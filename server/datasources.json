@@ -3,9 +3,9 @@
     "name": "db",
     "connector": "memory"
   },
-  "nutrition_care_app": {
+  "mysql_ds": {
     "url": "",
-    "name": "nutrition_care_app",
+    "name": "mysql_ds",
     "connector": "mysql"
   }
 }
