@@ -2,5 +2,10 @@
   "db": {
     "name": "db",
     "connector": "memory"
+  },
+  "nutrition_care_app": {
+    "url": "",
+    "name": "nutrition_care_app",
+    "connector": "mysql"
   }
 }

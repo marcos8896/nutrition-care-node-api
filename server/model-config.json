@@ -14,29 +14,29 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "mysql_ds"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "mysql_ds",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "mysql_ds",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "mysql_ds",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "mysql_ds",
     "public": false
   },
   "Food": {
-    "dataSource": "db",
+    "dataSource": "mysql_ds",
     "public": true
   }
 }
