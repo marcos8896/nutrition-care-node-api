@@ -1,0 +1,34 @@
+{
+  "name": "Food",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "description": {
+      "type": "string",
+      "required": true
+    },
+    "proteins": {
+      "type": "number",
+      "required": true
+    },
+    "carbohydrates": {
+      "type": "number",
+      "required": true
+    },
+    "fats": {
+      "type": "number",
+      "required": true
+    },
+    "calories": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
