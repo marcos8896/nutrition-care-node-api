@@ -50,5 +50,9 @@
   "Exercise": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "Routine": {
+    "dataSource": "mysql_ds",
+    "public": true
   }
 }
