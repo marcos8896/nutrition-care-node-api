@@ -1,0 +1,35 @@
+{
+  "name": "UserProgress",
+  "plural": "UserProgresses",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "weight": {
+      "type": "number",
+      "required": true
+    },
+    "fat_percentage": {
+      "type": "number",
+      "required": true
+    },
+    "fat_kilogram": {
+      "type": "number",
+      "required": true
+    },
+    "muscle_kilogram": {
+      "type": "number",
+      "required": true
+    },
+    "progress_date": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

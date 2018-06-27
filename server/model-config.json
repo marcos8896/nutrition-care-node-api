@@ -54,5 +54,9 @@
   "Routine": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "UserProgress": {
+    "dataSource": "mysql_ds",
+    "public": true
   }
 }
