@@ -1,4 +1,6 @@
 # Nutrition Care - Node API
+
+This project is meant to be the replacement for the old backend version that was made on PHP with the Laravel Framework.
 ___
 #### Required Enviroment Variables
 
