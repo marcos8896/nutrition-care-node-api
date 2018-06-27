@@ -1,16 +1,12 @@
 {
-  "name": "Food",
+  "name": "Diet_Food_Detail",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "description": {
-      "type": "string",
-      "required": true
-    },
-    "proteins": {
+    "calories": {
       "type": "number",
       "required": true
     },
@@ -22,17 +18,30 @@
       "type": "number",
       "required": true
     },
-    "calories": {
+    "proteins": {
       "type": "number",
+      "required": true
+    },
+    "desired_grams": {
+      "type": "number",
+      "required": true
+    },
+    "description": {
+      "type": "string",
       "required": true
     }
   },
   "validations": [],
   "relations": {
-    "dietFoodDetails": {
-      "type": "hasMany",
-      "model": "Diet_Food_Detail",
-      "foreignKey": "foodId"
+    "diet": {
+      "type": "belongsTo",
+      "model": "Diet",
+      "foreignKey": ""
+    },
+    "food": {
+      "type": "belongsTo",
+      "model": "Food",
+      "foreignKey": ""
     }
   },
   "acls": [],

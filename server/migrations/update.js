@@ -1,6 +1,6 @@
-var server = require('./server');
-var ds = server.dataSources.posgresql_ds;
-const { getNameModelsArray } = require('../utils/models-information.service');
+var server = require('../server');
+var ds = server.dataSources.mysql_ds;
+const { getNameModelsArray } = require('./utils/models-information');
 
 
 /**

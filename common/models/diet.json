@@ -28,7 +28,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "dietFoodDetails": {
+      "type": "hasMany",
+      "model": "Diet_Food_Detail",
+      "foreignKey": "dietId"
+    }
+  },
   "acls": [],
   "methods": {}
 }
