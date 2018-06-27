@@ -46,5 +46,9 @@
   "Diet": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "Exercise": {
+    "dataSource": "mysql_ds",
+    "public": true
   }
 }
