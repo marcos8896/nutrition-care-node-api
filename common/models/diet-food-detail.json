@@ -45,5 +45,17 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": {},
+  "indexes": {
+    "descriptionFoodIdDietIdIndex": { 
+      "keys": {
+        "description": 1,
+        "dietId": 1,
+        "foodId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  }
 }
