@@ -38,5 +38,9 @@
   "Food": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "BodyArea": {
+    "dataSource": "mysql_ds",
+    "public": true
   }
 }
