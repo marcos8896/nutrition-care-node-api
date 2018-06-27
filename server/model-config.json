@@ -42,5 +42,9 @@
   "BodyArea": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "Diet": {
+    "dataSource": "mysql_ds",
+    "public": true
   }
 }

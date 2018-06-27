@@ -1,0 +1,34 @@
+{
+  "name": "Diet",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "description": {
+      "type": "string",
+      "required": true
+    },
+    "total_carbohydrates": {
+      "type": "number",
+      "required": true
+    },
+    "total_proteins": {
+      "type": "number",
+      "required": true
+    },
+    "total_fats": {
+      "type": "number",
+      "required": true
+    },
+    "total_calories": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
