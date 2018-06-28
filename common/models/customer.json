@@ -6,7 +6,7 @@
     "validateUpsert": true
   },
   "properties": {
-    "customer_type": {
+    "customer_role": {
       "type": "string"
     }
   },
