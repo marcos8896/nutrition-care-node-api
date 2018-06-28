@@ -1,5 +1,11 @@
 'use strict';
+const CUSTOMER_ROLES = require('../../shared/customer-roles');
 
-module.exports = function(Customer) {
+module.exports = Customer => {
+
+  Customer.beforeRemote('create', (ctx, unused, next) => {
+    ctx.req.body.customer_type = CUSTOMER_ROLES.REGULAR;
+    next();
+  })
 
 };
