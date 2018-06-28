@@ -1,0 +1,35 @@
+{
+  "name": "BodyArea_Exercise_Detail",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "bodyAreaIdExerciseIdIndex": {
+      "keys": {
+        "bodyAreaId": 1,
+        "exerciseId": 1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "bodyArea": {
+      "type": "belongsTo",
+      "model": "BodyArea",
+      "foreignKey": "bodyAreaId"
+    },
+    "exercise": {
+      "type": "belongsTo",
+      "model": "Exercise",
+      "foreignKey": "exerciseId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

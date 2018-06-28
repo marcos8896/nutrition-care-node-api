@@ -66,5 +66,9 @@
   "Exercise_Routine_Detail": {
     "dataSource": "mysql_ds",
     "public": false
+  },
+  "BodyArea_Exercise_Detail": {
+    "dataSource": "mysql_ds",
+    "public": false
   }
 }

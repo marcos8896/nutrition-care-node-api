@@ -12,7 +12,14 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "exercises": {
+      "type": "hasMany",
+      "model": "Exercise",
+      "foreignKey": "bodyAreaId",
+      "through": "BodyArea_Exercise_Detail"
+    }
+  },
   "acls": [],
   "methods": {}
 }
