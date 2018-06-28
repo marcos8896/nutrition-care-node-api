@@ -14,7 +14,8 @@
     ]
   },
   "User": {
-    "dataSource": "mysql_ds"
+    "dataSource": "mysql_ds",
+    "public": false
   },
   "AccessToken": {
     "dataSource": "mysql_ds",
@@ -70,5 +71,9 @@
   "BodyArea_Exercise_Detail": {
     "dataSource": "mysql_ds",
     "public": false
+  },
+  "Customer": {
+    "dataSource": "mysql_ds",
+    "public": true
   }
 }
