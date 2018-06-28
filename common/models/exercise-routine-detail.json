@@ -1,13 +1,13 @@
 {
-  "name": "Diet_Food_Detail",
+  "name": "Exercise_Routine_Detail",
   "base": "PersistedModel",
   "idInjection": true,
   "indexes": {
-    "descriptionFoodIdDietIdIndex": {
+    "routineIdExerciseIdIndex": {
       "keys": {
-        "description": 1,
-        "dietId": 1,
-        "foodId": 1
+        "routineId": 1,
+        "exerciseId": 1,
+        "day": 1
       },
       "options": {
         "unique": true
@@ -18,41 +18,33 @@
     "validateUpsert": true
   },
   "properties": {
-    "calories": {
-      "type": "number",
+    "series": {
+      "type": "string",
       "required": true
     },
-    "carbohydrates": {
-      "type": "number",
-      "required": true
-    },
-    "fats": {
-      "type": "number",
-      "required": true
-    },
-    "proteins": {
-      "type": "number",
-      "required": true
-    },
-    "desired_grams": {
-      "type": "number",
+    "reps": {
+      "type": "string",
       "required": true
     },
     "description": {
+      "type": "string",
+      "required": true
+    },
+    "day": {
       "type": "string",
       "required": true
     }
   },
   "validations": [],
   "relations": {
-    "diet": {
+    "routine": {
       "type": "belongsTo",
-      "model": "Diet",
+      "model": "Routine",
       "foreignKey": ""
     },
-    "food": {
+    "exercise": {
       "type": "belongsTo",
-      "model": "Food",
+      "model": "Exercise",
       "foreignKey": ""
     }
   },

@@ -62,5 +62,9 @@
   "Diet_Food_Detail": {
     "dataSource": "mysql_ds",
     "public": false
+  },
+  "Exercise_Routine_Detail": {
+    "dataSource": "mysql_ds",
+    "public": false
   }
 }

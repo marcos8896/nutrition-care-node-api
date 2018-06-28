@@ -16,7 +16,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "exerciseRoutineDetails": {
+      "type": "hasMany",
+      "model": "Exercise_Routine_Detail",
+      "foreignKey": "exerciseId"
+    }
+  },
   "acls": [],
   "methods": {}
 }
