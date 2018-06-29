@@ -6,16 +6,16 @@
       "description": "{{commerce.product}}"
     },
     {
-      "proteins": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
+      "proteins": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.0001})}}"
     },
     {
-      "carbohydrates": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
+      "carbohydrates": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.0001})}}"
     },
     {
-      "fats": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
+      "fats": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.0001})}}"
     },
     {
-      "calories": "{{random.number({\"min\":1500, \"max\":4000, \"precision\": 0.001})}}"
+      "calories": "{{random.number({\"min\":1500, \"max\":4000, \"precision\": 0.0001})}}"
     }
   ]
 }
