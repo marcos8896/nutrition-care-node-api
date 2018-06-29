@@ -9,6 +9,7 @@ module.exports = {
         id: process.env.ADMINITRATOR_ID,
         name: process.env.ADMINITRATOR_NAME,
         last_name: process.env.ADMINITRATOR_LAST_NAME,
+        type: CONSTANT_ROLES.ADMIN,
         username: process.env.ADMINITRATOR_USERNAME,
         email: process.env.ADMINITRATOR_EMAIL,
         password: process.env.ADMINITRATOR_PASSWORD

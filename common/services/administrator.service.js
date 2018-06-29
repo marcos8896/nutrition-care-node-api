@@ -24,7 +24,6 @@ function beforeRemoteCreate(ctx, unused, next) {
 */
 function afterRemoteLogin(ctx, user, next) {
   const RoleMapping = app.models.RoleMapping;
-  console.log('user.type: ', user.type);
   user.type = CONSTANTS_ROLES.ADMIN;
   next();
 } 

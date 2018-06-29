@@ -6,14 +6,34 @@ const CONSTANTS_ROLES = require('../../shared/constants-roles');
 module.exports = Customer => {
 
   /**
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
    * @description:
-   * 'type' property will be added to the instance (user) that will be 
-   * returned in the login request. With 'type' property, the client
-   * application will know which type of user is loggin in
+   * 'type' property will be added to the body request to ensure
+   * that every new customer user is regitered as REGULAR customer
+   * user.
    */
   Customer.beforeRemote('create', (ctx, unused, next) => {
     ctx.req.body.type = CONSTANTS_ROLES.CUSTOMER.REGULAR;
     next();
   })
+
+  /**
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+   * @description: 'type' property will be added to the response that will be 
+   * returned in the login request. With 'type' property, the client
+   * application will know which type of user is loggin in
+   */
+  Customer.afterRemote('login', function (ctx, response, next) {
+
+    const RoleMapping = app.models.RoleMapping;
+
+    app.models.Customer.findById(response.userId)
+      .then( user => {
+        response.type = user.type;
+        next();
+      })
+      .catch( err => next(err));
+    
+  });
 
 };
