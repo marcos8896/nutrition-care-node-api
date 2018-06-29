@@ -1,6 +1,6 @@
 {
-  "name": "UserProgress",
-  "plural": "UserProgresses",
+  "name": "CustomerProgress",
+  "plural": "CustomerProgresses",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -34,5 +34,11 @@
   "validations": [],
   "relations": {},
   "acls": [],
-  "methods": {}
+  "methods": {
+    "customer": {
+      "type": "belongsTo",
+      "model": "Customer",
+      "foreignKey": ""
+    }
+  }
 }
