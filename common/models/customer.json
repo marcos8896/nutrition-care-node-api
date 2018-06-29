@@ -19,7 +19,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "diets": {
+      "type": "hasMany",
+      "model": "Diet",
+      "foreignKey": "customerId"
+    }
+  },
   "acls": [],
   "methods": {}
 }

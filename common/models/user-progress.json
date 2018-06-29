@@ -26,6 +26,9 @@
     "progress_date": {
       "type": "date",
       "required": true
+    },
+    "height": {
+      "type": "number"
     }
   },
   "validations": [],
