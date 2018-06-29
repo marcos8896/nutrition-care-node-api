@@ -78,6 +78,6 @@
   },
   "Administrator": {
     "dataSource": "mysql_ds",
-    "public": false
+    "public": true
   }
 }

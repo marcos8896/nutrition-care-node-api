@@ -1,7 +1,6 @@
 'use strict';
 
 const administratorService = require('../services/administrator.service');
-const CONSTANTS_ROLES = require('../../shared/constants-roles');
 
 module.exports = function(Administrator) {
   

@@ -14,7 +14,10 @@
       "type": "string",
       "required": true
     },
-    "customer_role": {
+    "type": {
+      "type": "string"
+    },
+    "type": {
       "type": "string"
     }
   },

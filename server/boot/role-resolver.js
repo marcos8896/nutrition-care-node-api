@@ -21,7 +21,7 @@ module.exports = app => {
       .then(customer => {
         
         //Check if the current user is a PREMIUM customer.
-        if(customer.customer_role === CONSTANTS_ROLES.CUSTOMER.PREMIUM)
+        if(customer.type === CONSTANTS_ROLES.CUSTOMER.PREMIUM)
           return cb(null, true);
         else
           return reject();

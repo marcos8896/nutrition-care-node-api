@@ -20,8 +20,7 @@
       "required": true
     },
     "type": {
-      "type": "string",
-      "default": "Administrator"
+      "type": "string"
     }
   },
   "validations": [],
