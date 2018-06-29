@@ -75,5 +75,9 @@
   "Customer": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "Administrator": {
+    "dataSource": "mysql_ds",
+    "public": false
   }
 }

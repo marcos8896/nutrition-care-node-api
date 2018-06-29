@@ -10,7 +10,8 @@
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "migrations:reset": "node server/migrations/reset",
-    "migrations:update": "node server/migrations/update"
+    "migrations:update": "node server/migrations/update",
+    "seeds:static-roles": "node common/roles/create-users-roles"
   },
   "dependencies": {
     "compression": "^1.0.3",
@@ -24,7 +25,8 @@
     "loopback-connector-mysql": "^2.4.1",
     "node-readfiles": "^0.2.0",
     "serve-favicon": "^2.0.1",
-    "strong-error-handler": "^2.0.0"
+    "strong-error-handler": "^2.0.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "eslint": "^3.17.1",
