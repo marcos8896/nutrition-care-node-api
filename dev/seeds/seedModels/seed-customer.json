@@ -3,19 +3,13 @@
   "name": "Customer",
   "properties_seeds": [
     {
-      "name": "{{name.firstName}}"
+      "name": ""
     },
     {
-      "email": "{{internet.email}}"
+      "last_name": ""
     },
     {
-      "last_name": "{{name.lastName}}"
-    },
-    {
-      "type": "REGULAR"
-    },
-    {
-      "password": "{{random.alphaNumeric}}"
+      "type": ""
     }
   ]
 }

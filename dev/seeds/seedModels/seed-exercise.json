@@ -3,10 +3,10 @@
   "name": "Exercise",
   "properties_seeds": [
     {
-      "name": "{{random.words(3)}}"
+      "name": ""
     },
     {
-      "src_image": "{{image.imageUrl}}"
+      "src_image": ""
     }
   ]
 }

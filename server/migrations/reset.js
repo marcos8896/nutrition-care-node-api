@@ -1,6 +1,6 @@
 var server = require('../server');
 var ds = server.dataSources.mysql_ds;
-const { getNameModelsArray } = require('./utils/models-information');
+const { getNameModelsArray } = require('../../shared/models-utils');
 
 
 /**

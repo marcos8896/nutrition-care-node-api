@@ -22,10 +22,7 @@ function getModelsContentFromJSONs() {
   }).then(() => arrayModels)
     .catch( error => console.log(error));
 }
-
-module.exports.getModelsContentFromJSONs = getModelsContentFromJSONs;
-
-//-------------------------------------------------------------------
+  
 
 /**
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
@@ -33,7 +30,7 @@ module.exports.getModelsContentFromJSONs = getModelsContentFromJSONs;
  * @returns {Promise<Array>} 
  */
 async function getNameModelsArray() {
-  
+
   let names = [];
   
   try {
@@ -45,6 +42,8 @@ async function getNameModelsArray() {
   return names;
 }
 
-module.exports.getNameModelsArray = getNameModelsArray;
 
-//-------------------------------------------------------------------
+module.exports = {
+  getModelsContentFromJSONs,
+  getNameModelsArray
+};
