@@ -11,24 +11,30 @@
     "posttest": "npm run lint && nsp check",
     "migrations:reset": "node server/migrations/reset",
     "migrations:update": "node server/migrations/update",
-    "seeds:static-roles": "node common/roles/create-users-roles"
+    "seeds:static-roles": "node common/roles/create-users-roles",
+    "seeds:prepare": "node dev/seeds/prepare-seeds",
+    "seeds:execute": "node dev/seeds/execute-seeds --"
   },
   "dependencies": {
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "dotenv": "^6.0.0",
+    "file-exists": "^5.0.1",
     "helmet": "^1.3.0",
     "loopback": "^3.0.0",
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^5.0.0",
     "loopback-component-visualizer": "^1.2.1",
     "loopback-connector-mysql": "^2.4.1",
+    "mkdirp": "^0.5.1",
     "node-readfiles": "^0.2.0",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "yargs": "^10.1.2"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
     "nsp": "^2.1.0"

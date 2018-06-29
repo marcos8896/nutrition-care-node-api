@@ -1,0 +1,21 @@
+{
+  "filename": "diet.json",
+  "name": "Diet",
+  "properties_seeds": [
+    {
+      "description": ""
+    },
+    {
+      "total_carbohydrates": ""
+    },
+    {
+      "total_proteins": ""
+    },
+    {
+      "total_fats": ""
+    },
+    {
+      "total_calories": ""
+    }
+  ]
+}

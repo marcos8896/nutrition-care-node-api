@@ -1,0 +1,24 @@
+{
+  "filename": "diet-food-detail.json",
+  "name": "Diet_Food_Detail",
+  "properties_seeds": [
+    {
+      "calories": ""
+    },
+    {
+      "carbohydrates": ""
+    },
+    {
+      "fats": ""
+    },
+    {
+      "proteins": ""
+    },
+    {
+      "desired_grams": ""
+    },
+    {
+      "description": ""
+    }
+  ]
+}

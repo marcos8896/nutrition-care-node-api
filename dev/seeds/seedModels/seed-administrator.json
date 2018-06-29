@@ -1,0 +1,18 @@
+{
+  "filename": "administrator.json",
+  "name": "Administrator",
+  "properties_seeds": [
+    {
+      "id": ""
+    },
+    {
+      "name": ""
+    },
+    {
+      "last_name": ""
+    },
+    {
+      "type": ""
+    }
+  ]
+}

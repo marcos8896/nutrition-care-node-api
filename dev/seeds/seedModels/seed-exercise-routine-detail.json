@@ -1,0 +1,18 @@
+{
+  "filename": "exercise-routine-detail.json",
+  "name": "Exercise_Routine_Detail",
+  "properties_seeds": [
+    {
+      "series": ""
+    },
+    {
+      "reps": ""
+    },
+    {
+      "description": ""
+    },
+    {
+      "day": ""
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "filename": "food.json",
+  "name": "Food",
+  "properties_seeds": [
+    {
+      "description": "{{commerce.product}}"
+    },
+    {
+      "proteins": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
+    },
+    {
+      "carbohydrates": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
+    },
+    {
+      "fats": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
+    },
+    {
+      "calories": "{{random.number({\"min\":1500, \"max\":4000, \"precision\": 0.001})}}"
+    }
+  ]
+}

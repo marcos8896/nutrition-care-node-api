@@ -1,0 +1,15 @@
+{
+  "filename": "customer.json",
+  "name": "Customer",
+  "properties_seeds": [
+    {
+      "name": ""
+    },
+    {
+      "last_name": ""
+    },
+    {
+      "type": ""
+    }
+  ]
+}

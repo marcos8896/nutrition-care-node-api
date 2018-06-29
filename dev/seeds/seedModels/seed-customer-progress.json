@@ -1,0 +1,24 @@
+{
+  "filename": "customer-progress.json",
+  "name": "CustomerProgress",
+  "properties_seeds": [
+    {
+      "weight": ""
+    },
+    {
+      "fat_percentage": ""
+    },
+    {
+      "fat_kilogram": ""
+    },
+    {
+      "muscle_kilogram": ""
+    },
+    {
+      "progress_date": ""
+    },
+    {
+      "height": ""
+    }
+  ]
+}
