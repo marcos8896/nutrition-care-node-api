@@ -9,26 +9,41 @@
   "properties": {
     "weight": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "fat_percentage": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "fat_kilogram": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "muscle_kilogram": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "progress_date": {
       "type": "date",
       "required": true
     },
     "height": {
-      "type": "number"
+      "type": "number",
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     }
   },
   "validations": [],
