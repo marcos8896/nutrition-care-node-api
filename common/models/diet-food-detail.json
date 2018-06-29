@@ -20,23 +20,38 @@
   "properties": {
     "calories": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "carbohydrates": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "fats": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "proteins": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "desired_grams": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "description": {
       "type": "string",

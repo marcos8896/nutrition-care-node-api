@@ -12,19 +12,31 @@
     },
     "proteins": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "carbohydrates": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "fats": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     },
     "calories": {
       "type": "number",
-      "required": true
+      "required": true,
+      "dataType": "decimal",
+      "precision": 10,
+      "scale": 4
     }
   },
   "validations": [],
