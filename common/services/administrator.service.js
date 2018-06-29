@@ -7,8 +7,9 @@ const CONSTANTS_ROLES = require('../../shared/constants-roles');
 
 
 /**
- * @description:
- * Before create a new register, a unique id (built with uuid library)
+ * @author Brandon Emmanuel Villa Cárdenas <bornofos@gmail.com>
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @description: Before create a new register, a unique id (built with uuid library)
  * will be added to that request.
  */
 function beforeRemoteCreate(ctx, unused, next) {
@@ -17,11 +18,12 @@ function beforeRemoteCreate(ctx, unused, next) {
 }
 
 /**
-* @description:
-* 'type' property will be added to the instance (user) that will be 
-* returned in the login request. With 'type' property, the client
-* application will know which type of user is loggin in
-*/
+ * @author Brandon Emmanuel Villa Cárdenas <bornofos@gmail.com>
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @description: 'type' property will be added to the instance (user) that will be 
+ * returned in the login request. With 'type' property, the client
+ * application will know which type of user is loggin in
+ */
 function afterRemoteLogin(ctx, user, next) {
   const RoleMapping = app.models.RoleMapping;
   user.type = CONSTANTS_ROLES.ADMIN;

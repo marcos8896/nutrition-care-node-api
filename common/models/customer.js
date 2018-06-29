@@ -1,21 +1,13 @@
 'use strict';
 
 const app = require('../../server/server');
-const CONSTANTS_ROLES = require('../../shared/constants-roles');
+const customerService = require('../services/customer.service');
 
 module.exports = Customer => {
 
-  /**
-   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
-   * @description:
-   * 'type' property will be added to the body request to ensure
-   * that every new customer user is regitered as REGULAR customer
-   * user.
-   */
-  Customer.beforeRemote('create', (ctx, unused, next) => {
-    ctx.req.body.type = CONSTANTS_ROLES.CUSTOMER.REGULAR;
-    next();
-  })
+
+  //Before Remote Hooks --->
+  Customer.beforeRemote('create', customerService.beforeRemoteCreate);
 
   /**
    * @author Marcos Barrera del Río <elyomarcos@gmail.com>
@@ -23,17 +15,6 @@ module.exports = Customer => {
    * returned in the login request. With 'type' property, the client
    * application will know which type of user is loggin in
    */
-  Customer.afterRemote('login', function (ctx, response, next) {
-
-    const RoleMapping = app.models.RoleMapping;
-
-    app.models.Customer.findById(response.userId)
-      .then( user => {
-        response.type = user.type;
-        next();
-      })
-      .catch( err => next(err));
-    
-  });
+  Customer.afterRemote('login', customerService.afterRemoteLogin);
 
 };
