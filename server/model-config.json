@@ -56,7 +56,7 @@
     "dataSource": "mysql_ds",
     "public": true
   },
-  "UserProgress": {
+  "CustomerProgress": {
     "dataSource": "mysql_ds",
     "public": true
   },

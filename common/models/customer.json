@@ -29,6 +29,11 @@
       "type": "hasMany",
       "model": "Routine",
       "foreignKey": "customerId"
+    },
+    "customerProgress": {
+      "type": "hasMany",
+      "model": "CustomerProgress",
+      "foreignKey": "customerId"
     }
   },
   "acls": [],
