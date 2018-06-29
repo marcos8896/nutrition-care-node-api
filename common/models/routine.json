@@ -17,6 +17,11 @@
       "type": "hasMany",
       "model": "Exercise_Routine_Detail",
       "foreignKey": "routineId"
+    },
+    "customer": {
+      "type": "belongsTo",
+      "model": "Customer",
+      "foreignKey": ""
     }
   },
   "acls": [],

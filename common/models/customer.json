@@ -24,6 +24,11 @@
       "type": "hasMany",
       "model": "Diet",
       "foreignKey": "customerId"
+    },
+    "routines": {
+      "type": "hasMany",
+      "model": "Routine",
+      "foreignKey": "customerId"
     }
   },
   "acls": [],
