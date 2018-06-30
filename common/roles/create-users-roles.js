@@ -8,17 +8,18 @@ const   app = require('../../server/server'),
 
 /**
  * 
- * @description Main method for creating a new collection of registers to
+ * Main method for creating a new collection of registers to
  * a specified model and added to a new role specified in the 
  * method's params. (Mostly used for a single record in this project
  * but it can receive multiple instances too).
+ * 
  * @author Brandon Emmanuel Villa Cárdenas <bornofos@gmail.com>
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param model Indicates the model from where is going to create the registers
- * @param collection The collections of objects from {model}
- * @param newRole The name of the new role 
- * @param roleDescription Description of the new role
- * @param cb Callback with two parameters (error, result) 
+ * @param {Object} model - Indicates the model from where is going to create the registers
+ * @param {Object[]} collection - The collections of objects from {model}
+ * @param {string} newRole - The name of the new role 
+ * @param {string} roleDescription - Description of the new role
+ * @param {callback} cb - Callback with two parameters (error, result) 
  */
 const createRole = (model, collection, newRole, roleDescription, cb) => {
 
@@ -125,9 +126,14 @@ const createRole = (model, collection, newRole, roleDescription, cb) => {
 
 }
 
-// Execute createRole() function (The parallel user is not needed with only one kind
-// of role, but it was left behind right there just in case future custom roles are needed
-// in the future.)
+/**
+ * Execute createRole() function (The parallel user is not needed with only one kind
+ * of role, but it was left behind right there just in case future custom roles are needed
+ * in the future.)
+ * 
+ * @name parallelBootsprapFunction 
+ * 
+*/
 parallel({
     adminUser: cb => {
         createRole( Admin, adminUser.users, adminUser.roleName, adminUser.rolDescription, (error, result) =>

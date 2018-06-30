@@ -1,12 +1,37 @@
+/**
+ * @file Prepares all the JSON seed files in order to generate fake
+ * data for the Loopback's model that are allocated on the common folder.
+ * The output that generate is a JSON file per Loopback model file that
+ * allows the user to enter faker.js' mustache syntax ( <code>{{  }}<code> ) 
+ * to generate all kind of fake data to test his or her applications. 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ */
+
 const asyncSeries = require('async').series;
 const fileExists = require('file-exists');
 const mkdirp = require('mkdirp');
 const readfiles = require('node-readfiles');
+
+/**
+ * The absolute path in which the JSON models seeds with be written.
+ * @type {string}
+ */
 const seedsDirectory = '/dev/seeds/seedModels/';
 
+
+/**
+ * The main array which several methods across the module will have access to.
+ * @type {Object[]}
+ */
 let arrayModels = [];
 
 
+/**
+ * This function is the one that starts all the process in this file, by running 
+ * all the other functions in the proper order one by one, one after the other.
+ * @name  boostrapFunction
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ */
 asyncSeries([
   cb => getModelsContentFromJSONs(cb),
   cb => prepareSeedsModels(cb),
@@ -21,7 +46,29 @@ asyncSeries([
 });
 
 
-
+/**
+ * Get all the Custom Loopback's models and processes them to only get the 
+ * model <code>name</code>, the model <code>filename</code> and the
+ * model <code>properties</code> to push it inside the <code>arrayModels</code>
+ * array.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {callback} cb - The next callback to keep the flow on all the 
+ * <code>prepare process</code> on the file.
+ * @example
+ * //The arrayModels shape at this point.
+ * arrayModels:  [
+ *   {
+ *     "filename": "model1.json",
+ *     "name": "Model1",
+ *     "properties_seeds": [
+ *       "id",
+ *       "name",
+ *       "last_name",
+ *     ]
+ *   },
+ *   //... more models
+ * ]
+ */
 function getModelsContentFromJSONs(cb) {
 
   readfiles('./common/models/', { filter: '*.json' }, (err, filename, contents) => {
@@ -35,7 +82,8 @@ function getModelsContentFromJSONs(cb) {
 
     arrayModels.push(json);
   })
-  .then(files => cb(null))
+  .then(files => {
+    return cb(null)})
   .catch(err => {
     console.log('Error reading files:', err.message);
     cb(err);
@@ -44,6 +92,25 @@ function getModelsContentFromJSONs(cb) {
 }
 
 
+/**
+ * Get all the previous processed models from the <code>arrayModels</code> array
+ * and generate the <code>properties_seeds</code> property on each
+ * one of them with the wanted shape in order to allow the seeder to introduces
+ * mustache syntax strings in each on of the properties from every model.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {callback} cb - The next callback to keep the flow on all the 
+ * <b>prepare process</b> on the file.
+ * @example
+ * {
+ *  "filename": "routine.json",
+ *  "name": "Routine",
+ *  "properties_seeds": [
+ *    {
+ *      "description": ""
+ *    }
+ *  ]
+ * }
+ */
 function prepareSeedsModels(cb) {
   arrayModels.forEach(model =>
     model.properties_seeds = model.properties_seeds.map(prop =>
@@ -54,6 +121,14 @@ function prepareSeedsModels(cb) {
 }
 
 
+/**
+ * Simple function that checks whether the current directory from the 
+ * <code>seedsDirectory</code> cons actually exists. If not, it creates it.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {callback} cb - The next callback to keep the flow on all the 
+ * <b>prepare process</b> on the file.
+ * 
+ */
 function checkIfDirectoryExists( cb ) {
   mkdirp(`.${seedsDirectory}`, (err) => {
     if (err) cb( err );
@@ -62,6 +137,17 @@ function checkIfDirectoryExists( cb ) {
 }
 
 
+/**
+ * Checks on by one if each model from the <code>arrayModels</code> array
+ * currently exists as a JSON seed file. If some mode already exists, then
+ * the <code>hasToBeModifiedOrAdded</code> property is added depending of
+ * the result.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @prop {boolean} model.hasToBeModifiedOrAdded 
+ * @param {callback} cb - The next callback to keep the flow on all the 
+ * <b>prepare process</b> on the file.
+ * 
+ */
 function checkJSONSeedsAvailability(cb) {
 
   let promises = [];
@@ -78,6 +164,16 @@ function checkJSONSeedsAvailability(cb) {
 }
 
 
+/**
+ * Checks if the current JSON Seed models are up to date. Deletes all the properties
+ * from the JSON seed files that are not showed on the main Loopback models and also
+ * add to the JSON seed files all the new properties that exists on the main Loopback
+ * models.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {callback} cb - The next callback to keep the flow on all the 
+ * <b>prepare process</b> on the file.
+ * 
+ */
 function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
 
   readfiles(`.${seedsDirectory}`, { filter: '*.json' }, (err, filename, jsonString) => {
@@ -102,7 +198,7 @@ function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
       return Object.keys(prop)[0];
     });
 
-    
+
     (function addNewPropertiesToTheSeedJSONModels() {
       
       //Get an array of all the properties that have to be added to the seed model.
@@ -175,6 +271,15 @@ function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
 }
 
 
+/**
+ * Writes all the new seed models or modified the ones that have new properties or
+ * the ones that have unnecesary properties (for example, properties that not longer
+ * exists on the main Loopback model of a given seed model).
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {callback} cb - The next callback to keep the flow on all the 
+ * <b>prepare process</b> on the file.
+ * 
+ */
 function writeRemainingJSONFiles(cb) {
   let each = require('async').each;
   const remainingJSONs = arrayModels.filter(model => model.hasToBeModifiedOrAdded);

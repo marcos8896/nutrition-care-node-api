@@ -1,7 +1,8 @@
 /**
- * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * Return a promises which contains all the Loobpack's custom models with 
  * all its properties on it.
+ * 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Promise<Array>} 
  */
 function getModelsContentFromJSONs() {
@@ -25,8 +26,9 @@ function getModelsContentFromJSONs() {
   
 
 /**
- * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * Return a promise which contains only the names from all the Loobpack's custom models.
+ * 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Promise<Array>} 
  */
 async function getNameModelsArray() {

@@ -4,9 +4,10 @@ const { getNameModelsArray } = require('../../shared/models-utils');
 
 
 /**
- * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * Run the proper autoupdate processes by loading automatically all existing custom models.
- * @returns {*} 
+ * 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @returns {undefined} 
  */
 function runModelsAutopdate() {
   getNameModelsArray().then( names => {

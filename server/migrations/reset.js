@@ -4,9 +4,10 @@ const { getNameModelsArray } = require('../../shared/models-utils');
 
 
 /**
- * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * Run the proper migrations by loading automatically all the new custom models.
- * @returns {*} 
+ * 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @returns {undefined} 
  */
 function runModelsMigrations() {
   getNameModelsArray().then( names => {

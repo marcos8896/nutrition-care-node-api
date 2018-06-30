@@ -3,19 +3,19 @@
   "name": "Food",
   "properties_seeds": [
     {
-      "description": ""
+      "description": "{{commerce.product}}"
     },
     {
-      "proteins": ""
+      "proteins": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "carbohydrates": ""
+      "carbohydrates": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "fats": ""
+      "fats": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "calories": ""
+      "calories": "{{random.number({\"min\":1500, \"max\":4000, \"precision\": 0.001})}}"
     }
   ]
 }
