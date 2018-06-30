@@ -1,7 +1,9 @@
 const asyncSeries = require('async').series;
 const fileExists = require('file-exists');
 const mkdirp = require('mkdirp');
+const seedsDirectory = '/dev/seeds/seedModels/'
 let arrayModels = [];
+
 
 function getModelsContentFromJSONs(cb) {
   const readfiles = require('node-readfiles');
@@ -38,7 +40,7 @@ function checkJSONSeedsAvailability(cb) {
   let promises = [];
   arrayModels.forEach(model => {
     promises.push(
-      fileExists(`./dev/seeds/seedModels/${model.filename}`).then(exists => {
+      fileExists(`.${seedsDirectory}seed-${model.filename}`).then(exists => {
         model.fileExists = exists;
         // console.log(exists); // OUTPUTS: true or false
       })
@@ -61,7 +63,7 @@ function writeRemainingJSONFiles(cb) {
 
   each(remainingJSONs, (json, eachCallback) => {
     
-    let file = `./dev/seeds/seedModels/seed-${json.filename}`
+    let file = `.${seedsDirectory}seed-${json.filename}`
     let obj = json
 
     jsonfile.writeFile(file, obj, { spaces: 2 }, function (err) {
@@ -77,7 +79,7 @@ function writeRemainingJSONFiles(cb) {
 }
 
 function checkIfDirectoryExists( cb ) {
-  mkdirp('./dev/seeds/seedModels/', (err) => {
+  mkdirp(`.${seedsDirectory}`, (err) => {
     if (err) cb( err );
     cb( null );
   });
