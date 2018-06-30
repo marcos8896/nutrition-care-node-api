@@ -8,10 +8,12 @@ const { waterfall } = require('async');
 class CustomerService {
 
   /**
-   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
-   * @description: 'type' property will be added to the body request to ensure
+   * 'type' property will be added to the body request to ensure
    * that every new customer user is regitered as REGULAR customer
    * user.
+   * 
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+   * 
    */
   static beforeRemoteCreate(ctx, unused, next) {
     ctx.req.body.type = CONSTANTS_ROLES.CUSTOMER.REGULAR;
@@ -19,10 +21,12 @@ class CustomerService {
   }
 
   /**
-   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
-   * @description: 'type' property will be added to the response that will be 
+   * 'type' property will be added to the response that will be 
    * returned in the login request. With 'type' property, the client
-   * application will know which type of user is loggin in
+   * application will know which type of user is loggin in.
+   * 
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+   * 
    */
   static afterRemoteLogin(ctx, response, next) {
 
