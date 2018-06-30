@@ -7,21 +7,18 @@ const seedsDirectory = '/dev/seeds/seedModels/';
 let arrayModels = [];
 
 
-
-
 asyncSeries([
   cb => getModelsContentFromJSONs(cb),
   cb => prepareSeedsModels(cb),
   cb => checkIfDirectoryExists(cb),
   cb => checkJSONSeedsAvailability(cb),
-  cb => addNewPropertiesFromJSONModelsToSeedModels(cb),
+  cb => keepPropetiesFromJSONSeedModelsUpToDate(cb),
   cb => writeRemainingJSONFiles(cb),
 ], (err, results) => {
   if(err) console.log('Error on asyncSeries - prepare-seeds.js: ', err);
   else console.log("\nTodo bien, men.");
   
 });
-
 
 
 
@@ -81,7 +78,7 @@ function checkJSONSeedsAvailability(cb) {
 }
 
 
-function addNewPropertiesFromJSONModelsToSeedModels( cb ) {
+function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
 
   readfiles(`.${seedsDirectory}`, { filter: '*.json' }, (err, filename, jsonString) => {
 
@@ -105,26 +102,68 @@ function addNewPropertiesFromJSONModelsToSeedModels( cb ) {
       return Object.keys(prop)[0];
     });
 
-    //Get an array of all the properties that have to be added to the seed model.
-    const newPropertiesToWrite = currentModelProperties.filter(val => {
-      return !currentSeedProperties.includes(val);
-    });
-
-
-    if(newPropertiesToWrite.length > 0) {
+    
+    (function addNewPropertiesToTheSeedJSONModels() {
       
-      //Get current model from main array.
-      let current = arrayModels[objectFromArrayModelsIndex];
-
-      //Create an object to be added to the curretn properties_seeds on the seed model.
-      let newPropertiesObject = newPropertiesToWrite.map( prop => { 
-        return {[prop] : ""} 
+      //Get an array of all the properties that have to be added to the seed model.
+      const newPropertiesToWrite = currentModelProperties.filter(val => {
+        return !currentSeedProperties.includes(val);
       });
       
-      //Added all new properties to the current JSON model that will be re-write.
-      current.properties_seeds = [ ...newPropertiesObject, ...seedObject.properties_seeds ];
-      current.hasToBeModifiedOrAdded = true;
-    }
+      
+      if(newPropertiesToWrite.length > 0) {
+        
+        //Get current model from main array.
+        let current = arrayModels[objectFromArrayModelsIndex];
+
+        //Create an object to be added to the curretn properties_seeds on the seed model.
+        let newPropertiesObject = newPropertiesToWrite.map( prop => { 
+          return {[prop] : ""} 
+        });
+        
+        //Added all new properties to the current JSON model that will be re-write.
+        current.properties_seeds = [ ...newPropertiesObject, ...seedObject.properties_seeds ];
+        current.hasToBeModifiedOrAdded = true;
+      }
+
+    })();
+
+
+    (function deleteLeftoverPropertiesFromSeedJSONModels() {
+      //Get an array of all the properties that have to be deleted from the seed model.
+      const leftoverPropertiesToDelete = currentSeedProperties.filter(val => {
+        return !currentModelProperties.includes(val);
+      });
+
+
+      if(leftoverPropertiesToDelete.length > 0) {
+
+        //Get current model from main array.
+        let current = arrayModels[objectFromArrayModelsIndex];
+
+        leftoverPropertiesToDelete.forEach( prop => {
+          let indexToDelete;
+
+          seedObject.properties_seeds.forEach((currentPropObject, i) => {
+            
+            if(Object.keys(currentPropObject)[0] === prop)
+              indexToDelete = i;
+          
+            });
+
+          //Delete the property fro the property seed array of the current seed model.
+          seedObject.properties_seeds.splice(indexToDelete, 1);
+
+          indexToDelete = null;
+
+        })
+        
+        current.properties_seeds = [ ...seedObject.properties_seeds ];
+        current.hasToBeModifiedOrAdded = true;
+        
+      }
+    })();
+    
 
   })
   .then(files => cb(null))
