@@ -71,7 +71,7 @@ function checkJSONSeedsAvailability(cb) {
   arrayModels.forEach(model => {
     promises.push(
       fileExists(`.${seedsDirectory}seed-${model.filename}`).then(exists => {
-        model.fileExists = exists;
+        model.hasToBeModifiedOrAdded = !exists;
         // console.log(exists); // OUTPUTS: true or false
       })
     )
@@ -79,6 +79,7 @@ function checkJSONSeedsAvailability(cb) {
 
   Promise.all(promises).then(() => cb(null));
 }
+
 
 function addNewPropertiesFromJSONModelsToSeedModels( cb ) {
 
@@ -122,7 +123,7 @@ function addNewPropertiesFromJSONModelsToSeedModels( cb ) {
       
       //Added all new properties to the current JSON model that will be re-write.
       current.properties_seeds = [ ...newPropertiesObject, ...seedObject.properties_seeds ];
-      current.fileExists = false;
+      current.hasToBeModifiedOrAdded = true;
     }
 
   })
@@ -137,10 +138,10 @@ function addNewPropertiesFromJSONModelsToSeedModels( cb ) {
 
 function writeRemainingJSONFiles(cb) {
   let each = require('async').each;
-  const remainingJSONs = arrayModels.filter(model => !model.fileExists);
+  const remainingJSONs = arrayModels.filter(model => model.hasToBeModifiedOrAdded);
 
-  //Removed fileExists property to not write it on the JSON Seed files.
-  remainingJSONs.forEach(json => delete json.fileExists);
+  //Removed hasToBeModifiedOrAdded property to not write it on the JSON Seed files.
+  remainingJSONs.forEach(json => delete json.hasToBeModifiedOrAdded);
 
   const jsonfile = require('jsonfile')
 
