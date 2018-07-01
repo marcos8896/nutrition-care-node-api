@@ -13,7 +13,8 @@
     "migrations:update": "node server/migrations/update",
     "seeds:static-roles": "node common/roles/create-users-roles",
     "seeds:prepare": "node dev/seeds/prepare-seeds",
-    "seeds:execute": "node dev/seeds/execute-seeds --"
+    "seeds:execute": "node dev/seeds/execute-seeds --",
+    "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json"
   },
   "dependencies": {
     "compression": "^1.0.3",
@@ -34,9 +35,11 @@
     "yargs": "^10.1.2"
   },
   "devDependencies": {
-    "faker": "^4.1.0",
+    "docdash": "^0.4.0",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",
+    "faker": "^4.1.0",
+    "jsdoc": "^3.5.5",
     "nsp": "^2.1.0"
   },
   "repository": {

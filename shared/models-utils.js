@@ -1,3 +1,11 @@
+/** 
+ * This module is meant to have all the models functionality of the Loopback models.
+ * Functionality that needs to be shared in multiple places.
+ * @module Shared/ModelsUtils 
+ * 
+ */
+
+
 /**
  * Return a promises which contains all the Loobpack's custom models with 
  * all its properties on it.

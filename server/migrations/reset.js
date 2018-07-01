@@ -1,11 +1,17 @@
+/** 
+ * This module contain the <code>runModelsMigrations</code> script, which
+ * reconstructs all the database <b>deleting all the current data on it</b>
+ * Use it only on development mode or with dummy data.
+ * @module Migrations/Reset 
+ * 
+ */
+
 var server = require('../server');
 var ds = server.dataSources.mysql_ds;
 const { getNameModelsArray } = require('../../shared/models-utils');
 
-
 /**
  * Run the proper migrations by loading automatically all the new custom models.
- * 
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {undefined} 
  */

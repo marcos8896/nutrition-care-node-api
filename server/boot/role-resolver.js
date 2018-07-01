@@ -4,10 +4,11 @@ module.exports = app => {
   const Role = app.models.Role;
 
   /**
-   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
-   * @description: This role resolver checks if the current
+   * This role resolver checks if the current
    * user is a customer and if so, then it proceeds to verifies
    * if that customer is a premium one.
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+   * 
    */
   Role.registerResolver('premium', (_, context, cb) => {
 

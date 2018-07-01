@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>server/migrations/reset.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdministratorService.html">AdministratorService</a><ul class='methods'><li data-type='method'><a href="AdministratorService.html#.afterRemoteLogin">afterRemoteLogin</a></li><li data-type='method'><a href="AdministratorService.html#.beforeRemoteCreate">beforeRemoteCreate</a></li></ul></li><li><a href="CustomerService.html">CustomerService</a><ul class='methods'><li data-type='method'><a href="CustomerService.html#.afterRemoteLogin">afterRemoteLogin</a></li><li data-type='method'><a href="CustomerService.html#.beforeRemoteCreate">beforeRemoteCreate</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-Migrations_Reset.html">Migrations/Reset</a><ul class='methods'><li data-type='method'><a href="module-Migrations_Reset.html#~runModelsMigrations">runModelsMigrations</a></li></ul></li><li><a href="module-Migrations_Update.html">Migrations/Update</a><ul class='methods'><li data-type='method'><a href="module-Migrations_Update.html#~runModelsAutopdate">runModelsAutopdate</a></li></ul></li><li><a href="module-Seeds_Execute.html">Seeds/Execute</a><ul class='methods'><li data-type='method'><a href="module-Seeds_Execute.html#~areAllpropertiesSeedsFilled">areAllpropertiesSeedsFilled</a></li><li data-type='method'><a href="module-Seeds_Execute.html#~getModelsSeedsFromSeedJSONModels">getModelsSeedsFromSeedJSONModels</a></li><li data-type='method'><a href="module-Seeds_Execute.html#~seedModel">seedModel</a></li></ul></li><li><a href="module-Seeds_Prepare.html">Seeds/Prepare</a><ul class='methods'><li data-type='method'><a href="module-Seeds_Prepare.html#~checkIfDirectoryExists">checkIfDirectoryExists</a></li><li data-type='method'><a href="module-Seeds_Prepare.html#~checkJSONSeedsAvailability">checkJSONSeedsAvailability</a></li><li data-type='method'><a href="module-Seeds_Prepare.html#~getModelsContentFromJSONs">getModelsContentFromJSONs</a></li><li data-type='method'><a href="module-Seeds_Prepare.html#~keepPropetiesFromJSONSeedModelsUpToDate">keepPropetiesFromJSONSeedModelsUpToDate</a></li><li data-type='method'><a href="module-Seeds_Prepare.html#~prepareSeedsModels">prepareSeedsModels</a></li><li data-type='method'><a href="module-Seeds_Prepare.html#~writeRemainingJSONFiles">writeRemainingJSONFiles</a></li></ul></li><li><a href="module-Seeds_Roles.html">Seeds/Roles</a><ul class='methods'><li data-type='method'><a href="module-Seeds_Roles.html#~createRole">createRole</a></li></ul></li><li><a href="module-Shared_ModelsUtils.html">Shared/ModelsUtils</a><ul class='methods'><li data-type='method'><a href="module-Shared_ModelsUtils.html#~getModelsContentFromJSONs">getModelsContentFromJSONs</a></li><li data-type='method'><a href="module-Shared_ModelsUtils.html#~getNameModelsArray">getNameModelsArray</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">server/migrations/reset.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** 
+ * This module contain the &lt;code>runModelsMigrations&lt;/code> script, which
+ * reconstructs all the database &lt;b>deleting all the current data on it&lt;/b>
+ * Use it only on development mode or with dummy data.
+ * @module Migrations/Reset 
+ * 
+ */
+
+var server = require('../server');
+var ds = server.dataSources.mysql_ds;
+const { getNameModelsArray } = require('../../shared/models-utils');
+
+/**
+ * Run the proper migrations by loading automatically all the new custom models.
+ * @author Marcos Barrera del Río &lt;elyomarcos@gmail.com>
+ * @returns {undefined} 
+ */
+function runModelsMigrations() {
+  getNameModelsArray().then( names => {
+
+    //There's no need to add new custom models in the 'lbTables', since they are
+    //being loaded automatically from the models' JSON files.
+    var lbTables = ['User', 'AccessToken', 'ACL', 'RoleMapping', 'Role', ...names];
+  
+    ds.automigrate(lbTables, function(er) {
+      if (er) throw er;
+      console.log('Loopback tables [' + lbTables + '] created in ', ds.adapter.name);
+      ds.disconnect();
+    });
+  })
+}
+
+runModelsMigrations();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Jul 01 2018 00:00:58 GMT-0500 (CDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

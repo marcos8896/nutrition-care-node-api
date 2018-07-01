@@ -5,6 +5,11 @@ const CONSTANTS_ROLES = require('../../shared/constants-roles');
 const uuid = require('uuid/v4');
 const { waterfall } = require('async');
 
+/**
+ * Dedicated services to handle all the function of the Customer model.
+ *
+ * @class CustomerService
+ */
 class CustomerService {
 
   /**

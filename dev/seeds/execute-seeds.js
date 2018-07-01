@@ -1,14 +1,12 @@
-//Example to run seeds
-// npm run execute:seeds Provider 10
-
 /**
- * @file Creates fake data based on the seed JSON files that were created
+ * Creates fake data based on the seed JSON files that were created
  * by the {@link prepare-seeds.js} script.
  * When a user runs this script, the user has to enter the wanted Model to seed
  * and the number of wanted records.
  * This file uses the [faker.js]{@link https://github.com/marak/Faker.js/}
  * library to generate all the dummy data.
- * 
+ * @module Seeds/Execute
+ * @example npm run execute:seeds Provider 10
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 
