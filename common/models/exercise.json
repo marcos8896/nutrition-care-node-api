@@ -22,11 +22,10 @@
       "model": "Exercise_Routine_Detail",
       "foreignKey": "exerciseId"
     },
-    "bodyAreas": {
+    "bodyAreaExerciseDetails": {
       "type": "hasMany",
-      "model": "BodyArea",
-      "foreignKey": "exerciseId",
-      "through": "BodyArea_Exercise_Detail"
+      "model": "BodyArea_Exercise_Detail",
+      "foreignKey": "exerciseId"
     }
   },
   "acls": [],

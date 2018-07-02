@@ -1,3 +1,14 @@
+/**
+ * Main file to declare all the Dynamic Roles.
+ * @module Roles/Resolver
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * 
+ */
+
+/** 
+ * Require all the constants roles to use them in this model.
+ * @constant
+*/
 const CONSTANTS_ROLES = require('../../shared/constants-roles');
 
 module.exports = app => {
@@ -7,6 +18,7 @@ module.exports = app => {
    * This role resolver checks if the current
    * user is a customer and if so, then it proceeds to verifies
    * if that customer is a premium one.
+   * 
    * @author Marcos Barrera del Río <elyomarcos@gmail.com>
    * 
    */

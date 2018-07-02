@@ -18,6 +18,11 @@
       "model": "Exercise",
       "foreignKey": "bodyAreaId",
       "through": "BodyArea_Exercise_Detail"
+    },
+    "bodyAreaExerciseDetails": {
+      "type": "hasMany",
+      "model": "BodyArea_Exercise_Detail",
+      "foreignKey": "bodyAreaId"
     }
   },
   "acls": [],

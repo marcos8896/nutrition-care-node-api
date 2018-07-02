@@ -31,6 +31,68 @@ function getModelsContentFromJSONs() {
   }).then(() => arrayModels)
     .catch( error => console.log(error));
 }
+
+
+
+/**
+ * Return a promises which contains all the Loobpack's custom models from the 
+ * JSON files on the common/models folder with the request properties on it.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {string[]} requestedProperties - The wanted properties to be return in
+ * promise.
+ * @returns {Promise<Object[]>} - A promise which contains an array of objects,
+ * and each object represents a Loopback model with the requested properties.
+ */
+function getModelsWithRequestedProperties( requestedProperties ) {
+
+  const readfiles = require('node-readfiles');
+  const arrayModels = [];
+
+  return readfiles('./common/models/', { filter: '*.json' }, (err, filename, model) => {
+    if (err) throw err;
+
+    const parsedModel = JSON.parse(model);
+
+    let json = {};
+
+    requestedProperties.forEach( prop => json[prop] = parsedModel[prop] );
+
+    arrayModels.push(json);
+
+  }).then(() => arrayModels)
+    .catch( error => console.log(error));
+}
+
+
+/**
+ * Return a promises which contains all the Loobpack's seed models from the 
+ * JSON files on the dev/seeds/seedModels folder with the request properties on it.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @param {string[]} requestedProperties - The wanted properties to be return in
+ * promise.
+ * @returns {Promise<Object[]>} - A promise which contains an array of objects,
+ * and each object represents a Loopback model with the requested properties.
+ */
+function getSeedModelsWithRequestedProperties( requestedProperties ) {
+
+  const readfiles = require('node-readfiles');
+  const arraySeedModels = [];
+
+  return readfiles('./dev/seeds/seedModels', { filter: '*.json' }, (err, filename, model) => {
+    if (err) throw err;
+
+    const parsedModel = JSON.parse(model);
+
+    let json = {};
+
+    requestedProperties.forEach( prop => json[prop] = parsedModel[prop] );
+
+    arraySeedModels.push(json);
+
+  }).then(() => arraySeedModels)
+    .catch( error => console.log(error));
+}
+
   
 
 /**
@@ -55,5 +117,7 @@ async function getNameModelsArray() {
 
 module.exports = {
   getModelsContentFromJSONs,
-  getNameModelsArray
+  getNameModelsArray,
+  getModelsWithRequestedProperties,
+  getSeedModelsWithRequestedProperties
 };

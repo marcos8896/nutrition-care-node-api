@@ -14,6 +14,12 @@ const series = require('async').series;
 const faker = require('faker/');
 const args = require('yargs').argv;
 
+const { 
+  getModelsWithRequestedProperties,
+  getSeedModelsWithRequestedProperties
+ } = require('../../shared/models-utils.js');
+
+
 /**
  * This constant holds all the custom models that the Loopback instance has available.
  * @type {string}
@@ -100,11 +106,12 @@ function getModelsSeedsFromSeedJSONModels( cb ) {
  * on the <code>numRecords</code> constant that holds the user input from the terminal.
  * At the end, this function grabs all the generate instances and it creates them on
  * the database.
+ * @async
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @param {callback} cb - The next callback to keep the flow on all the
  * <code>prepare process</code> on the file.
  */
-function seedModel( cb ) {
+async function seedModel( cb ) {
 
     let Model = arrayModels.find( model => model.name == singleModel);
  
@@ -118,21 +125,22 @@ function seedModel( cb ) {
     if( !areAllpropertiesSeedsFilled(Model) ) 
       cb(`There are empty 'properties_seeds' on seedModel '${singleModel}'. \nFile: '${Model.filename}'`)
     
-    
-    let fakeModel = { }
-    const fakeModelsArray = [];
-    for (let i = 0; i < numRecords; i++) {
-      Model.properties_seeds.forEach( prop => 
-        fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
-      )
-      fakeModelsArray.push(fakeModel);
-      fakeModel = { };
-    }
 
-    models[singleModel].create(fakeModelsArray)
-    .then( () => cb(null))
-    .catch( err => cb(err))
-  
+   try {
+
+    const modelRelationsType = await getRelationsTypeFromLoopbackModel( singleModel, cb );
+    const seedType = typeOfSeedToGenerate( modelRelationsType );
+
+    if(seedType === 'simpleSeed')
+      performSimpleSeed( Model, cb );
+
+    else if(seedType === 'complexSeed')
+      performComplexSeed( Model, cb );
+
+   } catch(error) {
+     return cb(error);
+   }
+    
 }
 
 /**
@@ -148,11 +156,197 @@ function areAllpropertiesSeedsFilled( Model ) {
 }
 
 
+function typeOfSeedToGenerate( relationsTypes ) {
+
+  let type = 'simpleSeed';
+
+  //Only 'hasMany' relations.
+  if( relationsTypes.length === 0 )
+    return 'simpleSeed'
+
+  else if( relationsTypes.every( type => type === 'hasMany' ) )
+    return 'simpleSeed';
+
+  else if( relationsTypes.includes('belongsTo') )
+    return 'complexSeed';
+
+  else throw "HANDLE THIS CASE, PLEASE";
+  
+
+}
+
+
+function performSimpleSeed( Model, cb ) {
+
+  let fakeModel = { };
+  const fakeModelsArray = [];
+  for (let i = 0; i < numRecords; i++) {
+    Model.properties_seeds.forEach( prop => 
+      fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
+    )
+    fakeModelsArray.push(fakeModel);
+    fakeModel = { };
+  }
+
+  models[singleModel].create(fakeModelsArray)
+    .then(_ => cb(null))
+    .catch( err => cb(err))
+
+}
+
+
+async function performComplexSeed( Model, cb ) {
+  
+  try {
+
+    const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
+    const JSONModel = JSONmodels.find( model => model.name === Model.name );
+    const relations = Object.keys(JSONModel.relations).map( key => JSONModel.relations[key] );
+
+    const mainLoopbackModel = models[Model.name];
+
+
+
+
+
+
+    //HAS TO BE A METHOD - getfakeModelsArray(Model, numberOfRecords)
+    const fakeModelsArray = [];
+
+    let fakeModel = { };
+    for (let i = 0; i < numRecords; i++) {
+      Model.properties_seeds.forEach( prop => 
+        fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
+      )
+      fakeModelsArray.push(fakeModel);
+      fakeModel = { };
+    }
+    
+    
+
+
+
+    const finishedPromises = [];
+    // HAS TO BE A METHOD - 
+    relations.forEach( relation => {
+
+      if(relation.typy === 'hasMany') {
+        //TODO: Make the proper relation also with the hasMany models.
+      } 
+      else if(relation.type === 'belongsTo') {
+
+        //Get the related model.
+        const relatedModel = models[relation.model];
+
+        //Get related JSON model.
+        const relatedJSONmodel = JSONmodels
+          .find( json => json.name === relatedModel.name );
+
+        //Go get the JSON model related to check the foreignKeys required to
+        //insert a new record.
+        const key = Object.keys(relatedJSONmodel.relations).find( relation => {
+          return relatedJSONmodel.relations[relation].model === mainLoopbackModel.name;
+        });
+
+        const foreignKey = relatedJSONmodel.relations[key].foreignKey;
+
+
+
+
+
+        //Get the related model properties.
+        const relatedModelProperties = relatedJSONmodel.properties;
+
+        const relatedModelPropKeys = Object.keys(relatedModelProperties);
+        
+        const randomProperty = getRandomElementFromArray(relatedModelPropKeys);
+
+        const orderBy = Math.random() >= 0.5 ? 'ASC' : 'DESC';
+
+
+          // Get 10 random object of the related model to be related with the
+          // 'mainLoopbackModel' model.
+          let auxPromise = relatedModel.find({ 
+            limit: 10,
+            order: `${randomProperty} ${orderBy}` 
+          }).then( relatedModelResults => {
+
+            if(relatedModelResults.length === 0) { //There aren't records.
+              //TODO: Create new records then.
+              return cb(`There are not ${relatedModel.name} existing records to make the relation insert`);
+            } else {
+
+              fakeModelsArray.forEach( fakeModel => {
+                fakeModel[foreignKey] = getRandomElementFromArray(relatedModelResults).id;
+              })
+
+              return { done: true };
+
+            }
+
+          })
+          .catch( err => cb(err))
+
+          finishedPromises.push(auxPromise);
+      }
+      
+    });
+
+    await Promise.all(finishedPromises);
+    await models[singleModel].create(fakeModelsArray);
+    return cb(null);
+    
+  } catch(error) {
+    return cb(error)
+  }
+
+}
+
+
+function getRandomElementFromArray( array ) {
+  return array[Math.floor(Math.random()*array.length)];
+}
+
+
+/**
+ * Returns all the relations's types from a given model.
+ * 
+ * @async
+ * @param {string} modelName - The name of the model from which the developer wants to get
+ * its relations' types.
+ * @param {callback} cb
+ * @returns {Promise<string[]>} modelRelationsType - A promise which contains an array with
+ * the relations' types.
+ */
+async function getRelationsTypeFromLoopbackModel( modelName, cb ) {
+
+  try {
+    const models = await getModelsWithRequestedProperties([ 'name', 'relations' ]);
+    const model = models.find( model => model.name === modelName );
+    const modelRelationsType = Object.keys(model.relations).map( key => model.relations[key].type );
+    
+    return modelRelationsType;
+  }
+  catch(error) {
+    return cb(error);
+  }
+
+}
+
+
 series([
   cb => getModelsSeedsFromSeedJSONModels(cb),
   cb => seedModel(cb)
 ], err => {
-  if(err) console.log(err);
+  if(err) throw err;
   else console.log("\nTodo bien, men.");
   process.exit(0);
 });
+
+
+
+
+
+function logComplex( complexObject, msg = "gg",  ) {
+  console.log(msg, JSON.stringify(complexObject, null, ' '));
+}

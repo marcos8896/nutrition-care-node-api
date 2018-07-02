@@ -22,12 +22,12 @@
     "bodyArea": {
       "type": "belongsTo",
       "model": "BodyArea",
-      "foreignKey": "bodyAreaId"
+      "foreignKey": ""
     },
     "exercise": {
       "type": "belongsTo",
       "model": "Exercise",
-      "foreignKey": "exerciseId"
+      "foreignKey": ""
     }
   },
   "acls": [],
