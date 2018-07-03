@@ -178,9 +178,20 @@ function typeOfSeedToGenerate( relationsTypes ) {
 
 function performSimpleSeed( Model, cb ) {
 
+  const fakeModelsArray = getfakeModelsArray( Model, numRecords );
+
+  models[singleModel].create(fakeModelsArray)
+    .then(_ => cb(null))
+    .catch( err => cb(err))
+
+}
+
+
+function getfakeModelsArray( Model, numberOfRecords ) {
+
   let fakeModel = { };
   const fakeModelsArray = [];
-  for (let i = 0; i < numRecords; i++) {
+  for (let i = 0; i < numberOfRecords; i++) {
     Model.properties_seeds.forEach( prop => 
       fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
     )
@@ -188,9 +199,7 @@ function performSimpleSeed( Model, cb ) {
     fakeModel = { };
   }
 
-  models[singleModel].create(fakeModelsArray)
-    .then(_ => cb(null))
-    .catch( err => cb(err))
+  return fakeModelsArray;
 
 }
 
@@ -205,25 +214,7 @@ async function performComplexSeed( Model, cb ) {
 
     const mainLoopbackModel = models[Model.name];
 
-
-
-
-
-
-    //HAS TO BE A METHOD - getfakeModelsArray(Model, numberOfRecords)
-    const fakeModelsArray = [];
-
-    let fakeModel = { };
-    for (let i = 0; i < numRecords; i++) {
-      Model.properties_seeds.forEach( prop => 
-        fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
-      )
-      fakeModelsArray.push(fakeModel);
-      fakeModel = { };
-    }
-    
-    
-
+    const fakeModelsArray = getfakeModelsArray( Model, numRecords );
 
 
     const finishedPromises = [];

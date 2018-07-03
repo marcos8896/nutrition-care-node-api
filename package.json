@@ -29,6 +29,7 @@
     "loopback-connector-mysql": "^2.4.1",
     "mkdirp": "^0.5.1",
     "node-readfiles": "^0.2.0",
+    "prompt": "^1.0.0",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^2.0.0",
     "uuid": "^3.3.2",
