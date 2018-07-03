@@ -3,7 +3,7 @@
   "name": "BodyArea",
   "properties_seeds": [
     {
-      "description": ""
+      "description": "{{random.words(3)}}"
     }
   ]
 }

@@ -3,22 +3,22 @@
   "name": "Diet_Food_Detail",
   "properties_seeds": [
     {
-      "calories": ""
+      "calories": "{{random.number({\"min\":50, \"max\":700, \"precision\": 0.001})}}"
     },
     {
-      "carbohydrates": ""
+      "carbohydrates": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "fats": ""
+      "fats": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "proteins": ""
+      "proteins": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "desired_grams": ""
+      "desired_grams": "{{random.number({\"min\":0, \"max\":350, \"precision\": 0.001})}}"
     },
     {
-      "description": ""
+      "description": "{{commerce.product}}"
     }
   ]
 }

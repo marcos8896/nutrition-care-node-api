@@ -3,16 +3,16 @@
   "name": "Exercise_Routine_Detail",
   "properties_seeds": [
     {
-      "series": ""
+      "series": "{{lorem.words(5)}}"
     },
     {
-      "reps": ""
+      "reps": "{{lorem.words(5)}}"
     },
     {
-      "description": ""
+      "description": "{{lorem.words(30)}}"
     },
     {
-      "day": ""
+      "day": "{{LUNES}}"
     }
   ]
 }

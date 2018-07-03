@@ -15,7 +15,7 @@
       "fats": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "calories": "{{random.number({\"min\":1500, \"max\":4000, \"precision\": 0.001})}}"
+      "calories": "{{random.number({\"min\":50, \"max\":700, \"precision\": 0.001})}}"
     }
   ]
 }

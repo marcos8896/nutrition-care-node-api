@@ -3,22 +3,22 @@
   "name": "CustomerProgress",
   "properties_seeds": [
     {
-      "weight": ""
+      "weight": "{{random.number({\"min\":50, \"max\":120, \"precision\": 0.0001})}}"
     },
     {
-      "fat_percentage": ""
+      "fat_percentage": "{{random.number({\"min\":5, \"max\":50, \"precision\": 0.0001})}}"
     },
     {
-      "fat_kilogram": ""
+      "fat_kilogram": "{{random.number({\"min\":2, \"max\":100, \"precision\": 0.0001})}}"
     },
     {
-      "muscle_kilogram": ""
+      "muscle_kilogram": "{{random.number({\"min\":40, \"max\":100, \"precision\": 0.0001})}}"
     },
     {
-      "progress_date": ""
+      "progress_date": "{{date.recent}}"
     },
     {
-      "height": ""
+      "height": "{{random.number({\"min\":1.40, \"max\":2.30, \"precision\": 0.01})}}"
     }
   ]
 }

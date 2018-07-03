@@ -3,10 +3,10 @@
   "name": "Exercise",
   "properties_seeds": [
     {
-      "name": ""
+      "name": "{{lorem.words(3)}}"
     },
     {
-      "src_image": ""
+      "src_image": "{{internet.url}}"
     }
   ]
 }

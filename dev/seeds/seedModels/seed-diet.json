@@ -3,19 +3,19 @@
   "name": "Diet",
   "properties_seeds": [
     {
-      "description": ""
+      "description": "{{commerce.product}} - {{commerce.product}} - {{commerce.product}}"
     },
     {
-      "total_carbohydrates": ""
+      "total_carbohydrates": "{{random.number({\"min\":100, \"max\":400, \"precision\": 0.001})}}"
     },
     {
-      "total_proteins": ""
+      "total_proteins": "{{random.number({\"min\":100, \"max\":150, \"precision\": 0.001})}}"
     },
     {
-      "total_fats": ""
+      "total_fats": "{{random.number({\"min\":50, \"max\":200, \"precision\": 0.001})}}"
     },
     {
-      "total_calories": ""
+      "total_calories": "{{random.number({\"min\":1700, \"max\":4000, \"precision\": 0.001})}}"
     }
   ]
 }
