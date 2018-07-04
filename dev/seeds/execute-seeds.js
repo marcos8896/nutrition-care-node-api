@@ -13,17 +13,17 @@
 const series = require('async').series;
 const args = require('yargs').argv;
 
-const { 
-  getModelsWithRequestedProperties,
-  getSeedModelsWithRequestedProperties,
- } = require('../../shared/models-utils.js');
-
  const {
   areAllpropertiesSeedsFilled,
   typeOfSeedToGenerate,
   getFakeModelsArray,
   getRandomElementFromArray,
+  getRelationsTypeFromLoopbackModel,
  } = require('./utils/shared');
+
+ const {
+  performComplexSeed,
+ } = require('./utils/complex-seed');
 
 /**
  * This constant holds all the custom models that the Loopback instance has available.
@@ -144,7 +144,7 @@ async function seedModel( cb ) {
       performSimpleSeed( Model, numRecords, cb );
 
     else if(seedType === 'complexSeed')
-      performComplexSeed( Model, cb );
+      performComplexSeed({  Model, models, numRecords, cb  });
 
    } catch(error) {
      return cb(error);
@@ -173,129 +173,6 @@ function performSimpleSeed( Model, numberOfRecords, cb ) {
 }
 
 
-
-async function performComplexSeed( Model, cb ) {
-  
-  try {
-
-    const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
-    const JSONModel = JSONmodels.find( model => model.name === Model.name );
-    const relations = Object.keys(JSONModel.relations).map( key => JSONModel.relations[key] );
-
-    const mainLoopbackModel = models[Model.name];
-
-    const fakeModelsArray = getFakeModelsArray( Model, numRecords );
-
-
-    const finishedPromises = [];
-    // HAS TO BE A METHOD - 
-    relations.forEach( relation => {
-
-      if(relation.type === 'hasMany') {
-        //TODO: Make the proper relation also with the hasMany models.
-      } 
-      else if(relation.type === 'belongsTo') {
-
-        //Get the related model.
-        const relatedModel = models[relation.model];
-
-        //Get related JSON model.
-        const relatedJSONmodel = JSONmodels
-          .find( json => json.name === relatedModel.name );
-
-        //Go get the JSON model related to check the foreignKeys required to
-        //insert a new record.
-        const key = Object.keys(relatedJSONmodel.relations).find( relation => {
-          return relatedJSONmodel.relations[relation].model === mainLoopbackModel.name;
-        });
-
-        const foreignKey = relatedJSONmodel.relations[key].foreignKey;
-
-
-
-
-
-        //Get the related model properties.
-        const relatedModelProperties = relatedJSONmodel.properties;
-
-        const relatedModelPropKeys = Object.keys(relatedModelProperties);
-        
-        const randomProperty = getRandomElementFromArray(relatedModelPropKeys);
-
-        const orderBy = Math.random() >= 0.5 ? 'ASC' : 'DESC';
-
-
-          // Get 10 random object of the related model to be related with the
-          // 'mainLoopbackModel' model.
-          let auxPromise = relatedModel.find({ 
-            limit: 10,
-            order: `${randomProperty} ${orderBy}` 
-          }).then( relatedModelResults => {
-
-            if(relatedModelResults.length === 0) { //There aren't records.
-              //TODO: Create new records then.
-              console.log(`The current ${Model.name} has a relation with the 
-                           ${relatedModel.name} model, however the ${relatedModel.name}
-                           model does not have records currently on the database,
-                           Do you want to create some records of it to get a more 
-                           accurate generated model?`);
-              //Put prompt functionality in here.
-              return cb(`There are not ${relatedModel.name} existing records to make the relation insert`);
-            } else {
-
-              fakeModelsArray.forEach( fakeModel => {
-                fakeModel[foreignKey] = getRandomElementFromArray(relatedModelResults).id;
-              })
-
-              return { done: true };
-
-            }
-
-          })
-          .catch( err => cb(err))
-
-          finishedPromises.push(auxPromise);
-      }
-      
-    });
-
-    await Promise.all(finishedPromises);
-    await models[singleModel].create(fakeModelsArray);
-    return cb(null);
-    
-  } catch(error) {
-    return cb(error)
-  }
-
-}
-
-
-
-
-/**
- * Returns all the relations's types from a given model.
- * 
- * @async
- * @param {string} modelName - The name of the model from which the developer wants to get
- * its relations' types.
- * @param {callback} cb
- * @returns {Promise<string[]>} modelRelationsType - A promise which contains an array with
- * the relations' types.
- */
-async function getRelationsTypeFromLoopbackModel( modelName, cb ) {
-
-  try {
-    const models = await getModelsWithRequestedProperties([ 'name', 'relations' ]);
-    const model = models.find( model => model.name === modelName );
-    const modelRelationsType = Object.keys(model.relations).map( key => model.relations[key].type );
-    
-    return modelRelationsType;
-  }
-  catch(error) {
-    return cb(error);
-  }
-
-}
 
 
 series([

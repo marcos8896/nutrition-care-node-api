@@ -86,9 +86,41 @@ function getRandomElementFromArray( array ) {
   return array[Math.floor(Math.random()*array.length)];
 }
 
+
+
+/**
+ * Returns all the relations's types from a given model.
+ * 
+ * @async
+ * @param {string} modelName - The name of the model from which the developer wants to get
+ * its relations' types.
+ * @param {callback} cb
+ * @returns {Promise<string[]>} modelRelationsType - A promise which contains an array with
+ * the relations' types.
+ */
+async function getRelationsTypeFromLoopbackModel( modelName, cb ) {
+
+  const { 
+    getModelsWithRequestedProperties,
+   } = require('../../../shared/models-utils.js');
+
+  try {
+    const models = await getModelsWithRequestedProperties([ 'name', 'relations' ]);
+    const model = models.find( model => model.name === modelName );
+    const modelRelationsType = Object.keys(model.relations).map( key => model.relations[key].type );
+    
+    return modelRelationsType;
+  }
+  catch(error) {
+    return cb(error);
+  }
+
+}
+
 module.exports = {
   areAllpropertiesSeedsFilled,
   typeOfSeedToGenerate,
   getFakeModelsArray,
   getRandomElementFromArray,
+  getRelationsTypeFromLoopbackModel,
 }
