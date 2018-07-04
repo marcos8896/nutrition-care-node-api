@@ -1,5 +1,7 @@
 /** @module Seeds/Execute/Shared */
 
+const faker = require('faker/');
+
 /**
  * Validates if the current seed model has all its properties_seeds filled.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
@@ -55,9 +57,6 @@ function typeOfSeedToGenerate( relationsTypes ) {
  * @returns {Object[]} Returns an array with fake records of the current seed model.
  */
 function getFakeModelsArray( Model, numberOfRecords ) {
-
-  const faker = require('faker/');
-
 
   let fakeModel = { };
   const fakeModelsArray = [];

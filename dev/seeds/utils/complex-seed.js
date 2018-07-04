@@ -21,25 +21,36 @@ const {
  * @param {Object} models - All the models that the Loopback instance provides.
  * @param {callback} cb - The next callback to keep the flow on all the
  * <code>prepare process</code> on the file.
+ * @async
  */
-
-async function performComplexSeed({  Model, numRecords, cb }) {
+async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
   
   try {
     
     const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
     const JSONModel = JSONmodels.find( model => model.name === Model.name );
-    const relations = Object.keys(JSONModel.relations).map( key => JSONModel.relations[key] );
+    const relations = Object.keys(JSONModel.relations).map( key => {
+      return {
+        ...JSONModel.relations[key],
+        relationName: key
+      }
+    });
     const mainLoopbackModel = models[Model.name];
     const fakeModelsArray = getFakeModelsArray( Model, numRecords );
-
     
-    await checkModelRelations({ JSONmodels, relations, mainLoopbackModel, fakeModelsArray })
-    await models[Model.name].create(fakeModelsArray);
+    
+    await checkModelRelations({ 
+      JSONmodels, relations, mainLoopbackModel, fakeModelsArray, seedModels 
+    });
+    
+    await insert({ 
+      models, Model, fakeModelsArray, relations 
+    });
+
     return cb(null);
     
   } catch(error) {
-    return cb(error)
+    return cb(error);
   }
 
 }
@@ -53,25 +64,34 @@ async function performComplexSeed({  Model, numRecords, cb }) {
  * on the terminal).
  * @param {Object} mainLoopbackModel A Loopback instance for the current model.
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
+ * @async
  * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
  */
-function checkModelRelations({ JSONmodels, relations, mainLoopbackModel, fakeModelsArray }) {
-
-  const finishedPromises = [];
+async function checkModelRelations({ 
+  JSONmodels, relations, mainLoopbackModel, seedModels, fakeModelsArray 
+}) {
+  
+  const promisesToAwait = [];
   relations.forEach( relation => {
 
+    //Get the related model.
+    const relatedModel = models[relation.model];
+
     if(relation.type === 'hasMany') {
-      //TODO: Make the proper relation also with the hasMany models.
+
+      const currentSeedModel = getSeedModelByName(seedModels, relatedModel.name);
+      fakeModelsArray.forEach( fakeModel => {
+        fakeModel[relation.relationName] = getFakeModelsArray(currentSeedModel, 10);
+      });
+      
     } 
     else if(relation.type === 'belongsTo') {
-      //Get the related model.
-      const relatedModel = models[relation.model];
 
       //Get related JSON model.
       const relatedJSONmodel = JSONmodels
         .find( json => json.name === relatedModel.name );
 
-      //Go get the JSON model related to check the foreignKeys required to
+      //Go get the JSON related model to check the foreignKeys required to
       //insert a new record.
       const key = Object.keys(relatedJSONmodel.relations).find( relation => {
         return relatedJSONmodel.relations[relation].model === mainLoopbackModel.name;
@@ -124,15 +144,97 @@ function checkModelRelations({ JSONmodels, relations, mainLoopbackModel, fakeMod
       })
       .catch( err => cb(err))
 
-      finishedPromises.push(auxPromise);
+      promisesToAwait.push(auxPromise);
     }
     
   });
 
-  return Promise.all(finishedPromises);
+  return Promise.all(promisesToAwait);
 
 }
 
+
+function insert({ models, Model, fakeModelsArray, relations }) {
+
+  const hasManyRelations = relations
+    .filter( relation => relation.type === 'hasMany' )
+    .map( relation => {
+      return { 
+        name: relation.relationName, 
+        relatedModelName: relation.model,
+        foreignKey: relation.foreignKey
+      }
+    });
+  
+  
+  //Parent model created
+  return models[Model.name].create(fakeModelsArray)
+    //Get the ids of the already created parent models.
+    .then( createdResults => createdResults.map( record => record.id ))
+    //Get the ids from the parent model records to bound the 'hasMany' related models.
+    .then( ids => {
+
+      let hasManyRecordsPromises = [];
+
+      hasManyRelations
+        .forEach( relation => {
+
+          const relatedArraysModelsToCreate = fakeModelsArray
+            .map( fakeModel => fakeModel[relation.name] )
+
+          //Put a parent id to every single related model.
+          relatedArraysModelsToCreate.forEach( (relatedModelsArray, i) => {
+
+            relatedModelsArray.forEach( relatedModel => {
+              relatedModel[relation.foreignKey] = ids[i];
+            });
+
+          })
+          
+          const flattenedArray = flattenArray({ array: relatedArraysModelsToCreate, mutable: false })
+          
+          hasManyRecordsPromises.push(models[relation.relatedModelName].create(flattenedArray));
+
+        })
+
+        return Promise.all(hasManyRecordsPromises);
+
+    })
+
+}
+
+
+
+function getSeedModelByName( seedModels, name ) {
+  return seedModels.find( seedModel => seedModel.name === name );
+}
+
+
+function flattenArray({ array, mutable }) {
+  var toString = Object.prototype.toString;
+  var arrayTypeStr = '[object Array]';
+  
+  var result = [];
+  var nodes = (mutable && array) || array.slice();
+  var node;
+
+  if (!array.length) {
+      return result;
+  }
+
+  node = nodes.pop();
+  
+  do {
+      if (toString.call(node) === arrayTypeStr) {
+          nodes.push.apply(nodes, node);
+      } else {
+          result.push(node);
+      }
+  } while (nodes.length && (node = nodes.pop()) !== undefined);
+
+  result.reverse(); // we reverse result to restore the original order
+  return result;
+}
 
 
 

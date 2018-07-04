@@ -12,7 +12,7 @@
       "description": "{{lorem.words(30)}}"
     },
     {
-      "day": "{{LUNES}}"
+      "day": "LUNES"
     }
   ]
 }

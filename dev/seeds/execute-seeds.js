@@ -144,7 +144,7 @@ async function seedModel( cb ) {
       performSimpleSeed( Model, numRecords, cb );
 
     else if(seedType === 'complexSeed')
-      performComplexSeed({  Model, numRecords, cb  });
+      performComplexSeed({  Model, numRecords, seedModels: arrayModels, cb  });
 
    } catch(error) {
      return cb(error);
