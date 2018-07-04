@@ -132,7 +132,7 @@ async function seedModel( cb ) {
     const seedType = typeOfSeedToGenerate( modelRelationsType );
 
     if(seedType === 'simpleSeed')
-      performSimpleSeed( Model, cb );
+      performSimpleSeed( Model, numRecords, cb );
 
     else if(seedType === 'complexSeed')
       performComplexSeed( Model, cb );
@@ -155,7 +155,19 @@ function areAllpropertiesSeedsFilled( Model ) {
   return propertiesValues.every( property => property );
 }
 
-
+/**
+ * Determines what kind of seed is going to need the current model.
+ * There are two kind of seeds:
+ * - The simple, which only runs a function that create fake data
+ *   by using the seed JSON file for the given seed model.
+ * - The complex, which also create fake models for the given seed
+ *   model, however, this one also takes in consideration every
+ *   related models by using the relations of the current model.
+ * @param {string[]} relationsTypes - An array with all the relations from the
+ * current model.
+ * @returns {string} Returns the kind of seed that is going to be needed for the
+ * given seed model.
+ */
 function typeOfSeedToGenerate( relationsTypes ) {
 
   let type = 'simpleSeed';
@@ -164,21 +176,25 @@ function typeOfSeedToGenerate( relationsTypes ) {
   if( relationsTypes.length === 0 )
     return 'simpleSeed'
 
-  else if( relationsTypes.every( type => type === 'hasMany' ) )
-    return 'simpleSeed';
-
-  else if( relationsTypes.includes('belongsTo') )
+  else if( relationsTypes.includes('belongsTo') || relationsTypes.includes('hasMany') )
     return 'complexSeed';
 
-  else throw "HANDLE THIS CASE, PLEASE";
+  else throw "The relations that your model has are not supported currently.";
   
 
 }
 
+/**
+ * Creates a wanted number of records for the given model on the terminal.
+ *
+ * @param {*} Model - The current seed model from which the script is going
+ * to generate fake data.
+ * @param {number} numberOfRecords - The wanted number of records to be created.
+ * @param {callback} cb - Next callback on the stack.
+ */
+function performSimpleSeed( Model, numberOfRecords, cb ) {
 
-function performSimpleSeed( Model, cb ) {
-
-  const fakeModelsArray = getfakeModelsArray( Model, numRecords );
+  const fakeModelsArray = getfakeModelsArray( Model, numberOfRecords );
 
   models[singleModel].create(fakeModelsArray)
     .then(_ => cb(null))
@@ -186,7 +202,16 @@ function performSimpleSeed( Model, cb ) {
 
 }
 
-
+/**
+ * Generates all the fake data that is going to be created on the database,
+ * it creates a given number of records of the current seed model based on
+ * the given number of records and it puts all these records on an array.
+ * 
+ * @param {*} Model - The current seed model from which the script is going
+ * to generate fake data.
+ * @param {number} numberOfRecords - The wanted number of records to be created.
+ * @returns {Object[]} Returns an array with fake records of the current seed model.
+ */
 function getfakeModelsArray( Model, numberOfRecords ) {
 
   let fakeModel = { };
@@ -221,7 +246,7 @@ async function performComplexSeed( Model, cb ) {
     // HAS TO BE A METHOD - 
     relations.forEach( relation => {
 
-      if(relation.typy === 'hasMany') {
+      if(relation.type === 'hasMany') {
         //TODO: Make the proper relation also with the hasMany models.
       } 
       else if(relation.type === 'belongsTo') {
@@ -293,7 +318,13 @@ async function performComplexSeed( Model, cb ) {
 
 }
 
-
+/**
+ * Takes an array and returns a random element from it.
+ *
+ * @param {*} array - An array from which is going to be returned
+ * a random element.
+ * @returns {any} - A random element from the array param.
+ */
 function getRandomElementFromArray( array ) {
   return array[Math.floor(Math.random()*array.length)];
 }

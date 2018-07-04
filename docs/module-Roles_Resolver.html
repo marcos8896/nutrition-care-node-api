@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>CustomerService - Documentation</title>
+    <title>Roles/Resolver - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">CustomerService</h1>
+    <h1 class="page-title">Roles/Resolver</h1>
     
 
     
@@ -39,9 +39,8 @@
 
 <header>
     
-        <h2>
-        CustomerService
-        </h2>
+        
+            
         
     
 </header>
@@ -50,12 +49,11 @@
     <div class="container-overview">
     
         
+            <div class="description"><p>Main file to declare all the Dynamic Roles.</p></div>
+        
 
-    
-
-    <h4 class="name" id="CustomerService"><span class="type-signature"></span>new CustomerService<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
+        
+            
 
 
 
@@ -65,7 +63,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_services_customer.service.js.html">common/services/customer.service.js</a>, <a href="common_services_customer.service.js.html#line8">line 8</a>
+        <a href="server_boot_role-resolver.js.html">server/boot/role-resolver.js</a>, <a href="server_boot_role-resolver.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -86,6 +84,13 @@
     
 
     
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li><a href="mailto:elyomarcos@gmail.com">Marcos Barrera del Río</a></li>
+        </ul>
+    </dd>
+    
 
     
 
@@ -104,9 +109,6 @@
 
 
 
-<div class="description">
-    <p>Dedicated services to handle all the function of the Customer model.</p>
-</div>
 
 
 
@@ -131,7 +133,7 @@
 
 
 
-
+        
     
     </div>
 
@@ -146,18 +148,12 @@
     
 
     
-
-    
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         
             
+<h4 class="name" id="~CONSTANTS_ROLES"><span class="type-signature">(inner, constant) </span>CONSTANTS_ROLES<span class="type-signature"></span></h4>
 
-    
-
-    <h4 class="name" id=".afterRemoteLogin"><span class="type-signature">(static) </span>afterRemoteLogin<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
 
 
 
@@ -167,7 +163,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_services_customer.service.js.html">common/services/customer.service.js</a>, <a href="common_services_customer.service.js.html#line36">line 36</a>
+        <a href="server_boot_role-resolver.js.html">server/boot/role-resolver.js</a>, <a href="server_boot_role-resolver.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -188,13 +184,6 @@
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:elyomarcos@gmail.com">Marcos Barrera del Río</a></li>
-        </ul>
-    </dd>
-    
 
     
 
@@ -214,9 +203,7 @@
 
 
 <div class="description">
-    <p>'type' property will be added to the response that will be 
-returned in the login request. With 'type' property, the client
-application will know which type of user is loggin in.</p>
+    <p>Require all the constants roles to use them in this model.</p>
 </div>
 
 
@@ -226,117 +213,9 @@ application will know which type of user is loggin in.</p>
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
-            
-
     
 
-    <h4 class="name" id=".beforeRemoteCreate"><span class="type-signature">(static) </span>beforeRemoteCreate<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_services_customer.service.js.html">common/services/customer.service.js</a>, <a href="common_services_customer.service.js.html#line23">line 23</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:elyomarcos@gmail.com">Marcos Barrera del Río</a></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>'type' property will be added to the body request to ensure
-that every new customer user is regitered as REGULAR customer
-user.</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 
     
