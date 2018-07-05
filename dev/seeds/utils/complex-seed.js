@@ -43,11 +43,6 @@ async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
       const mainLoopbackModel = models[Model.name];
       const fakeModelsArray = getFakeModelsArray( Model, numRecords );
       
-      
-      await checkModelRelations({ 
-        JSONmodels, relations, mainLoopbackModel, fakeModelsArray, seedModels 
-      });
-      
       await insert({ 
         models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel,
         seedModels
@@ -67,107 +62,27 @@ async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
  * Check the 'hasMany' relation and attach fake records to forward be created with the proper
  * relation.
  *
- * @param {Object[]} JSONmodels Contains all the Loobpack JSON models files from 'common/models'
- * directory (already parsed as objects).
  * @param {Object[]} relations Contains all the relations from current seed model (the one specified
  * on the terminal).
- * @param {Object} mainLoopbackModel A Loopback instance for the current model.
  * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
- * @async
- * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
  */
-async function checkModelRelations({ 
-  JSONmodels, relations, mainLoopbackModel, seedModels, fakeModelsArray 
-}) {
+function checkHasManyModelRelations({  relations, seedModels, fakeModelsArray }) {
+
+  const hasManyRelations = relations
+    .filter( relation => relation.type === 'hasMany' )
   
-  const promisesToAwait = [];
-  relations.forEach( relation => {
+  hasManyRelations.forEach( relation => {
 
     //Get the related model.
     const relatedModel = models[relation.model];
-
-    if(relation.type === 'hasMany') {
 
       const currentSeedModel = getSeedModelByName(seedModels, relatedModel.name);
       fakeModelsArray.forEach( fakeModel => {
         fakeModel[relation.relationName] = getFakeModelsArray(currentSeedModel, 10);
       });
       
-    } 
-    /*** else if(relation.type === 'belongsTo') {
-
-      let auxPromise = relatedModel.find({ 
-        limit: 10,
-      }).then( relatedModelResults => {
-
-
-        if(relatedModelResults.length === 0) {
-
-          //TODO: Create new records then.
-          console.log(`The current ${Model.name} model has a 'belongsTo' relation with the `
-                    + `${relatedModel.name} model, however the ${relatedModel.name} `
-                    + `model does not have records currently on the database, `
-                    + `Do you want to create some fake records of it to get a more `
-                    + `accurate generated model?`);
-
-          
-
-
-        } else {
-
-          //Get related JSON model.
-          const relatedJSONmodel = JSONmodels
-          .find( json => json.name === relatedModel.name );
-
-          //Go get the JSON related model to check the foreignKeys required to
-          //insert a new record.
-          const key = Object.keys(relatedJSONmodel.relations).find( relation => {
-            return relatedJSONmodel.relations[relation].model === mainLoopbackModel.name;
-          });
-
-          const foreignKey = relatedJSONmodel.relations[key].foreignKey;
-
-          //Get the related model properties.
-          const relatedModelProperties = relatedJSONmodel.properties;
-
-          const relatedModelPropKeys = Object.keys(relatedModelProperties);
-          
-          const randomProperty = getRandomElementFromArray(relatedModelPropKeys);
-
-          const orderBy = Math.random() >= 0.5 ? 'ASC' : 'DESC';
-
-
-          // Get 10 random object of the related model to be related with the
-          // 'mainLoopbackModel' model.
-          let auxPromise = relatedModel.find({ 
-            limit: 10,
-            order: `${randomProperty} ${orderBy}` 
-          }).then( relatedModelResults => {
-
-
-              fakeModelsArray.forEach( fakeModel => {
-                fakeModel[foreignKey] = getRandomElementFromArray(relatedModelResults).id;
-              })
-
-              return { done: true };
-
-
-          })
-          .catch( err => cb(err))
-
-          promisesToAwait.push(auxPromise);
-
-        }
-
-      })
-
-      
-    }*/
-    
   });
-
-  return Promise.all(promisesToAwait);
 
 }
 
@@ -199,7 +114,7 @@ async function insert({
      });
       
     await insertParentWithHasMany({ 
-      models, Model, fakeModelsArray, relations 
+      models, Model, fakeModelsArray, relations, seedModels
     });
 
 }
@@ -216,7 +131,9 @@ async function insert({
  * on the terminal).
  * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
  */
-function insertParentWithHasMany({ models, Model, fakeModelsArray, relations }) {
+function insertParentWithHasMany({ models, Model, fakeModelsArray, relations, seedModels }) {
+
+  checkHasManyModelRelations({ relations, seedModels, fakeModelsArray, seedModels })
 
   const hasManyRelations = relations
     .filter( relation => relation.type === 'hasMany' )
