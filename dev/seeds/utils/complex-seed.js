@@ -14,10 +14,16 @@ const {
   getRelationsTypeFromLoopbackModel,
  } = require('./shared');
 
+
+
 /**
- * Validates if the current seed model has all its properties_seeds filled.
+ * Prepare and insert the wanted model to seed, by considering the its relationships.
+ * 
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @param {Object} Model - A given seed model object.
+ * @param {Number} numRecords The wanted number of fake records to be created on the
+ * database.
+ * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
  * @param {Object} models - All the models that the Loopback instance provides.
  * @param {callback} cb - The next callback to keep the flow on all the
  * <code>prepare process</code> on the file.
@@ -25,39 +31,48 @@ const {
  */
 async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
   
-    const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
-    const JSONModel = JSONmodels.find( model => model.name === Model.name );
-    const relations = Object.keys(JSONModel.relations).map( key => {
-      return {
-        ...JSONModel.relations[key],
-        relationName: key
-      }
-    });
-    const mainLoopbackModel = models[Model.name];
-    const fakeModelsArray = getFakeModelsArray( Model, numRecords );
-    
-    
-    await checkModelRelations({ 
-      JSONmodels, relations, mainLoopbackModel, fakeModelsArray, seedModels 
-    });
-    
-    await insert({ 
-      models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel,
-      seedModels, cb
-    });
+    try {
+      const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
+      const JSONModel = JSONmodels.find( model => model.name === Model.name );
+      const relations = Object.keys(JSONModel.relations).map( key => {
+        return {
+          ...JSONModel.relations[key],
+          relationName: key
+        }
+      });
+      const mainLoopbackModel = models[Model.name];
+      const fakeModelsArray = getFakeModelsArray( Model, numRecords );
+      
+      
+      await checkModelRelations({ 
+        JSONmodels, relations, mainLoopbackModel, fakeModelsArray, seedModels 
+      });
+      
+      await insert({ 
+        models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel,
+        seedModels
+      });
 
-    return cb(null);
+      return cb(null);
+    
+    } catch( error ) {
+      console.log('error: ', error);
+    }
     
 }
 
+
+
 /**
- *
+ * Check the 'hasMany' relation and attach fake records to forward be created with the proper
+ * relation.
  *
  * @param {Object[]} JSONmodels Contains all the Loobpack JSON models files from 'common/models'
  * directory (already parsed as objects).
  * @param {Object[]} relations Contains all the relations from current seed model (the one specified
  * on the terminal).
  * @param {Object} mainLoopbackModel A Loopback instance for the current model.
+ * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
  * @async
  * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
@@ -157,28 +172,51 @@ async function checkModelRelations({
 }
 
 
+
+/**
+ * Insert all the new fake records from the <code>fakeModelsArray</code> taking in
+ * consideration the 'hasMany' and 'belongsTo' relations from current model to seed.
+ *
+ * @param {Object} models The models from the Loopback main instance.
+ * @param {Object} Model - A given seed model object.
+ * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
+ * @param {Object[]} relations Contains all the relations from current seed model (the one specified
+ * on the terminal).
+ * @param {Object[]} JSONmodels Contains all the Loobpack JSON models files from 'common/models'
+ * directory (already parsed as objects).
+ * @param {Object} mainLoopbackModel A Loopback instance for the current model.
+ * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
+ * @async
+ * }
+ * @returns
+ */
 async function insert({ 
-  models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels, cb
+  models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
 }) {
 
-  try {
-
     await insertBelongsTo({ 
-      models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel,
-      seedModels
+      models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
      });
       
-    await insertHasMany({ models, Model, fakeModelsArray, relations });
-
-  } catch( error ) {
-    return cb(error);
-    process.exit(0);
-  }
+    await insertParentWithHasMany({ 
+      models, Model, fakeModelsArray, relations 
+    });
 
 }
 
 
-function insertHasMany({ models, Model, fakeModelsArray, relations }) {
+
+/**
+ * 
+ *
+ * @param {Object} models The models from the Loopback main instance.
+ * @param {Object} Model - A given seed model object.
+ * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
+ * @param {Object[]} relations Contains all the relations from current seed model (the one specified
+ * on the terminal).
+ * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
+ */
+function insertParentWithHasMany({ models, Model, fakeModelsArray, relations }) {
 
   const hasManyRelations = relations
     .filter( relation => relation.type === 'hasMany' )
@@ -228,9 +266,24 @@ function insertHasMany({ models, Model, fakeModelsArray, relations }) {
 }
 
 
-async function insertBelongsTo({ 
-  models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel,
-  seedModels
+/**
+ * Insert all the new fake records from the <code>fakeModelsArray</code> taking in
+ * consideration the 'hasMany' and 'belongsTo' relations from current model to seed.
+ *
+ * @param {Object} models The models from the Loopback main instance.
+ * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
+ * @param {Object[]} relations Contains all the relations from current seed model (the one specified
+ * on the terminal).
+ * @param {Object[]} JSONmodels Contains all the Loobpack JSON models files from 'common/models'
+ * directory (already parsed as objects).
+ * @param {Object} mainLoopbackModel A Loopback instance for the current model.
+ * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
+ * @async
+ * }
+ * @returns
+ */
+function insertBelongsTo({ 
+  models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
 }) {
 
   const belongsToRelations = relations
@@ -283,7 +336,7 @@ async function insertBelongsTo({
 
   })
 
-  await Promise.all(insertRelatedParantModels);
+  return Promise.all(insertRelatedParantModels);
 
 }
 
