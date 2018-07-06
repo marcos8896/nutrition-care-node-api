@@ -1,4 +1,8 @@
-/** @module Seeds/Execute/Shared */
+/**
+ * Contains all the shared functionality between the 'simpleSeed' and the 'complexSeeds'. 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @module Seeds/Utils/Shared 
+ */
 
 const faker = require('faker/');
 

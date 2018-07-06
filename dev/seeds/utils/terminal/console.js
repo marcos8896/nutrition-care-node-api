@@ -1,3 +1,9 @@
+/**
+ * Contains all the helper function to print the custom texts. 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @module Seeds/Utils/Terminal/Console 
+ */
+
 const clear = require('clear');
 const chalk = require('chalk');
 const figlet = require('figlet');

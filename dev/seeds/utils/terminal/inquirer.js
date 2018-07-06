@@ -1,3 +1,9 @@
+/**
+ * Contains all the question functionality for the Seed Process. 
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @module Seeds/Utils/Terminal/Inquirer 
+ */
+
 const inquirer = require('inquirer');
 
 const mainManuChoices = [
