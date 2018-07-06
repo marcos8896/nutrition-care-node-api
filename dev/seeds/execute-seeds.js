@@ -6,7 +6,6 @@
  * This file uses the [faker.js]{@link https://github.com/marak/Faker.js/}
  * library to generate all the dummy data.
  * @module Seeds/Execute
- * @example npm run execute:seeds Provider 10
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 

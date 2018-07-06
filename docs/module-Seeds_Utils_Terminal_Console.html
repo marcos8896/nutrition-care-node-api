@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Seeds/Roles - Documentation</title>
+    <title>Seeds/Utils/Terminal/Console - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Seeds/Roles</h1>
+    <h1 class="page-title">Seeds/Utils/Terminal/Console</h1>
     
 
     
@@ -49,7 +49,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>This module has all the functionality to create user roles when needed.</p></div>
+            <div class="description"><p>Contains all the helper function to print the custom texts.</p></div>
         
 
         
@@ -63,7 +63,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_roles_create-users-roles.js.html">common/roles/create-users-roles.js</a>, <a href="common_roles_create-users-roles.js.html#line1">line 1</a>
+        <a href="dev_seeds_utils_terminal_console.js.html">dev/seeds/utils/terminal/console.js</a>, <a href="dev_seeds_utils_terminal_console.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -83,6 +83,13 @@
 
     
 
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li><a href="mailto:elyomarcos@gmail.com">Marcos Barrera del Río</a></li>
+        </ul>
+    </dd>
     
 
     
@@ -141,75 +148,6 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~parallelBootsprapFunction"><span class="type-signature">(inner) </span>parallelBootsprapFunction<span class="type-signature"></span></h4>
-
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_roles_create-users-roles.js.html">common/roles/create-users-roles.js</a>, <a href="common_roles_create-users-roles.js.html#line136">line 136</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Execute createRole() function (The parallel user is not needed with only one kind
-of role, but it was left behind right there just in case future custom roles are needed
-in the future.)</p>
-</div>
-
-
-
-
-
-
-
-
-        
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -219,7 +157,7 @@ in the future.)</p>
 
     
 
-    <h4 class="name" id="~createRole"><span class="type-signature">(inner) </span>createRole<span class="signature">(model, collection, newRole, roleDescription, cb)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~logMessage"><span class="type-signature">(inner) </span>logMessage<span class="signature">(color, message, bold, error)</span><span class="type-signature"></span></h4>
 
     
 
@@ -231,7 +169,7 @@ in the future.)</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_roles_create-users-roles.js.html">common/roles/create-users-roles.js</a>, <a href="common_roles_create-users-roles.js.html#line31">line 31</a>
+        <a href="dev_seeds_utils_terminal_console.js.html">dev/seeds/utils/terminal/console.js</a>, <a href="dev_seeds_utils_terminal_console.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -252,15 +190,6 @@ in the future.)</p>
     
 
     
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:bornofos@gmail.com">Brandon Emmanuel Villa Cárdenas</a></li>
-        
-            <li><a href="mailto:elyomarcos@gmail.com">Marcos Barrera del Río</a></li>
-        </ul>
-    </dd>
-    
 
     
 
@@ -280,10 +209,8 @@ in the future.)</p>
 
 
 <div class="description">
-    <p>Main method for creating a new collection of registers to
-a specified model and added to a new role specified in the 
-method's params. (Mostly used for a single record in this project
-but it can receive multiple instances too).</p>
+    <p>Logs a custom message with the given color, bold feature and message. It handles
+also the error usecase.</p>
 </div>
 
 
@@ -321,53 +248,7 @@ but it can receive multiple instances too).</p>
 
         <tr>
             
-                <td class="name"><code>model</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Indicates the model from where is going to create the registers</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>collection</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The collections of objects from {model}</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>newRole</code></td>
+                <td class="name"><code>color</code></td>
             
 
             <td class="type">
@@ -383,20 +264,20 @@ but it can receive multiple instances too).</p>
 
             
 
-            <td class="description last"><p>The name of the new role</p></td>
+            <td class="description last"><p>The color to print.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>roleDescription</code></td>
+                <td class="name"><code>message</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">any</span>
 
 
             
@@ -406,20 +287,20 @@ but it can receive multiple instances too).</p>
 
             
 
-            <td class="description last"><p>Description of the new role</p></td>
+            <td class="description last"><p>The message to be printed.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>cb</code></td>
+                <td class="name"><code>bold</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">callback</span>
+<span class="param-type">boolean</span>
 
 
             
@@ -429,12 +310,275 @@ but it can receive multiple instances too).</p>
 
             
 
-            <td class="description last"><p>Callback with two parameters (error, result)</p></td>
+            <td class="description last"><p>To check whether to use the bold feature or not.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>To check whether to use the error usecase or not.</p></td>
         </tr>
 
     
     </tbody>
 </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~logProcess"><span class="type-signature">(inner) </span>logProcess<span class="signature">(message, bold)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="dev_seeds_utils_terminal_console.js.html">dev/seeds/utils/terminal/console.js</a>, <a href="dev_seeds_utils_terminal_console.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Logs a custom message meant to describe all the Seed Process.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The message to be printed.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>To check whether to use the bold feature or not.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="~printBanner"><span class="type-signature">(inner) </span>printBanner<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="dev_seeds_utils_terminal_console.js.html">dev/seeds/utils/terminal/console.js</a>, <a href="dev_seeds_utils_terminal_console.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Prints the banner for the script.</p>
+</div>
+
+
+
+
+
+
+
+
+
 
 
 

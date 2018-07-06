@@ -9,6 +9,9 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const emoji = require('node-emoji');
 
+/**
+ * Prints the banner for the script.
+ */
 function printBanner() {
 
   clear();
@@ -24,6 +27,16 @@ function printBanner() {
 
 }
 
+
+/**
+ * Logs a custom message with the given color, bold feature and message. It handles
+ * also the error usecase.
+ * 
+ * @param {string} color The color to print.
+ * @param {any} message The message to be printed.
+ * @param {boolean} bold To check whether to use the bold feature or not.
+ * @param {any} error To check whether to use the error usecase or not.
+ */
 function logMessage({ color = 'white', message, bold = false, error = false }) {
 
   if(error) {
@@ -35,7 +48,11 @@ function logMessage({ color = 'white', message, bold = false, error = false }) {
   }
 
 }
-
+/**
+ * Logs a custom message meant to describe all the Seed Process.
+ * @param {any} message The message to be printed.
+ * @param {boolean} bold To check whether to use the bold feature or not.
+ */
 function logProcess({ message, bold = false }) {
   logMessage({ color: 'cyanBright', message, bold })
 }

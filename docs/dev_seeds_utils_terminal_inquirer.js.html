@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Seeds/Roles - Documentation</title>
+    <title>dev/seeds/utils/terminal/inquirer.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,439 +27,86 @@
 
 <div id="main">
     
-    <h1 class="page-title">Seeds/Roles</h1>
-    
-
-    
-
-
-
-
-<section>
-
-<header>
-    
-        
-            
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description"><p>This module has all the functionality to create user roles when needed.</p></div>
-        
-
-        
-            
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_roles_create-users-roles.js.html">common/roles/create-users-roles.js</a>, <a href="common_roles_create-users-roles.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-<h4 class="name" id="~parallelBootsprapFunction"><span class="type-signature">(inner) </span>parallelBootsprapFunction<span class="type-signature"></span></h4>
-
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_roles_create-users-roles.js.html">common/roles/create-users-roles.js</a>, <a href="common_roles_create-users-roles.js.html#line136">line 136</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Execute createRole() function (The parallel user is not needed with only one kind
-of role, but it was left behind right there just in case future custom roles are needed
-in the future.)</p>
-</div>
-
-
-
-
-
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="~createRole"><span class="type-signature">(inner) </span>createRole<span class="signature">(model, collection, newRole, roleDescription, cb)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_roles_create-users-roles.js.html">common/roles/create-users-roles.js</a>, <a href="common_roles_create-users-roles.js.html#line31">line 31</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-author">Author:</dt>
-    <dd class="tag-author">
-        <ul>
-            <li><a href="mailto:bornofos@gmail.com">Brandon Emmanuel Villa Cárdenas</a></li>
-        
-            <li><a href="mailto:elyomarcos@gmail.com">Marcos Barrera del Río</a></li>
-        </ul>
-    </dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Main method for creating a new collection of registers to
-a specified model and added to a new role specified in the 
-method's params. (Mostly used for a single record in this project
-but it can receive multiple instances too).</p>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>model</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Indicates the model from where is going to create the registers</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>collection</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The collections of objects from {model}</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>newRole</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The name of the new role</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>roleDescription</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Description of the new role</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>cb</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">callback</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Callback with two parameters (error, result)</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <h1 class="page-title">dev/seeds/utils/terminal/inquirer.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Contains all the question functionality for the Seed Process. 
+ * @author Marcos Barrera del Río &lt;elyomarcos@gmail.com>
+ * @module Seeds/Utils/Terminal/Inquirer 
+ */
+
+const inquirer = require('inquirer');
+
+const mainManuChoices = [
+  'Created missing seed files and updated the existing ones (Required the first time).',
+  'Create fake data from a model.',
+  'Exit.'
+]
+
+const mainManuChoicesObject = {
+  prepareSeeds: mainManuChoices[0],
+  executeSeeds: mainManuChoices[1],
+  exit: mainManuChoices[2],
+
+}
+
+module.exports = {
+
+  mainManuChoices,
+  mainManuChoicesObject,
+
+  askForSeedModel: (array) => {
+    const questions = [
+      {
+        type: 'list',
+        name: 'seedModel',
+        message: 'Select one of the models that you want to created fake records from',
+        choices: array,
+        pageSize: 12
+      }
+    ];
+    return inquirer.prompt(questions);
+  },
+  askNumberOfRecords: _ => {
+    const questions = [
+      {
+        type: 'input',
+        name: 'numberOfRecords',
+        message: 'Enter the wanted number of fake records to be created.',
+        default: 10,
+        validate: input => {
+          const numRecords = parseInt(input);
+          return !(isNaN(numRecords) || numRecords &lt;= 0)
+        }
+      }
+    ];
+    return inquirer.prompt(questions);
+  },
+  mainMenu: (array) => {
+    const questions = [
+      {
+        type: 'list',
+        name: 'selected',
+        message: 'Select an option please: ',
+        choices: mainManuChoices
+      }
+    ];
+    return inquirer.prompt(questions);
+  },
+
+
+
+}</code></pre>
+        </article>
+    </section>
 
 
 
