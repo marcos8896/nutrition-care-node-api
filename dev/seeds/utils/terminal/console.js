@@ -3,9 +3,6 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const emoji = require('node-emoji');
 
-// const clui         = require('clui');
-// const Spinner     = clui.Spinner;
-
 function printBanner() {
 
   clear();
@@ -19,25 +16,26 @@ function printBanner() {
 
   console.log("\n\n");
 
-  // const status = new Spinner(`Ajalas ... ${emoji.get('bird')}`);
+}
 
-  // status.start();
+function logMessage({ color = 'white', message, bold = false, error = false }) {
 
-  // status.stop();
+  if(error) {
+    console.trace(bold ? chalk[color]['bold'](message) : chalk[color](message));
+  } else {
+    console.log(
+      bold ? chalk[color]['bold'](message) : chalk[color](message)
+    );
+  }
 
 }
 
-function logMessage({ color = 'white', message, bold = false }) {
-
-  const msg = typeof message === 'string' ? message : JSON.stringify(message, null, '  ');
-
-  console.log(
-    bold ? chalk[color]['bold'](msg) : chalk[color]['bold'](msg)
-  );
-
+function logProcess({ message, bold = false }) {
+  logMessage({ color: 'cyanBright', message, bold })
 }
 
 module.exports = {
   printBanner,
-  logMessage
+  logMessage,
+  logProcess,
 }

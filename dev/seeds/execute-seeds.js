@@ -170,9 +170,9 @@ function boostrapFunction() {
 
   const handleError = (err) => {
     if(err) {
-      terminal.logMessage({ color: 'redBright', bold: true ,message: err });
+      terminal.logMessage({ color: 'redBright', bold: true ,message: err, error: true });
       terminal.logMessage({ 
-        color: 'cyanBright', 
+        color: 'red', 
         bold: true, 
         message: '\n-----There previous error forced the Seed Process to be stopped.-----\n'
      });
@@ -224,18 +224,15 @@ async function main() {
       }
       
       case options.exit: {
-        console.log('Ajalas...\n');
+        terminal.logMessage({ color: 'greenBright', bold: true, message: '\nAjalas...\n' });
         process.exit(0);
         break;
       } 
-        
-    
-      default:
-        break;
+
     }
 
   } catch( error ) {
-    console.log('error: ', error);
+    terminal.logMessage({ color: 'redBright', bold: true ,message: error, error: true });
     process.exit(1);
 
   }

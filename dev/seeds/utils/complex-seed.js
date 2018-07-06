@@ -14,6 +14,10 @@ const {
   getRelationsTypeFromLoopbackModel,
  } = require('./shared');
 
+ const { 
+   logProcess, 
+  } = require('./terminal/console');
+
 
 
 /**
@@ -109,6 +113,8 @@ function insertParentWithHasManyRelatedModels({
   models, Model, fakeModelsArray, relations, seedModels 
 }) {
 
+  logProcess({ message: `\nProcessing 'hasMany' relations...`, bold: true })
+
   const hasManyRelations = relations
     .filter( relation => relation.type === 'hasMany' )
 
@@ -117,14 +123,27 @@ function insertParentWithHasManyRelatedModels({
   //Parent model created
   return models[Model.name].create(fakeModelsArray)
     //Get the ids of the already created parent models.
-    .then( createdResults => createdResults.map( record => record.id ))
+    .then( createdResults => {
+
+      logProcess({ 
+        message: `\nFake records from the main '${Model.name}' model were inserted ` +
+                 `to get the IDs and to be able to relate/link the 'hasMany' relations.`, 
+        bold: true 
+
+      });
+
+      return createdResults.map( record => record.id )
+    })
     //Get the ids from the parent model records to bound the 'hasMany' related models.
     .then( ids => {
-
       let hasManyRecordsPromises = [];
-
       hasManyRelations
         .forEach( relation => {
+
+          logProcess({ 
+            message: `  Inserting '${relation.model}' related fake records ` +
+                     `through the ${relation.type} '${relation.relationName}' relation...` 
+          });
 
           const relatedArraysModelsToCreate = fakeModelsArray
             .map( fakeModel => fakeModel[relation.relationName] )
@@ -167,6 +186,8 @@ function addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsA
   
   hasManyRelations.forEach( relation => {
 
+    logProcess({ message: `  Processing hasMany '${relation.relationName}' relation...` });
+
     //Get the related model.
     const relatedModel = models[relation.model];
 
@@ -206,11 +227,15 @@ function insertBelongsTo({
   models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
 }) {
 
+  logProcess({ message: `\nProcessing 'belongsTo' relations...`, bold: true });
+
   const belongsToRelations = relations
   .filter( relation => relation.type === 'belongsTo' )
 
   //METHOD - Get the foreign key from the related models in order to make the insertion.
   belongsToRelations.forEach( relation => {
+
+    logProcess({ message: `  Processing belongsTo '${relation.relationName}' relation...` });
 
     const relatedModel = models[relation.model];
 
@@ -229,10 +254,13 @@ function insertBelongsTo({
 
   });
 
-
-
   const insertRelatedParantModels = [];
   belongsToRelations.forEach( relation => {
+
+    logProcess({ 
+      message: `  Inserting '${relation.model}' related fake records ` +
+               `through the ${relation.type} '${relation.relationName}' relation...` 
+    });
 
     fakeModelsArray.forEach( fakeModel => {
 
@@ -247,7 +275,9 @@ function insertBelongsTo({
 
   })
 
-  return Promise.all(insertRelatedParantModels);
+  return Promise.all(insertRelatedParantModels).then(() => logProcess({ 
+    message: `  All 'belongsTo' related records where inserted.`
+  }));
 
 }
 

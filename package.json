@@ -38,7 +38,6 @@
   "devDependencies": {
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
-    "clui": "^0.3.6",
     "docdash": "^0.4.0",
     "eslint": "^3.17.1",
     "eslint-config-loopback": "^8.0.0",

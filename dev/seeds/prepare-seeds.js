@@ -47,7 +47,7 @@ function bootstrapFuction() {
   ], (err, results) => {
     if(err) {
 
-      logMessage({ color: 'redBright', bold: true ,message: err });
+      logMessage({ color: 'redBright', bold: true ,message: err, error: true });
       logMessage({ 
         color: 'cyanBright', 
         bold: true, 
