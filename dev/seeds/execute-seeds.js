@@ -55,15 +55,6 @@ let numRecords;
  */
 const arrayModels = [];
 
-console.log("-------------MINIMUM AMOUNT OF RECORDS: 20-------------\n")
-
-
-console.log("-------------INPUT-------------\n")
-console.log(`Model: '${singleModel}'`);
-console.log(`Number of records: ${numRecords}`);
-console.log("\n-------------------------------")
-
-
 
 /**
  * Get all the Seed models and processes them to only get the 
@@ -183,12 +174,18 @@ function boostrapFunction() {
       terminal.logMessage({ 
         color: 'cyanBright', 
         bold: true, 
-        message: '-----There previous error forced the Seed Process to be stopped.-----'
+        message: '\n-----There previous error forced the Seed Process to be stopped.-----\n'
      });
 
+    } else {
+      terminal.logMessage({ 
+        color: 'greenBright', bold: true,
+        message: '\nThe Seed Process has finished successfully.\n'
+      });
     }
-    else console.log("\nTodo bien, men.");
+
     process.exit(0);
+
   }
 
   seedModel(handleError);

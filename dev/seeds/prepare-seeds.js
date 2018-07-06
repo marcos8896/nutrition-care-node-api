@@ -13,6 +13,9 @@ const fileExists = require('file-exists');
 const mkdirp = require('mkdirp');
 const readfiles = require('node-readfiles');
 
+const { logMessage } = require('./utils/terminal/console');
+
+
 /**
  * The absolute path in which the JSON models seeds with be written.
  * @type {string}
@@ -43,12 +46,25 @@ function bootstrapFuction() {
     cb => writeRemainingJSONFiles(cb),
   ], (err, results) => {
     if(err) {
-      console.log('Prepare Seeds: ', err);
-      process.exit(1);
+
+      logMessage({ color: 'redBright', bold: true ,message: err });
+      logMessage({ 
+        color: 'cyanBright', 
+        bold: true, 
+        message: '\n-----There previous error forced the Seed Process to be stopped.-----\n'
+     });
+
+    } else {
+      
+      logMessage({ 
+        color: 'greenBright', bold: true,
+        message: '\nTodo bien, men. All the seed files were created and updated successfully :)\n'
+      });
+
+      process.exit(0);
+
     }
     
-    console.log("\nTodo bien, men. All the seed files were created and updated successfully :)\n");
-    process.exit(0);
   
   });
 
