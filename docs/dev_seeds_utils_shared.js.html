@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>common/roles/create-users-roles.js - Documentation</title>
+    <title>dev/seeds/utils/shared.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">common/roles/create-users-roles.js</h1>
+    <h1 class="page-title">dev/seeds/utils/shared.js</h1>
     
 
     
@@ -37,161 +37,131 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/** 
- * This module has all the functionality to create user roles when needed. 
- * @module Seeds/Roles 
- * 
+            <pre class="prettyprint source linenums"><code>/** @module Seeds/Execute/Shared */
+
+const faker = require('faker/');
+
+/**
+ * Validates if the current seed model has all its properties_seeds filled.
+ * @author Marcos Barrera del Río &lt;elyomarcos@gmail.com>
+ * @param {Object} Model - A given seed model object.
+ * @param {callback} cb - The next callback to keep the flow on all the
+ * &lt;code>prepare process&lt;/code> on the file.
  */
+function areAllpropertiesSeedsFilled( Model ) {
+  const propertiesValues = Model.properties_seeds.map( property => Object.values(property)[0]);
+  return propertiesValues.every( property => property );
+}
 
-
-const   app = require('../../server/server'),
-        { parallel, each, waterfall } = require('async'),
-        Role = app.models.Role,
-        RoleMapping = app.models.RoleMapping,
-        adminUser = require('./static-users/administrator'),
-        Admin = app.models[adminUser.model];
 
 
 /**
- * 
- * Main method for creating a new collection of registers to
- * a specified model and added to a new role specified in the 
- * method's params. (Mostly used for a single record in this project
- * but it can receive multiple instances too).
- * 
- * @author Brandon Emmanuel Villa Cárdenas &lt;bornofos@gmail.com>
- * @author Marcos Barrera del Río &lt;elyomarcos@gmail.com>
- * @param {Object} model - Indicates the model from where is going to create the registers
- * @param {Object[]} collection - The collections of objects from {model}
- * @param {string} newRole - The name of the new role 
- * @param {string} roleDescription - Description of the new role
- * @param {callback} cb - Callback with two parameters (error, result) 
+ * Determines what kind of seed is going to need the current model.
+ * There are two kind of seeds:
+ * - The simple, which only runs a function that create fake data
+ *   by using the seed JSON file for the given seed model.
+ * - The complex, which also create fake models for the given seed
+ *   model, however, this one also takes in consideration every
+ *   related models by using the relations of the current model.
+ * @param {string[]} relationsTypes - An array with all the relations from the
+ * current model.
+ * @returns {string} Returns the kind of seed that is going to be needed for the
+ * given seed model.
  */
-const createRole = (model, collection, newRole, roleDescription, cb) => {
+function typeOfSeedToGenerate( relationsTypes ) {
 
-  waterfall([
+  let type = 'simpleSeed';
 
-      //Verify if the current model exists on the database.
-      next => {
-        each(collection, (userToRegister, callback) => {
-          
-          model.exists(userToRegister.id)
-          .then( exists => {
-            userToRegister.alreadyExists = exists;
-            callback();
-          })
-          .catch( error => next(error));
-        },
-        err => {
-          if(err) 
-            return next(error);
-          
-          return next(null, collection);
-        })
+  //Only 'hasMany' relations.
+  if( relationsTypes.length === 0 )
+    return 'simpleSeed'
 
-      },
+  else if( relationsTypes.includes('belongsTo') || relationsTypes.includes('hasMany') )
+    return 'complexSeed';
 
-      //Create the current models on the datasource if they do not exist yet.
-      (collectionOfUsers, next) => {
-        
-        //Users that do not exists currently on the database.
-        const usersToRegister = collectionOfUsers.filter( user => !user.alreadyExists )
+  else throw "The relations that your model has are not supported currently.";
+  
+}
 
-        model.create( usersToRegister, (err, createdUsers) => {
 
-          if ( err )
-            return next( err );
-          
-          return next(null, createdUsers);
 
-        });
-      },
-      
-      //Return an model instance whether with an existing role or with a null.
-      (createdUsers, next) => {
-        
-        Role.findOne({ where: {name: newRole} },
-          function(err, role){
-            if (err) 
-            return next(err);
-            
-            return next(null, createdUsers, role);
+/**
+ * Generates all the fake data that is going to be created on the database,
+ * it creates a given number of records of the current seed model based on
+ * the given number of records and it puts all these records on an array.
+ * 
+ * @param {*} Model - The current seed model from which the script is going
+ * to generate fake data.
+ * @param {number} numberOfRecords - The wanted number of records to be created.
+ * @returns {Object[]} Returns an array with fake records of the current seed model.
+ */
+function getFakeModelsArray( Model, numberOfRecords ) {
 
-        })
-      },
+  let fakeModel = { };
+  const fakeModelsArray = [];
+  for (let i = 0; i &lt; numberOfRecords; i++) {
+    Model.properties_seeds.forEach( prop => 
+      fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
+    )
+    fakeModelsArray.push(fakeModel);
+    fakeModel = { };
+  }
 
-      //Create a new Role if the passed role (second param called 'role') is null.
-      //Otherwise it will use the one that is being passed as second param. 
-      (createdUsers, role, next) => {
-        
-        if ( role === null ) {
-
-          //Create the {newRole} role
-          Role.create({ name: newRole, description: roleDescription }, (err, role) => {
-              
-            if ( err ) 
-              return next( err );
-            
-            console.log(`Rol: ${newRole} created`)
-            return next(null, role, createdUsers);
-
-          });
-
-        } else {
-          return next(null, role, createdUsers);
-
-        }
-      },
-
-      //Attach role to every single user.
-      (role, createdUsers, next) => {
-
-        each( createdUsers, (user, callback) => {
-          //make user part of {newRole}
-          role.principals.create({
-              principalType: RoleMapping.USER,
-              principalId: user.id
-          }, (err, principal) => {
-              if ( err ) callback( err );
-              console.log('Principal created: ', principal);
-              callback();
-          })
-        }, error => error ? next( error ) : next( null, 'Success'));
-      }
-    ],
-
-    (error, message) => {
-      if (error)
-        return cb(error);
-      
-      console.log('Message: ', `${message} for ${newRole}`);
-      return cb(null, message);
-
-    }
-  );
+  return fakeModelsArray;
 
 }
 
+
+
 /**
- * Execute createRole() function (The parallel user is not needed with only one kind
- * of role, but it was left behind right there just in case future custom roles are needed
- * in the future.)
+ * Takes an array and returns a random element from it.
+ *
+ * @param {*} array - An array from which is going to be returned
+ * a random element.
+ * @returns {any} - A random element from the array param.
+ */
+function getRandomElementFromArray( array ) {
+  return array[Math.floor(Math.random()*array.length)];
+}
+
+
+
+/**
+ * Returns all the relations's types from a given model.
  * 
- * @name parallelBootsprapFunction 
- * 
-*/
-parallel({
-    adminUser: cb => {
-        createRole( Admin, adminUser.users, adminUser.roleName, adminUser.rolDescription, (error, result) =>
-            error ? cb( error ) : cb ( null, result ))
-    }
-},
-(error, result) => {
-    if ( error ) throw error;
-    console.log('Script successfully finished :P');
-    process.exit(0);
-})
-</code></pre>
+ * @async
+ * @param {string} modelName - The name of the model from which the developer wants to get
+ * its relations' types.
+ * @param {callback} cb
+ * @returns {Promise&lt;string[]>} modelRelationsType - A promise which contains an array with
+ * the relations' types.
+ */
+async function getRelationsTypeFromLoopbackModel( modelName, cb ) {
+
+  const { 
+    getModelsWithRequestedProperties,
+   } = require('../../../shared/models-utils.js');
+
+  try {
+    const models = await getModelsWithRequestedProperties([ 'name', 'relations' ]);
+    const model = models.find( model => model.name === modelName );
+    const modelRelationsType = Object.keys(model.relations).map( key => model.relations[key].type );
+    
+    return modelRelationsType;
+  }
+  catch(error) {
+    return cb(error);
+  }
+
+}
+
+module.exports = {
+  areAllpropertiesSeedsFilled,
+  typeOfSeedToGenerate,
+  getFakeModelsArray,
+  getRandomElementFromArray,
+  getRelationsTypeFromLoopbackModel,
+}</code></pre>
         </article>
     </section>
 

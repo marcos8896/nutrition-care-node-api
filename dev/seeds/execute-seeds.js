@@ -144,7 +144,7 @@ async function seedModel( cb ) {
       performSimpleSeed( Model, numRecords, cb );
 
     else if(seedType === 'complexSeed')
-      performComplexSeed({  Model, numRecords, seedModels: arrayModels, cb  });
+      performComplexSeed({  Model, numRecords, seedModels: arrayModels, cb });
 
    } catch(error) {
      return cb(error);
@@ -179,7 +179,10 @@ series([
   cb => getModelsSeedsFromSeedJSONModels(cb),
   cb => seedModel(cb)
 ], err => {
-  if(err) throw err;
+  if(err) {
+    console.log(err);
+    console.log("-----There previous error forced the Seed Process to be stopped.-----");
+  }
   else console.log("\nTodo bien, men.");
   process.exit(0);
 });
