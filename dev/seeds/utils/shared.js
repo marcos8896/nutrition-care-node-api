@@ -40,7 +40,7 @@ function typeOfSeedToGenerate( relationsTypes ) {
   else if( relationsTypes.includes('belongsTo') || relationsTypes.includes('hasMany') )
     return 'complexSeed';
 
-  else throw "The relations that your model has are not supported currently.";
+  else throw "One or more relations that your model has are not supported currently.";
   
 }
 
