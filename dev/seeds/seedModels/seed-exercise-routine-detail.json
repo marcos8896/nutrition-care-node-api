@@ -9,7 +9,7 @@
       "reps": "{{lorem.words(5)}}"
     },
     {
-      "description": "{{lorem.words(30)}}"
+      "description": "{{lorem.words(10)}}"
     },
     {
       "day": "LUNES"

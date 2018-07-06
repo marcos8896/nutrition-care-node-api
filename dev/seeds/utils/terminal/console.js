@@ -27,6 +27,17 @@ function printBanner() {
 
 }
 
+function logMessage({ color = 'white', message, bold = false }) {
+
+  const msg = typeof message === 'string' ? message : JSON.stringify(message, null, '  ');
+
+  console.log(
+    bold ? chalk[color]['bold'](msg) : chalk[color]['bold'](msg)
+  );
+
+}
+
 module.exports = {
   printBanner,
+  logMessage
 }

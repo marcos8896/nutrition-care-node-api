@@ -179,8 +179,13 @@ function boostrapFunction() {
 
   const handleError = (err) => {
     if(err) {
-      console.log(err);
-      console.log("-----There previous error forced the Seed Process to be stopped.-----");
+      terminal.logMessage({ color: 'redBright', bold: true ,message: err });
+      terminal.logMessage({ 
+        color: 'cyanBright', 
+        bold: true, 
+        message: '-----There previous error forced the Seed Process to be stopped.-----'
+     });
+
     }
     else console.log("\nTodo bien, men.");
     process.exit(0);
@@ -193,40 +198,49 @@ function boostrapFunction() {
 
 async function main() {
 
-  terminal.printBanner();
+  try {
 
-  const { selected } = await inquirer.mainMenu();
-  const options = inquirer.mainManuChoicesObject;
+    terminal.printBanner();
 
-  switch (selected) {
-    case options.prepareSeeds: {
-      prepareSeedFiles();
-      break;
-    } 
+    const { selected } = await inquirer.mainMenu();
+    const options = inquirer.mainManuChoicesObject;
 
-    case options.executeSeeds: {
+    switch (selected) {
       
-      await getModelsSeedsFromSeedJSONModels();
+      case options.prepareSeeds: {
+        prepareSeedFiles();
+        break;
+      } 
 
-      const { seedModel } = await inquirer.askForSeedModel(arrayModels);
-      singleModel = seedModel;
+      case options.executeSeeds: {
+        
+        await getModelsSeedsFromSeedJSONModels();
 
-      const { numberOfRecords } = await inquirer.askNumberOfRecords();
-      numRecords = parseInt(numberOfRecords);
+        const { seedModel } = await inquirer.askForSeedModel(arrayModels.map( model => model.name ));
+        singleModel = seedModel;
 
-      boostrapFunction();
-      break;
-    }
+        const { numberOfRecords } = await inquirer.askNumberOfRecords();
+        numRecords = parseInt(numberOfRecords);
+
+        boostrapFunction();
+        break;
+      }
+      
+      case options.exit: {
+        console.log('Ajalas...\n');
+        process.exit(0);
+        break;
+      } 
+        
     
-    case options.exit: {
-      console.log('Ajalas...\n');
-      process.exit(0);
-      break;
-    } 
-      
-  
-    default:
-      break;
+      default:
+        break;
+    }
+
+  } catch( error ) {
+    console.log('error: ', error);
+    process.exit(1);
+
   }
 
 }

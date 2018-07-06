@@ -33,6 +33,7 @@ const {
 async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
   
     try {
+
       const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
       const JSONModel = JSONmodels.find( model => model.name === Model.name );
       const relations = Object.keys(JSONModel.relations).map( key => {
