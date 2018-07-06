@@ -12,6 +12,8 @@
 
 const inquirer = require('./utils/terminal/inquirer');
 const terminal = require('./utils/terminal/console');
+const mkdirp = require('mkdirp');
+const fileExists = require('file-exists');
 
 const prepareSeedFiles = require('./prepare-seeds');
 
@@ -34,6 +36,12 @@ const prepareSeedFiles = require('./prepare-seeds');
 const models = require('../../server/server').models;
 
 /**
+ * This constant holds the path in which all the seed files are placed.
+ * @type {string}
+ */
+const seedPath = './dev/seeds/seedModels/';
+
+/**
  * This variable holds the model that the user has to introduce when running this script.
  * @type {string}
  */
@@ -54,6 +62,59 @@ let numRecords;
  * @type {Object[]}
  */
 const arrayModels = [];
+
+
+
+/**
+ * Checks if the current <code>seedPath</code> exists, if not, 
+ * it creates that path if possible.
+ * @returns {Promise} Returns a promise which contains an object with 
+ * the <code>exists</code> property.
+ */
+function checkIfDirectoryExists() {
+  return new Promise((resolve, reject) => {
+
+    mkdirp(`${seedPath}`, (err) => {
+      if (err) reject(err);
+      resolve({ exists: true });
+    });
+
+  })
+}
+
+/**
+ * Checks if the <code>seedPath</code> directory is empty or not.
+ * 
+ * @returns {Promise<Boolean>} Returns a promise which contains a boolean
+ * notifying whether the folder is empty or not.
+ */
+function isTheFolderEmpty() {
+
+  const emptyDir = require('empty-dir');
+ 
+  return new Promise((resolve, reject) => {
+
+    emptyDir(`${seedPath}`, (err, result) => {
+      if (err) reject(err);
+      else {
+        resolve(result);
+      }
+    });
+
+  })
+
+}
+/**
+ * Runs the <code>checkIfDirectoryExists</code> function and after that
+ * runs the <code>isTheFolderEmpty</code> function.
+ * 
+ * @returns {Promise<Boolean>} Returns a promise which contains a boolean
+ * notifying whether there are seed files or not.
+ * @returns
+ */
+function areThereSeedFilesModels() {
+  return checkIfDirectoryExists().then(() => isTheFolderEmpty()).then( empty => !empty );
+}
 
 
 /**
@@ -83,7 +144,7 @@ function getModelsSeedsFromSeedJSONModels() {
   
   const readfiles = require('node-readfiles');
 
-  return readfiles('./dev/seeds/seedModels/', { filter: '*.json' }, (err, filename, contents) => {
+  return readfiles(`${seedPath}`, { filter: '*.json' }, (err, filename, contents) => {
     if (err) throw err;
 
     let json = {
@@ -95,7 +156,6 @@ function getModelsSeedsFromSeedJSONModels() {
     arrayModels.push(json);
   })
     .then(files => arrayModels)
-    .catch(err => cb(err));
 }
 
 
@@ -210,8 +270,15 @@ async function main() {
       } 
 
       case options.executeSeeds: {
+
+        const areThereFiles = await areThereSeedFilesModels();
         
-        await getModelsSeedsFromSeedJSONModels();
+        if(!areThereFiles) {
+          throw `There are not seed files currently on the ${seedPath} path ` +
+                `please, run the '${options.prepareSeeds}' option and try again...`
+        }
+
+        const models = await getModelsSeedsFromSeedJSONModels();
 
         const { seedModel } = await inquirer.askForSeedModel(arrayModels.map( model => model.name ));
         singleModel = seedModel;
@@ -233,7 +300,7 @@ async function main() {
 
   } catch( error ) {
     terminal.logMessage({ color: 'redBright', bold: true ,message: error, error: true });
-    process.exit(1);
+    process.exit(0);
 
   }
 
