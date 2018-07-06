@@ -10,8 +10,10 @@
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 
-const series = require('async').series;
-const args = require('yargs').argv;
+const inquirer = require('./utils/terminal/inquirer');
+const terminal = require('./utils/terminal/console');
+
+const prepareSeedFiles = require('./prepare-seeds');
 
  const {
   areAllpropertiesSeedsFilled,
@@ -32,20 +34,19 @@ const args = require('yargs').argv;
 const models = require('../../server/server').models;
 
 /**
- * This constant holds the model that the user has to introduce when running this script.
+ * This variable holds the model that the user has to introduce when running this script.
  * @type {string}
  */
-const singleModel = args._[0];
+let singleModel;
 
 
 /**
- * This constant holds the value of the number of records that the user 
+ * This variable holds the value of the number of records that the user 
  * introduces on the terminal by running the script.
- * (Restriction to generate 20 records or more for convinience on hardcored seed models).
  * @todo Remove the previous restriction.
  * @type {number}
  */
-const numRecords =  parseInt(args._[1]) >= 20 ? parseInt(args._[1]) : 20 ;
+let numRecords;
 
 
 /**
@@ -70,7 +71,6 @@ console.log("\n-------------------------------")
  * model <code>properties</code> to push it inside the <code>arrayModels</code>
  * array.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback to keep the flow on all the 
  * <code>prepare process</code> on the file.
  * @example
  * //Current shape of the <code>arrayModels</code> array.
@@ -88,11 +88,11 @@ console.log("\n-------------------------------")
  *   //More seed models...
  * ]
  */
-function getModelsSeedsFromSeedJSONModels( cb ) {
+function getModelsSeedsFromSeedJSONModels() {
   
   const readfiles = require('node-readfiles');
 
-  readfiles('./dev/seeds/seedModels/', { filter: '*.json' }, (err, filename, contents) => {
+  return readfiles('./dev/seeds/seedModels/', { filter: '*.json' }, (err, filename, contents) => {
     if (err) throw err;
 
     let json = {
@@ -103,7 +103,7 @@ function getModelsSeedsFromSeedJSONModels( cb ) {
     
     arrayModels.push(json);
   })
-    .then(files => cb(null))
+    .then(files => arrayModels)
     .catch(err => cb(err));
 }
 
@@ -159,6 +159,7 @@ async function seedModel( cb ) {
  *
  * @param {*} Model - The current seed model from which the script is going
  * to generate fake data.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @param {number} numberOfRecords - The wanted number of records to be created.
  * @param {callback} cb - Next callback on the stack.
  */
@@ -174,23 +175,59 @@ function performSimpleSeed( Model, numberOfRecords, cb ) {
 
 
 
+function boostrapFunction() {
 
-series([
-  cb => getModelsSeedsFromSeedJSONModels(cb),
-  cb => seedModel(cb)
-], err => {
-  if(err) {
-    console.log(err);
-    console.log("-----There previous error forced the Seed Process to be stopped.-----");
+  const handleError = (err) => {
+    if(err) {
+      console.log(err);
+      console.log("-----There previous error forced the Seed Process to be stopped.-----");
+    }
+    else console.log("\nTodo bien, men.");
+    process.exit(0);
   }
-  else console.log("\nTodo bien, men.");
-  process.exit(0);
-});
 
+  seedModel(handleError);
 
-
-
-
-function logComplex( complexObject, msg = "gg",  ) {
-  console.log(msg, JSON.stringify(complexObject, null, ' '));
 }
+
+
+async function main() {
+
+  terminal.printBanner();
+
+  const { selected } = await inquirer.mainMenu();
+  const options = inquirer.mainManuChoicesObject;
+
+  switch (selected) {
+    case options.prepareSeeds: {
+      prepareSeedFiles();
+      break;
+    } 
+
+    case options.executeSeeds: {
+      
+      await getModelsSeedsFromSeedJSONModels();
+
+      const { seedModel } = await inquirer.askForSeedModel(arrayModels);
+      singleModel = seedModel;
+
+      const { numberOfRecords } = await inquirer.askNumberOfRecords();
+      numRecords = parseInt(numberOfRecords);
+
+      boostrapFunction();
+      break;
+    }
+    
+    case options.exit: {
+      console.log('Ajalas...\n');
+      process.exit(0);
+      break;
+    } 
+      
+  
+    default:
+      break;
+  }
+
+}
+main();

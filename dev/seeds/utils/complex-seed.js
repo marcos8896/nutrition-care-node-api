@@ -71,6 +71,7 @@ async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
  * directory (already parsed as objects).
  * @param {Object} mainLoopbackModel A Loopback instance for the current model.
  * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @async
  * }
  * @returns
@@ -100,6 +101,7 @@ async function insert({
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
  * @param {Object[]} relations Contains all the relations from current seed model (the one specified
  * on the terminal).
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
  */
 function insertParentWithHasManyRelatedModels({ 
@@ -158,6 +160,7 @@ function insertParentWithHasManyRelatedModels({
  * on the terminal).
  * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 function addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsArray }) {
   
@@ -193,6 +196,7 @@ function addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsA
  * directory (already parsed as objects).
  * @param {Object} mainLoopbackModel A Loopback instance for the current model.
  * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @async
  * }
  * @returns
@@ -250,7 +254,8 @@ function insertBelongsTo({
  *
  *
  * @param {Object[]} seedModels - All the parsed seed models from the seedModels folder.
- * @param {*} name - The name from the seed model to be searched.
+ * @param {string} name - The name from the seed model to be searched.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns
  */
 function getSeedModelByName( seedModels, name ) {
@@ -263,6 +268,7 @@ function getSeedModelByName( seedModels, name ) {
  *
  * @param {any[]} - The array from which is going to be removed the nested arrays.
  * @returns {any[]} An array with all the elements from the given param array
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * without any nested array inside of it.
  */
 function flattenArray({ array, mutable }) {

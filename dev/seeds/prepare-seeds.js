@@ -30,21 +30,29 @@ let arrayModels = [];
 /**
  * This function is the one that starts all the process in this file, by running 
  * all the other functions in the proper order one by one, one after the other.
- * @name  boostrapFunction
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
-asyncSeries([
-  cb => getModelsContentFromJSONs(cb),
-  cb => prepareSeedsModels(cb),
-  cb => checkIfDirectoryExists(cb),
-  cb => checkJSONSeedsAvailability(cb),
-  cb => keepPropetiesFromJSONSeedModelsUpToDate(cb),
-  cb => writeRemainingJSONFiles(cb),
-], (err, results) => {
-  if(err) console.log('Error on asyncSeries - prepare-seeds.js: ', err);
-  else console.log("\nTodo bien, men.");
+function bootstrapFuction() {
+
+  asyncSeries([
+    cb => getModelsContentFromJSONs(cb),
+    cb => prepareSeedsModels(cb),
+    cb => checkIfDirectoryExists(cb),
+    cb => checkJSONSeedsAvailability(cb),
+    cb => keepPropetiesFromJSONSeedModelsUpToDate(cb),
+    cb => writeRemainingJSONFiles(cb),
+  ], (err, results) => {
+    if(err) {
+      console.log('Prepare Seeds: ', err);
+      process.exit(1);
+    }
+    
+    console.log("\nTodo bien, men. All the seed files were created and updated successfully :)\n");
+    process.exit(0);
   
-});
+  });
+
+}
 
 
 /**
@@ -306,3 +314,5 @@ function writeRemainingJSONFiles(cb) {
 
   })
 }
+
+module.exports = bootstrapFuction;
