@@ -88,11 +88,39 @@ async function insert({
     await insertBelongsTo({ 
       models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
      });
-      
-    await insertParentWithHasManyRelatedModels({ 
-      models, Model, fakeModelsArray, relations, seedModels
+
+    const idsMainSeedModel = await insertMainParentRecords({
+      Model, fakeModelsArray
+    })
+    
+    await insertHasManyRelatedModels({ 
+      models, Model, fakeModelsArray, relations, seedModels, idsMainSeedModel
     });
 
+}
+
+/**
+ * Inserts main seed model and returns the IDs of the insertion results
+ * to be able to bound the 'hasMany' related models on the following 
+ * functions.
+ * @param {Object} Model - A given seed model object.
+ * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @returns {Promise<number[]|string[]>} Returns a promise that contains all the IDs from the
+ * created fake records from the main seed model.
+ */
+function insertMainParentRecords({ Model, fakeModelsArray }) {
+  return models[Model.name].create(fakeModelsArray)
+    .then( results => { 
+      
+      logProcess({ 
+        message: `\nFake records from the main '${Model.name}' model were inserted...`,
+        bold: true 
+      });
+
+      return results.map( result => result.id )
+    
+    });
 }
 
 
@@ -109,63 +137,49 @@ async function insert({
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
  */
-function insertParentWithHasManyRelatedModels({ 
-  models, Model, fakeModelsArray, relations, seedModels 
+function insertHasManyRelatedModels({ 
+  models, fakeModelsArray, relations, seedModels, idsMainSeedModel
 }) {
-
-  logProcess({ message: `\nProcessing 'hasMany' relations...`, bold: true })
 
   const hasManyRelations = relations
     .filter( relation => relation.type === 'hasMany' )
 
+  if(hasManyRelations.length)
+    logProcess({ message: `\nProcessing 'hasMany' relations...`, bold: true })
+
   addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsArray, seedModels })
+
   
-  //Parent model created
-  return models[Model.name].create(fakeModelsArray)
-    //Get the ids of the already created parent models.
-    .then( createdResults => {
+
+  let hasManyRecordsPromises = [];
+  hasManyRelations
+    .forEach( relation => {
 
       logProcess({ 
-        message: `\nFake records from the main '${Model.name}' model were inserted ` +
-                 `to get the IDs and to be able to relate/link the 'hasMany' relations.`, 
-        bold: true 
-
+        message: `  Inserting '${relation.model}' related fake records ` +
+                  `through the ${relation.type} '${relation.relationName}' relation...` 
       });
 
-      return createdResults.map( record => record.id )
-    })
-    //Get the ids from the parent model records to bound the 'hasMany' related models.
-    .then( ids => {
-      let hasManyRecordsPromises = [];
-      hasManyRelations
-        .forEach( relation => {
+      const relatedArraysModelsToCreate = fakeModelsArray
+        .map( fakeModel => fakeModel[relation.relationName] )
 
-          logProcess({ 
-            message: `  Inserting '${relation.model}' related fake records ` +
-                     `through the ${relation.type} '${relation.relationName}' relation...` 
-          });
+      //Put a parent id to every single related model.
+      relatedArraysModelsToCreate.forEach( (relatedModelsArray, i) => {
 
-          const relatedArraysModelsToCreate = fakeModelsArray
-            .map( fakeModel => fakeModel[relation.relationName] )
+        relatedModelsArray.forEach( relatedModel => {
+          relatedModel[relation.foreignKey] = idsMainSeedModel[i];
+        });
 
-          //Put a parent id to every single related model.
-          relatedArraysModelsToCreate.forEach( (relatedModelsArray, i) => {
-
-            relatedModelsArray.forEach( relatedModel => {
-              relatedModel[relation.foreignKey] = ids[i];
-            });
-
-          })
-          
-          const flattenedArray = flattenArray({ array: relatedArraysModelsToCreate, mutable: false })
-          
-          hasManyRecordsPromises.push(models[relation.model].create(flattenedArray));
-
-        })
-
-        return Promise.all(hasManyRecordsPromises);
+      })
+      
+      const flattenedArray = flattenArray({ array: relatedArraysModelsToCreate, mutable: false })
+      
+      hasManyRecordsPromises.push(models[relation.model].create(flattenedArray));
 
     })
+
+    return Promise.all(hasManyRecordsPromises);
+
 
 }
 
