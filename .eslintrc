@@ -1,3 +1,33 @@
 {
-  "extends": "loopback"
+  "env": {
+      "es6": true,
+      "node": true,
+      "commonjs": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "loopback"
+  ],
+  "rules": {
+      "linebreak-style": [
+          "error",
+          "unix"
+      ],
+      "quotes": [
+          "error",
+          "single"
+      ],
+      "semi": [
+          "error",
+          "always"
+      ],
+      "no-multiple-empty-lines": ["error", { "max": 3, "maxEOF": 1 }],
+      "object-curly-spacing": ["error", "always"],
+      "space-in-parens": [2, "always", { "exceptions": ["empty", "{}"] }],
+      "padded-blocks": ["error", { "blocks": "always" }],
+      "no-unused-vars": ["error", {"args": "none"}]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  }
 }

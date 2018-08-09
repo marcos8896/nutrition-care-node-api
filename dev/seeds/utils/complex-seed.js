@@ -1,29 +1,27 @@
+'use strict';
+
 /** @module Seeds/Execute/ComplexSeed */
 
-const models = require('../../../server/server').models;
+const models = require( '../../../server/server' ).models;
 
-const { 
+const {
   getModelsWithRequestedProperties,
- } = require('../../../shared/models-utils.js');
+ } = require( '../../../shared/models-utils.js' );
 
- const {
-  areAllpropertiesSeedsFilled,
-  typeOfSeedToGenerate,
+const {
   getFakeModelsArray,
-  getRandomElementFromArray,
-  getRelationsTypeFromLoopbackModel,
- } = require('./shared');
+ } = require( './shared' );
 
- const { 
-   logProcess, 
-  } = require('./terminal/console');
+const {
+   logProcess,
+  } = require( './terminal/console' );
 
 
 
 /**
  * Prepare and insert the wanted model to seed, by considering its related models and its
  * relations.
- * 
+ *
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @param {Object} Model - A given seed model object.
  * @param {Number} numRecords The wanted number of fake records to be created on the
@@ -35,30 +33,38 @@ const {
  * @async
  */
 async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
-  
-    try {
 
-      const JSONmodels = await getModelsWithRequestedProperties([ 'name', 'relations', 'properties' ]);
-      const JSONModel = JSONmodels.find( model => model.name === Model.name );
-      const relations = Object.keys(JSONModel.relations).map( key => {
-        return {
-          ...JSONModel.relations[key],
-          relationName: key
-        }
-      });
-      const mainLoopbackModel = models[Model.name];
-      const fakeModelsArray = getFakeModelsArray( Model, numRecords );
-      
-      await insert({ 
-        models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
-      });
+  try {
 
-      return cb(null);
-    
-    } catch( error ) {
-      return cb(error);
-    }
-    
+    const JSONmodels = await getModelsWithRequestedProperties(
+      ['name', 'relations', 'properties']
+    );
+
+    const JSONModel = JSONmodels.find( model => model.name === Model.name );
+    const relations = Object.keys( JSONModel.relations ).map( key => {
+
+      return {
+        ...JSONModel.relations[key],
+        relationName: key,
+      };
+
+    });
+    const mainLoopbackModel = models[Model.name];
+    const fakeModelsArray = getFakeModelsArray( Model, numRecords );
+
+    await insert({
+      models, Model, fakeModelsArray, relations,
+      JSONmodels, mainLoopbackModel, seedModels,
+    });
+
+    return cb( null );
+
+  } catch ( error ) {
+
+    return cb( error );
+
+  }
+
 }
 
 
@@ -81,27 +87,29 @@ async function performComplexSeed({  Model, numRecords, seedModels, cb }) {
  * }
  * @returns
  */
-async function insert({ 
-  models, Model, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
+async function insert({
+  models, Model, fakeModelsArray, relations,
+  JSONmodels, mainLoopbackModel, seedModels,
 }) {
 
-    await insertBelongsTo({ 
-      models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
-     });
+  await insertBelongsTo({
+    models, fakeModelsArray, relations, JSONmodels,
+    mainLoopbackModel, seedModels,
+  });
 
-    const idsMainSeedModel = await insertMainParentRecords({
-      Model, fakeModelsArray
-    })
-    
-    await insertHasManyRelatedModels({ 
-      models, Model, fakeModelsArray, relations, seedModels, idsMainSeedModel
-    });
+  const idsMainSeedModel = await insertMainParentRecords({
+    Model, fakeModelsArray,
+  });
+
+  await insertHasManyRelatedModels({
+    models, Model, fakeModelsArray, relations, seedModels, idsMainSeedModel,
+  });
 
 }
 
 /**
  * Inserts main seed model and returns the IDs of the insertion results
- * to be able to bound the 'hasMany' related models on the following 
+ * to be able to bound the 'hasMany' related models on the following
  * functions.
  * @param {Object} Model - A given seed model object.
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
@@ -110,17 +118,20 @@ async function insert({
  * created fake records from the main seed model.
  */
 function insertMainParentRecords({ Model, fakeModelsArray }) {
-  return models[Model.name].create(fakeModelsArray)
-    .then( results => { 
-      
-      logProcess({ 
-        message: `\nFake records from the main '${Model.name}' model were inserted...`,
-        bold: true 
+
+  return models[Model.name].create( fakeModelsArray )
+    .then( results => {
+
+      logProcess({
+        message: '\nFake records from the main ' +
+                 `'${Model.name}' model were inserted...`,
+        bold: true,
       });
 
-      return results.map( result => result.id )
-    
+      return results.map( result => result.id );
+
     });
+
 }
 
 
@@ -137,48 +148,59 @@ function insertMainParentRecords({ Model, fakeModelsArray }) {
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Promise} Returns a promise just to be able to wait from the function that calls this one.
  */
-function insertHasManyRelatedModels({ 
-  models, fakeModelsArray, relations, seedModels, idsMainSeedModel
+function insertHasManyRelatedModels({
+  models, fakeModelsArray, relations, seedModels, idsMainSeedModel,
 }) {
 
   const hasManyRelations = relations
-    .filter( relation => relation.type === 'hasMany' )
+    .filter( relation => relation.type === 'hasMany' );
 
-  if(hasManyRelations.length)
-    logProcess({ message: `\nProcessing 'hasMany' relations...`, bold: true })
+  if ( hasManyRelations.length )
+    logProcess({
+      message: '\nProcessing \'hasMany\' relations...', bold: true,
+    });
 
-  addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsArray, seedModels })
+  addHasManyFakeRelatedModels({
+    hasManyRelations, seedModels, fakeModelsArray,
+  });
 
-  
+
 
   let hasManyRecordsPromises = [];
   hasManyRelations
     .forEach( relation => {
 
-      logProcess({ 
+      logProcess({
         message: `  Inserting '${relation.model}' related fake records ` +
-                  `through the ${relation.type} '${relation.relationName}' relation...` 
+                  `through the ${relation.type} ` +
+                  `'${relation.relationName}' relation...`,
       });
 
       const relatedArraysModelsToCreate = fakeModelsArray
-        .map( fakeModel => fakeModel[relation.relationName] )
+        .map( fakeModel => fakeModel[relation.relationName] );
 
-      //Put a parent id to every single related model.
-      relatedArraysModelsToCreate.forEach( (relatedModelsArray, i) => {
+      // Put a parent id to every single related model.
+      relatedArraysModelsToCreate.forEach( ( relatedModelsArray, i ) => {
 
         relatedModelsArray.forEach( relatedModel => {
+
           relatedModel[relation.foreignKey] = idsMainSeedModel[i];
+
         });
 
-      })
-      
-      const flattenedArray = flattenArray({ array: relatedArraysModelsToCreate, mutable: false })
-      
-      hasManyRecordsPromises.push(models[relation.model].create(flattenedArray));
+      });
 
-    })
+      const flattenedArray = flattenArray({
+        array: relatedArraysModelsToCreate, mutable: false,
+      });
 
-    return Promise.all(hasManyRecordsPromises);
+      hasManyRecordsPromises.push(
+        models[relation.model].create( flattenedArray )
+      );
+
+    });
+
+  return Promise.all( hasManyRecordsPromises );
 
 
 }
@@ -196,20 +218,31 @@ function insertHasManyRelatedModels({
  * @param {Object[]} fakeModelsArray It contains a bunch of fake records from the current seed model.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
-function addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsArray }) {
-  
+function addHasManyFakeRelatedModels({
+  hasManyRelations, seedModels, fakeModelsArray,
+}) {
+
   hasManyRelations.forEach( relation => {
 
-    logProcess({ message: `  Processing hasMany '${relation.relationName}' relation...` });
+    logProcess({
+      message: `  Processing hasMany '${relation.relationName}' relation...`,
+    });
 
-    //Get the related model.
+    // Get the related model.
     const relatedModel = models[relation.model];
 
-      const currentSeedModel = getSeedModelByName(seedModels, relatedModel.name);
-      fakeModelsArray.forEach( fakeModel => {
-        fakeModel[relation.relationName] = getFakeModelsArray(currentSeedModel, 10);
-      });
-      
+    const currentSeedModel = getSeedModelByName(
+      seedModels, relatedModel.name
+    );
+
+    fakeModelsArray.forEach( fakeModel => {
+
+      fakeModel[relation.relationName] = getFakeModelsArray(
+        currentSeedModel, 10
+      );
+
+    });
+
   });
 
 }
@@ -237,30 +270,37 @@ function addHasManyFakeRelatedModels({ hasManyRelations, seedModels, fakeModelsA
  * }
  * @returns
  */
-function insertBelongsTo({ 
-  models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels
+function insertBelongsTo({
+  models, fakeModelsArray, relations, JSONmodels, mainLoopbackModel, seedModels,
 }) {
 
-  logProcess({ message: `\nProcessing 'belongsTo' relations...`, bold: true });
+  logProcess({
+    message: '\nProcessing \'belongsTo\' relations...', bold: true,
+  });
 
   const belongsToRelations = relations
-  .filter( relation => relation.type === 'belongsTo' )
+    .filter( relation => relation.type === 'belongsTo' );
 
-  //METHOD - Get the foreign key from the related models in order to make the insertion.
+  // METHOD - Get the foreign key from the related models in order to make the insertion.
   belongsToRelations.forEach( relation => {
 
-    logProcess({ message: `  Processing belongsTo '${relation.relationName}' relation...` });
+    logProcess({
+      message: `  Processing belongsTo '${relation.relationName}' relation...`,
+    });
 
     const relatedModel = models[relation.model];
 
-    //Get related JSON model.
+    // Get related JSON model.
     const relatedJSONmodel = JSONmodels
       .find( json => json.name === relatedModel.name );
-    
-    //Go get the JSON related model to check the foreignKeys required to
-    //insert a new record.
-    const key = Object.keys(relatedJSONmodel.relations).find( relation => {
+
+    // Go get the JSON related model to check the foreignKeys required to
+    // insert a new record.
+    const key = Object.keys( relatedJSONmodel.relations ).find( relation => {
+
+      // eslint-disable-next-line max-len
       return relatedJSONmodel.relations[relation].model === mainLoopbackModel.name;
+
     });
 
     const foreignKey = relatedJSONmodel.relations[key].foreignKey;
@@ -271,27 +311,36 @@ function insertBelongsTo({
   const insertRelatedParantModels = [];
   belongsToRelations.forEach( relation => {
 
-    logProcess({ 
+    logProcess({
       message: `  Inserting '${relation.model}' related fake records ` +
-               `through the ${relation.type} '${relation.relationName}' relation...` 
+               `through the ${relation.type} '${relation.relationName}' ` +
+               'relation...',
     });
 
     fakeModelsArray.forEach( fakeModel => {
 
-      const currentRelatedSeedModel = getSeedModelByName(seedModels, relation.model);
-      const relatedModelFakeData =  getFakeModelsArray(currentRelatedSeedModel, 1);
+      const currentRelatedSeedModel = getSeedModelByName(
+        seedModels, relation.model
+      );
+
+      const relatedModelFakeData = getFakeModelsArray(
+        currentRelatedSeedModel, 1
+      );
+
       insertRelatedParantModels.push(
-        models[relation.model].create(relatedModelFakeData).then( result => {
+        models[relation.model].create( relatedModelFakeData ).then( result => {
+
           fakeModel[relation.foreignKey] = result[0].id;
-      }))
 
-    })
+        }) );
 
-  })
+    });
 
-  return Promise.all(insertRelatedParantModels).then(() => logProcess({ 
-    message: `  All 'belongsTo' related records where inserted.`
-  }));
+  });
+
+  return Promise.all( insertRelatedParantModels ).then( () => logProcess({
+    message: '  All \'belongsTo\' related records where inserted.',
+  }) );
 
 }
 
@@ -304,7 +353,9 @@ function insertBelongsTo({
  * @returns
  */
 function getSeedModelByName( seedModels, name ) {
+
   return seedModels.find( seedModel => seedModel.name === name );
+
 }
 
 /**
@@ -317,34 +368,44 @@ function getSeedModelByName( seedModels, name ) {
  * without any nested array inside of it.
  */
 function flattenArray({ array, mutable }) {
+
   var toString = Object.prototype.toString;
   var arrayTypeStr = '[object Array]';
-  
+
   var result = [];
-  var nodes = (mutable && array) || array.slice();
+  var nodes = ( mutable && array ) || array.slice();
   var node;
 
-  if (!array.length) {
-      return result;
+  if ( !array.length ) {
+
+    return result;
+
   }
 
   node = nodes.pop();
-  
+
   do {
-      if (toString.call(node) === arrayTypeStr) {
-          nodes.push.apply(nodes, node);
-      } else {
-          result.push(node);
-      }
-  } while (nodes.length && (node = nodes.pop()) !== undefined);
+
+    if ( toString.call( node ) === arrayTypeStr ) {
+
+      nodes.push.apply( nodes, node );
+
+    } else {
+
+      result.push( node );
+
+    }
+
+  } while ( nodes.length && ( node = nodes.pop() ) !== undefined );
 
   result.reverse(); // we reverse result to restore the original order
   return result;
+
 }
 
 
 
 module.exports = {
   performComplexSeed,
-}
+};
 

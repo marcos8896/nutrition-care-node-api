@@ -1,13 +1,17 @@
 'use strict';
 
-const AdministratorService = require('../services/administrator.service');
+const AdministratorService = require( '../services/administrator.service' );
 
-module.exports = function(Administrator) {
-  
-  //Before Remote Hooks --->
-  Administrator.beforeRemote('create', AdministratorService.beforeRemoteCreate);
+module.exports = function( Administrator ) {
 
-  //After Remote Hooks --->
-  Administrator.afterRemote('login', AdministratorService.afterRemoteLogin);
-    
+  // Before Remote Hooks --->
+  Administrator.beforeRemote(
+    'create', AdministratorService.beforeRemoteCreate
+  );
+
+  // After Remote Hooks --->
+  Administrator.afterRemote(
+    'login', AdministratorService.afterRemoteLogin
+  );
+
 };

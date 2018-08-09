@@ -1,41 +1,50 @@
-/** 
+'use strict';
+
+/**
  * This module is meant to have all the models functionality of the Loopback models.
  * Functionality that needs to be shared in multiple places.
- * @module Shared/ModelsUtils 
- * 
+ * @module Shared/ModelsUtils
+ *
  */
 
 
 /**
- * Return a promises which contains all the Loobpack's custom models with 
+ * Return a promises which contains all the Loobpack's custom models with
  * all its properties on it.
- * 
+ *
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @returns {Promise<Array>} 
+ * @returns {Promise<Array>}
  */
 function getModelsContentFromJSONs() {
-  const readfiles = require('node-readfiles');
+
+  const readfiles = require( 'node-readfiles' );
   let arrayModels = [];
 
-  return readfiles('./common/models/', { filter: '*.json' }, (err, filename, contents) => {
-    if (err) throw err;
+  const callback = ( err, filename, contents ) => {
+
+    if ( err ) throw err;
 
     let json = {
       filename,
-      name: JSON.parse(contents).name,
-      properties_seeds: Object.keys(JSON.parse(contents).properties)
-    }
+      name: JSON.parse( contents ).name,
+      // eslint-disable-next-line camelcase
+      properties_seeds: Object.keys( JSON.parse( contents ).properties ),
+    };
 
-    arrayModels.push(json);
+    arrayModels.push( json );
 
-  }).then(() => arrayModels)
-    .catch( error => console.log(error));
+  };
+
+  return readfiles( './common/models/', { filter: '*.json' }, callback )
+    .then( () => arrayModels )
+    .catch( error => console.log( error ) );
+
 }
 
 
 
 /**
- * Return a promises which contains all the Loobpack's custom models from the 
+ * Return a promises which contains all the Loobpack's custom models from the
  * JSON files on the common/models folder with the request properties on it.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @param {string[]} requestedProperties - The wanted properties to be return in
@@ -45,42 +54,53 @@ function getModelsContentFromJSONs() {
  */
 function getModelsWithRequestedProperties( requestedProperties ) {
 
-  const readfiles = require('node-readfiles');
+  const readfiles = require( 'node-readfiles' );
   const arrayModels = [];
 
-  return readfiles('./common/models/', { filter: '*.json' }, (err, filename, model) => {
-    if (err) throw err;
+  return readfiles(
+    './common/models/',
+    { filter: '*.json' },
+    ( err, filename, model ) => {
 
-    const parsedModel = JSON.parse(model);
+      if ( err ) throw err;
 
-    let json = {};
+      const parsedModel = JSON.parse( model );
 
-    requestedProperties.forEach( prop => json[prop] = parsedModel[prop] );
+      let json = {};
 
-    arrayModels.push(json);
+      requestedProperties.forEach( prop => json[prop] = parsedModel[prop] );
 
-  }).then(() => arrayModels)
-    .catch( error => console.log(error));
+      arrayModels.push( json );
+
+    }).then( () => arrayModels )
+    .catch( error => console.log( error ) );
+
 }
-  
+
 
 /**
  * Return a promise which contains only the names from all the Loobpack's custom models.
- * 
+ *
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @returns {Promise<Array>} 
+ * @returns {Promise<Array>}
  */
 async function getNameModelsArray() {
 
   let names = [];
-  
+
   try {
-    names = await getModelsContentFromJSONs().then( models => models.map( model => model.name));
-  } catch (error) {
-    console.log(error);
+
+    names = await getModelsContentFromJSONs()
+                    .then( models => models.map( model => model.name ) );
+
+  } catch ( error ) {
+
+    console.log( error );
+
   }
-  
+
   return names;
+
 }
 
 
