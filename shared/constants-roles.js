@@ -1,7 +1,7 @@
 module.exports = {
   CUSTOMER: {
     REGULAR: 'REGULAR',
-    PREMIUM: 'PREMIUM'
+    PREMIUM: 'PREMIUM',
   },
-  ADMIN: 'ADMINISTRATOR'
+  ADMIN: 'ADMINISTRATOR',
 };
