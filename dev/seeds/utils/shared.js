@@ -1,10 +1,11 @@
+'use strict';
 /**
- * Contains all the shared functionality between the 'simpleSeed' and the 'complexSeeds'. 
+ * Contains all the shared functionality between the 'simpleSeed' and the 'complexSeeds'.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @module Seeds/Utils/Shared 
+ * @module Seeds/Utils/Shared
  */
 
-const faker = require('faker/');
+const faker = require( 'faker' );
 
 /**
  * Validates if the current seed model has all its properties_seeds filled.
@@ -14,8 +15,12 @@ const faker = require('faker/');
  * <code>prepare process</code> on the file.
  */
 function areAllpropertiesSeedsFilled( Model ) {
-  const propertiesValues = Model.properties_seeds.map( property => Object.values(property)[0]);
+
+  const propertiesValues = Model.properties_seeds
+    .map( property => Object.values( property )[0] );
+
   return propertiesValues.every( property => property );
+
 }
 
 
@@ -35,17 +40,17 @@ function areAllpropertiesSeedsFilled( Model ) {
  */
 function typeOfSeedToGenerate( relationsTypes ) {
 
-  let type = 'simpleSeed';
+  // Only 'hasMany' relations.
+  if ( relationsTypes.length === 0 )
+    return 'simpleSeed';
 
-  //Only 'hasMany' relations.
-  if( relationsTypes.length === 0 )
-    return 'simpleSeed'
-
-  else if( relationsTypes.includes('belongsTo') || relationsTypes.includes('hasMany') )
+  else if ( relationsTypes.includes( 'belongsTo' ) ||
+            relationsTypes.includes( 'hasMany' ) )
     return 'complexSeed';
 
-  else throw "One or more relations that your model has are not supported currently.";
-  
+  else throw 'One or more relations that your model ' +
+             'has are not supported currently.';
+
 }
 
 
@@ -54,7 +59,7 @@ function typeOfSeedToGenerate( relationsTypes ) {
  * Generates all the fake data that is going to be created on the database,
  * it creates a given number of records of the current seed model based on
  * the given number of records and it puts all these records on an array.
- * 
+ *
  * @param {*} Model - The current seed model from which the script is going
  * to generate fake data.
  * @param {number} numberOfRecords - The wanted number of records to be created.
@@ -64,12 +69,14 @@ function getFakeModelsArray( Model, numberOfRecords ) {
 
   let fakeModel = { };
   const fakeModelsArray = [];
-  for (let i = 0; i < numberOfRecords; i++) {
-    Model.properties_seeds.forEach( prop => 
-      fakeModel[Object.keys(prop)[0]] = faker.fake(Object.values(prop)[0])
-    )
-    fakeModelsArray.push(fakeModel);
+  for ( let i = 0; i < numberOfRecords; i++ ) {
+
+    Model.properties_seeds.forEach( prop =>
+      fakeModel[Object.keys( prop )[0]] = faker.fake( Object.values( prop )[0] )
+    );
+    fakeModelsArray.push( fakeModel );
     fakeModel = { };
+
   }
 
   return fakeModelsArray;
@@ -86,14 +93,16 @@ function getFakeModelsArray( Model, numberOfRecords ) {
  * @returns {any} - A random element from the array param.
  */
 function getRandomElementFromArray( array ) {
-  return array[Math.floor(Math.random()*array.length)];
+
+  return array[Math.floor( Math.random() * array.length )];
+
 }
 
 
 
 /**
  * Returns all the relations's types from a given model.
- * 
+ *
  * @async
  * @param {string} modelName - The name of the model from which the developer wants to get
  * its relations' types.
@@ -103,19 +112,27 @@ function getRandomElementFromArray( array ) {
  */
 async function getRelationsTypeFromLoopbackModel( modelName, cb ) {
 
-  const { 
+  const {
     getModelsWithRequestedProperties,
-   } = require('../../../shared/models-utils.js');
+   } = require( '../../../shared/models-utils.js' );
 
   try {
-    const models = await getModelsWithRequestedProperties([ 'name', 'relations' ]);
+
+    const models = await getModelsWithRequestedProperties(
+      ['name', 'relations']
+    );
+
     const model = models.find( model => model.name === modelName );
-    const modelRelationsType = Object.keys(model.relations).map( key => model.relations[key].type );
-    
+
+    const modelRelationsType = Object.keys( model.relations )
+      .map( key => model.relations[key].type );
+
     return modelRelationsType;
-  }
-  catch(error) {
-    return cb(error);
+
+  }  catch ( error ) {
+
+    return cb( error );
+
   }
 
 }
@@ -126,4 +143,4 @@ module.exports = {
   getFakeModelsArray,
   getRandomElementFromArray,
   getRelationsTypeFromLoopbackModel,
-}
+};

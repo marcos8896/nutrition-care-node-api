@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Creates fake data based on the seed JSON files that were created
  * by the {@link prepare-seeds.js} script.
@@ -9,30 +11,28 @@
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 
-const inquirer = require('./utils/terminal/inquirer');
-const terminal = require('./utils/terminal/console');
-const mkdirp = require('mkdirp');
-const fileExists = require('file-exists');
+const inquirer = require( './utils/terminal/inquirer' );
+const terminal = require( './utils/terminal/console' );
+const mkdirp = require( 'mkdirp' );
 
-const prepareSeedFiles = require('./prepare-seeds');
+const prepareSeedFiles = require( './prepare-seeds' );
 
- const {
+const {
   areAllpropertiesSeedsFilled,
   typeOfSeedToGenerate,
   getFakeModelsArray,
-  getRandomElementFromArray,
   getRelationsTypeFromLoopbackModel,
- } = require('./utils/shared');
+ } = require( './utils/shared' );
 
- const {
+const {
   performComplexSeed,
- } = require('./utils/complex-seed');
+ } = require( './utils/complex-seed' );
 
 /**
  * This constant holds all the custom models that the Loopback instance has available.
  * @type {string}
  */
-const models = require('../../server/server').models;
+const models = require( '../../server/server' ).models;
 
 /**
  * This constant holds the path in which all the seed files are placed.
@@ -48,12 +48,12 @@ let singleModel;
 
 
 /**
- * This variable holds the value of the number of records that the user 
+ * This variable holds the value of the number of records that the user
  * introduces on the terminal by running the script.
  * @todo Remove the previous restriction.
  * @type {number}
  */
-let numRecords;
+let numRecords; // eslint-disable-line one-var
 
 
 /**
@@ -65,59 +65,71 @@ const arrayModels = [];
 
 
 /**
- * Checks if the current <code>seedPath</code> exists, if not, 
+ * Checks if the current <code>seedPath</code> exists, if not,
  * it creates that path if possible.
- * @returns {Promise} Returns a promise which contains an object with 
+ * @returns {Promise} Returns a promise which contains an object with
  * the <code>exists</code> property.
  */
 function checkIfDirectoryExists() {
-  return new Promise((resolve, reject) => {
 
-    mkdirp(`${seedPath}`, (err) => {
-      if (err) reject(err);
+  return new Promise( ( resolve, reject ) => {
+
+    mkdirp( `${seedPath}`, ( err ) => {
+
+      if ( err ) reject( err );
       resolve({ exists: true });
+
     });
 
-  })
+  });
+
 }
 
 /**
  * Checks if the <code>seedPath</code> directory is empty or not.
- * 
+ *
  * @returns {Promise<Boolean>} Returns a promise which contains a boolean
  * notifying whether the folder is empty or not.
  */
 function isTheFolderEmpty() {
 
-  const emptyDir = require('empty-dir');
- 
-  return new Promise((resolve, reject) => {
+  const emptyDir = require( 'empty-dir' );
 
-    emptyDir(`${seedPath}`, (err, result) => {
-      if (err) reject(err);
+  return new Promise( ( resolve, reject ) => {
+
+    emptyDir( `${seedPath}`, ( err, result ) => {
+
+      if ( err ) reject( err );
       else {
-        resolve(result);
+
+        resolve( result );
+
       }
+
     });
 
-  })
+  });
 
 }
 /**
  * Runs the <code>checkIfDirectoryExists</code> function and after that
  * runs the <code>isTheFolderEmpty</code> function.
- * 
+ *
  * @returns {Promise<Boolean>} Returns a promise which contains a boolean
  * notifying whether there are seed files or not.
  * @returns
  */
 function areThereSeedFilesModels() {
-  return checkIfDirectoryExists().then(() => isTheFolderEmpty()).then( empty => !empty );
+
+  return checkIfDirectoryExists()
+          .then( () => isTheFolderEmpty() )
+          .then( empty => !empty );
+
 }
 
 
 /**
- * Get all the Seed models and processes them to only get the 
+ * Get all the Seed models and processes them to only get the
  * model <code>name</code>, the model <code>filename</code> and the
  * model <code>properties</code> to push it inside the <code>arrayModels</code>
  * array.
@@ -140,28 +152,35 @@ function areThereSeedFilesModels() {
  * ]
  */
 function getModelsSeedsFromSeedJSONModels() {
-  
-  const readfiles = require('node-readfiles');
 
-  return readfiles(`${seedPath}`, { filter: '*.json' }, (err, filename, contents) => {
-    if (err) throw err;
+  const readfiles = require( 'node-readfiles' );
 
-    let json = {
-      filename,
-      name: JSON.parse(contents).name,
-      properties_seeds: JSON.parse(contents).properties_seeds
-    }
-    
-    arrayModels.push(json);
-  })
-    .then(files => arrayModels)
+  return readfiles(
+    `${seedPath}`,
+    { filter: '*.json' },
+    ( err, filename, contents ) => {
+
+      if ( err ) throw err;
+
+      let json = {
+        filename,
+        name: JSON.parse( contents ).name,
+      // eslint-disable-next-line camelcase
+        properties_seeds: JSON.parse( contents ).properties_seeds,
+      };
+
+      arrayModels.push( json );
+
+    })
+    .then( files => arrayModels );
+
 }
 
 
 
 /**
  * Get all the Seed models from the <code>arrayModels</code> array, creates
- * a the proper number of instances based on the wanted number of records 
+ * a the proper number of instances based on the wanted number of records
  * on the <code>numRecords</code> constant that holds the user input from the terminal.
  * At the end, this function grabs all the generate instances and it creates them on
  * the database.
@@ -172,34 +191,41 @@ function getModelsSeedsFromSeedJSONModels() {
  */
 async function seedModel( cb ) {
 
-    let Model = arrayModels.find( model => model.name == singleModel);
- 
+  let Model = arrayModels.find( model => model.name == singleModel );
+
     // //Validate if the Model exists
-    if( !!!Model ) return cb("Model not found.");
-    
+  if ( !Model ) return cb( 'Model not found.' );
+
     // //Validate if numRecords is a valid number
-    if( isNaN(numRecords) || numRecords <= 0 ) return cb("The number of records are not valid.");
+  if ( isNaN( numRecords ) || numRecords <= 0 )
+    return cb( 'The number of records are not valid.' );
 
-    //Validate if all the properties_seeds are filled.
-    if( !areAllpropertiesSeedsFilled(Model) ) 
-      cb(`There are empty 'properties_seeds' on seedModel '${singleModel}'. \nFile: '${Model.filename}'`)
-    
+    // Validate if all the properties_seeds are filled.
+  if ( !areAllpropertiesSeedsFilled( Model ) )
+    cb( 'There are empty \'properties_seeds\' on seedModel ' +
+        `'${singleModel}'. \nFile: '${Model.filename}'` );
 
-   try {
 
-    const modelRelationsType = await getRelationsTypeFromLoopbackModel( singleModel, cb );
+  try {
+
+    const modelRelationsType = await getRelationsTypeFromLoopbackModel(
+      singleModel, cb
+    );
+
     const seedType = typeOfSeedToGenerate( modelRelationsType );
 
-    if(seedType === 'simpleSeed')
+    if ( seedType === 'simpleSeed' )
       performSimpleSeed( Model, numRecords, cb );
 
-    else if(seedType === 'complexSeed')
+    else if ( seedType === 'complexSeed' )
       performComplexSeed({  Model, numRecords, seedModels: arrayModels, cb });
 
-   } catch(error) {
-     return cb(error);
-   }
-    
+  } catch ( error ) {
+
+    return cb( error );
+
+  }
+
 }
 
 
@@ -217,9 +243,9 @@ function performSimpleSeed( Model, numberOfRecords, cb ) {
 
   const fakeModelsArray = getFakeModelsArray( Model, numberOfRecords );
 
-  models[singleModel].create(fakeModelsArray)
-    .then(_ => cb(null))
-    .catch( err => cb(err))
+  models[singleModel].create( fakeModelsArray )
+    .then( _ => cb( null ) )
+    .catch( err => cb( err ) );
 
 }
 
@@ -227,27 +253,34 @@ function performSimpleSeed( Model, numberOfRecords, cb ) {
 
 function boostrapFunction() {
 
-  const handleError = (err) => {
-    if(err) {
-      terminal.logMessage({ color: 'redBright', bold: true ,message: err, error: true });
-      terminal.logMessage({ 
-        color: 'red', 
-        bold: true, 
-        message: '\n-----There previous error forced the Seed Process to be stopped.-----\n'
-     });
+  const handleError = ( err ) => {
+
+    if ( err ) {
+
+      terminal.logMessage({
+        color: 'redBright', bold: true, message: err, error: true,
+      });
+      terminal.logMessage({
+        color: 'red',
+        bold: true,
+        message: '\n-----There previous error forced ' +
+                 'the Seed Process to be stopped.-----\n',
+      });
 
     } else {
-      terminal.logMessage({ 
+
+      terminal.logMessage({
         color: 'greenBright', bold: true,
-        message: '\nThe Seed Process has finished successfully.\n'
+        message: '\nThe Seed Process has finished successfully.\n',
       });
+
     }
 
-    process.exit(0);
+    process.exit( 0 );
 
-  }
+  };
 
-  seedModel(handleError);
+  seedModel( handleError );
 
 }
 
@@ -261,45 +294,62 @@ async function main() {
     const { selected } = await inquirer.mainMenu();
     const options = inquirer.mainManuChoicesObject;
 
-    switch (selected) {
-      
+    switch ( selected ) {
+
       case options.prepareSeeds: {
+
         prepareSeedFiles();
         break;
-      } 
+
+      }
 
       case options.executeSeeds: {
 
         const areThereFiles = await areThereSeedFilesModels();
-        
-        if(!areThereFiles) {
+
+        if ( !areThereFiles ) {
+
           throw `There are not seed files currently on the ${seedPath} path ` +
-                `please, run the '${options.prepareSeeds}' option and try again...`
+                `please, run the '${options.prepareSeeds}' option and try ` +
+                'again...';
+
         }
 
-        const models = await getModelsSeedsFromSeedJSONModels();
+        await getModelsSeedsFromSeedJSONModels();
 
-        const { seedModel } = await inquirer.askForSeedModel(arrayModels.map( model => model.name ));
+        const { seedModel } = await inquirer
+          .askForSeedModel( arrayModels.map( model => model.name ) );
+
         singleModel = seedModel;
 
         const { numberOfRecords } = await inquirer.askNumberOfRecords();
-        numRecords = parseInt(numberOfRecords);
+        numRecords = parseInt( numberOfRecords );
 
         boostrapFunction();
         break;
+
       }
-      
+
       case options.exit: {
-        terminal.logMessage({ color: 'greenBright', bold: true, message: '\nAjalas...\n' });
-        process.exit(0);
+
+        terminal.logMessage({
+          color: 'greenBright', bold: true, message: '\nAjalas...\n',
+        });
+
+        process.exit( 0 );
         break;
-      } 
+
+      }
 
     }
 
-  } catch( error ) {
-    terminal.logMessage({ color: 'redBright', bold: true ,message: error, error: true });
-    process.exit(0);
+  } catch ( error ) {
+
+    terminal.logMessage({
+      color: 'redBright', bold: true, message: error, error: true,
+    });
+
+    process.exit( 0 );
 
   }
 

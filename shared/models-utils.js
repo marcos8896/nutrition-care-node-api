@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * This module is meant to have all the models functionality of the Loopback models.
  * Functionality that needs to be shared in multiple places.
@@ -25,12 +27,13 @@ function getModelsContentFromJSONs() {
     let json = {
       filename,
       name: JSON.parse( contents ).name,
+      // eslint-disable-next-line camelcase
       properties_seeds: Object.keys( JSON.parse( contents ).properties ),
     };
 
     arrayModels.push( json );
 
-  }
+  };
 
   return readfiles( './common/models/', { filter: '*.json' }, callback )
     .then( () => arrayModels )
@@ -54,19 +57,22 @@ function getModelsWithRequestedProperties( requestedProperties ) {
   const readfiles = require( 'node-readfiles' );
   const arrayModels = [];
 
-  return readfiles( './common/models/', { filter: '*.json' }, ( err, filename, model ) => {
+  return readfiles(
+    './common/models/',
+    { filter: '*.json' },
+    ( err, filename, model ) => {
 
-    if ( err ) throw err;
+      if ( err ) throw err;
 
-    const parsedModel = JSON.parse( model );
+      const parsedModel = JSON.parse( model );
 
-    let json = {};
+      let json = {};
 
-    requestedProperties.forEach( prop => json[prop] = parsedModel[prop] );
+      requestedProperties.forEach( prop => json[prop] = parsedModel[prop] );
 
-    arrayModels.push( json );
+      arrayModels.push( json );
 
-  } ).then( () => arrayModels )
+    }).then( () => arrayModels )
     .catch( error => console.log( error ) );
 
 }
@@ -90,8 +96,8 @@ async function getNameModelsArray() {
   } catch ( error ) {
 
     console.log( error );
-    
-}
+
+  }
 
   return names;
 

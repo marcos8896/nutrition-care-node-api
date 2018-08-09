@@ -1,19 +1,21 @@
+'use strict';
+
 /**
  * Prepares all the JSON seed files in order to generate fake
  * data for the Loopback's model that are allocated on the common folder.
  * The output that generate is a JSON file per Loopback model file that
- * allows the user to enter faker.js' mustache syntax to generate all 
+ * allows the user to enter faker.js' mustache syntax to generate all
  * kind of fake data to test his or her applications.
- * @module Seeds/Prepare 
+ * @module Seeds/Prepare
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 
-const asyncSeries = require('async').series;
-const fileExists = require('file-exists');
-const mkdirp = require('mkdirp');
-const readfiles = require('node-readfiles');
+const asyncSeries = require( 'async' ).series;
+const fileExists = require( 'file-exists' );
+const mkdirp = require( 'mkdirp' );
+const readfiles = require( 'node-readfiles' );
 
-const { logMessage } = require('./utils/terminal/console');
+const { logMessage } = require( './utils/terminal/console' );
 
 
 /**
@@ -31,53 +33,56 @@ let arrayModels = [];
 
 
 /**
- * This function is the one that starts all the process in this file, by running 
+ * This function is the one that starts all the process in this file, by running
  * all the other functions in the proper order one by one, one after the other.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  */
 function bootstrapFuction() {
 
-  asyncSeries([
-    cb => getModelsContentFromJSONs(cb),
-    cb => prepareSeedsModels(cb),
-    cb => checkIfDirectoryExists(cb),
-    cb => checkJSONSeedsAvailability(cb),
-    cb => keepPropetiesFromJSONSeedModelsUpToDate(cb),
-    cb => writeRemainingJSONFiles(cb),
-  ], (err, results) => {
-    if(err) {
+  asyncSeries( [
+    cb => getModelsContentFromJSONs( cb ),
+    cb => prepareSeedsModels( cb ),
+    cb => checkIfDirectoryExists( cb ),
+    cb => checkJSONSeedsAvailability( cb ),
+    cb => keepPropetiesFromJSONSeedModelsUpToDate( cb ),
+    cb => writeRemainingJSONFiles( cb ),
+  ], ( err, results ) => {
 
-      logMessage({ color: 'redBright', bold: true ,message: err, error: true });
-      logMessage({ 
-        color: 'cyanBright', 
-        bold: true, 
-        message: '\n-----There previous error forced the Seed Process to be stopped.-----\n'
-     });
+    if ( err ) {
 
-    } else {
-      
-      logMessage({ 
-        color: 'greenBright', bold: true,
-        message: '\nTodo bien, men. All the seed files were created and updated successfully :)\n'
+      logMessage({ color: 'redBright', bold: true, message: err, error: true });
+      logMessage({
+        color: 'cyanBright',
+        bold: true,
+        message: '\n-----There previous error forced ' +
+                 'the Seed Process to be stopped.-----\n',
       });
 
-      process.exit(0);
+    } else {
+
+      logMessage({
+        color: 'greenBright', bold: true,
+        message: '\nTodo bien, men. All the seed files were ' +
+                 'created and updated successfully :)\n',
+      });
+
+      process.exit( 0 );
 
     }
-    
-  
+
+
   });
 
 }
 
 
 /**
- * Get all the Custom Loopback's models and processes them to only get the 
+ * Get all the Custom Loopback's models and processes them to only get the
  * model <code>name</code>, the model <code>filename</code> and the
  * model <code>properties</code> to push it inside the <code>arrayModels</code>
  * array.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback to keep the flow on all the 
+ * @param {callback} cb - The next callback to keep the flow on all the
  * <code>prepare process</code> on the file.
  * @example
  * //The arrayModels shape at this point.
@@ -94,24 +99,30 @@ function bootstrapFuction() {
  *   //... more models
  * ]
  */
-function getModelsContentFromJSONs(cb) {
+function getModelsContentFromJSONs( cb ) {
 
-  readfiles('./common/models/', { filter: '*.json' }, (err, filename, contents) => {
-    if (err) throw err;
+  readfiles( './common/models/',
+    { filter: '*.json' },
+    ( err, filename, contents ) => {
 
-    let json = {
-      filename,
-      name: JSON.parse(contents).name,
-      properties_seeds: Object.keys(JSON.parse(contents).properties)
-    }
+      if ( err ) throw err;
 
-    arrayModels.push(json);
-  })
-  .then(files => {
-    return cb(null)})
-  .catch(err => {
-    console.log('Error reading files:', err.message);
-    cb(err);
+      let json = {
+        filename,
+        name: JSON.parse( contents ).name,
+        // eslint-disable-next-line camelcase
+        properties_seeds: Object.keys( JSON.parse( contents ).properties ),
+      };
+
+      arrayModels.push( json );
+
+    })
+  .then( files => cb( null ) )
+  .catch( err => {
+
+    console.log( 'Error reading files:', err.message );
+    cb( err );
+
   });
 
 }
@@ -123,7 +134,7 @@ function getModelsContentFromJSONs(cb) {
  * one of them with the wanted shape in order to allow the seeder to introduces
  * mustache syntax strings in each on of the properties from every model.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback to keep the flow on all the 
+ * @param {callback} cb - The next callback to keep the flow on all the
  * <b>prepare process</b> on the file.
  * @example
  * {
@@ -136,29 +147,36 @@ function getModelsContentFromJSONs(cb) {
  *  ]
  * }
  */
-function prepareSeedsModels(cb) {
-  arrayModels.forEach(model =>
-    model.properties_seeds = model.properties_seeds.map(prop =>
-      prop = { [prop]: "" }
+function prepareSeedsModels( cb ) {
+
+  arrayModels.forEach( model =>
+    // eslint-disable-next-line camelcase
+    model.properties_seeds = model.properties_seeds.map( prop =>
+      prop = { [prop]: '' }
     )
   );
-  cb(null);
+  cb( null );
+
 }
 
 
 /**
- * Simple function that checks whether the current directory from the 
+ * Simple function that checks whether the current directory from the
  * <code>seedsDirectory</code> cons actually exists. If not, it creates it.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback to keep the flow on all the 
+ * @param {callback} cb - The next callback to keep the flow on all the
  * <b>prepare process</b> on the file.
- * 
+ *
  */
 function checkIfDirectoryExists( cb ) {
-  mkdirp(`.${seedsDirectory}`, (err) => {
-    if (err) cb( err );
+
+  mkdirp( `.${seedsDirectory}`, ( err ) => {
+
+    if ( err ) cb( err );
     cb( null );
+
   });
+
 }
 
 
@@ -168,24 +186,29 @@ function checkIfDirectoryExists( cb ) {
  * the <code>hasToBeModifiedOrAdded</code> property is added depending of
  * the result.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @prop {boolean} model.hasToBeModifiedOrAdded 
- * @param {callback} cb - The next callback to keep the flow on all the 
+ * @prop {boolean} model.hasToBeModifiedOrAdded
+ * @param {callback} cb - The next callback to keep the flow on all the
  * <b>prepare process</b> on the file.
- * 
+ *
  */
-function checkJSONSeedsAvailability(cb) {
+function checkJSONSeedsAvailability( cb ) {
 
   let promises = [];
-  arrayModels.forEach(model => {
+  arrayModels.forEach( model => {
+
     promises.push(
-      fileExists(`.${seedsDirectory}seed-${model.filename}`).then(exists => {
+      fileExists( `.${seedsDirectory}seed-${model.filename}` ).then( exists => {
+
         model.hasToBeModifiedOrAdded = !exists;
         // console.log(exists); // OUTPUTS: true or false
-      })
-    )
-  })
 
-  Promise.all(promises).then(() => cb(null));
+      })
+    );
+
+  });
+
+  Promise.all( promises ).then( () => cb( null ) );
+
 }
 
 
@@ -195,102 +218,125 @@ function checkJSONSeedsAvailability(cb) {
  * add to the JSON seed files all the new properties that exists on the main Loopback
  * models.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback to keep the flow on all the 
+ * @param {callback} cb - The next callback to keep the flow on all the
  * <b>prepare process</b> on the file.
- * 
+ *
  */
 function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
 
-  readfiles(`.${seedsDirectory}`, { filter: '*.json' }, (err, filename, jsonString) => {
+  readfiles(
+    `.${seedsDirectory}`,
+    { filter: '*.json' },
+    ( err, filename, jsonString ) => {
 
-    //Parsed to an object the previous JSON seed file.
-    const seedObject = JSON.parse(jsonString);
+      // Parsed to an object the previous JSON seed file.
+      const seedObject = JSON.parse( jsonString );
 
-    //Get current object seed from array to check if they have the same properties.
-    const objectFromArrayModelsIndex = arrayModels.findIndex( model => {
-      return seedObject.name === model.name
-    });
+      // Get current object seed from array to check if they have the same properties.
+      const objectFromArrayModelsIndex = arrayModels.findIndex( model => {
 
-    const objectFromArrayModels = arrayModels[objectFromArrayModelsIndex];
-    
-    //Get every property of the previous seed object on a new array.
-    const currentSeedProperties = seedObject.properties_seeds.map( prop => {
-      return Object.keys(prop)[0];
-    });
+        return seedObject.name === model.name;
 
-    //Get every property of the current seed object on a new array.
-    const currentModelProperties = objectFromArrayModels.properties_seeds.map( prop => {
-      return Object.keys(prop)[0];
-    });
-
-
-    (function addNewPropertiesToTheSeedJSONModels() {
-      
-      //Get an array of all the properties that have to be added to the seed model.
-      const newPropertiesToWrite = currentModelProperties.filter(val => {
-        return !currentSeedProperties.includes(val);
       });
-      
-      
-      if(newPropertiesToWrite.length > 0) {
-        
-        //Get current model from main array.
-        let current = arrayModels[objectFromArrayModelsIndex];
 
-        //Create an object to be added to the curretn properties_seeds on the seed model.
-        let newPropertiesObject = newPropertiesToWrite.map( prop => { 
-          return {[prop] : ""} 
+      const objectFromArrayModels = arrayModels[objectFromArrayModelsIndex];
+
+      // Get every property of the previous seed object on a new array.
+      const currentSeedProperties = seedObject.properties_seeds.map( prop => {
+
+        return Object.keys( prop )[0];
+
+      });
+
+      // Get every property of the current seed object on a new array.
+      const currentModelProperties = objectFromArrayModels
+      .properties_seeds.map( prop => { // eslint-disable-line camelcase
+
+        return Object.keys( prop )[0];
+
+      });
+
+
+      ( function addNewPropertiesToTheSeedJSONModels() {
+
+      // Get an array of all the properties that have to be added to the seed model.
+        const newPropertiesToWrite = currentModelProperties.filter( val => {
+
+          return !currentSeedProperties.includes( val );
+
         });
-        
-        //Added all new properties to the current JSON model that will be re-write.
-        current.properties_seeds = [ ...newPropertiesObject, ...seedObject.properties_seeds ];
-        current.hasToBeModifiedOrAdded = true;
-      }
-
-    })();
 
 
-    (function deleteLeftoverPropertiesFromSeedJSONModels() {
-      //Get an array of all the properties that have to be deleted from the seed model.
-      const leftoverPropertiesToDelete = currentSeedProperties.filter(val => {
-        return !currentModelProperties.includes(val);
-      });
+        if ( newPropertiesToWrite.length > 0 ) {
+
+          // Get current model from main array.
+          let current = arrayModels[objectFromArrayModelsIndex];
+
+          // Create an object to be added to the curretn properties_seeds on the seed model.
+          let newPropertiesObject = newPropertiesToWrite.map( prop => {
+
+            return { [prop]: '' };
+
+          });
+
+          // Added all new properties to the current JSON model that will be re-write.
+          // eslint-disable-next-line camelcase
+          current.properties_seeds = [
+            ...newPropertiesObject, ...seedObject.properties_seeds,
+          ];
+          current.hasToBeModifiedOrAdded = true;
+
+        }
+
+      })();
 
 
-      if(leftoverPropertiesToDelete.length > 0) {
+      ( function deleteLeftoverPropertiesFromSeedJSONModels() {
 
-        //Get current model from main array.
-        let current = arrayModels[objectFromArrayModelsIndex];
+        // Get an array of all the properties that have to be deleted from the seed model.
+        const leftoverPropertiesToDelete = currentSeedProperties
+          .filter( val => !currentModelProperties.includes( val ) );
 
-        leftoverPropertiesToDelete.forEach( prop => {
-          let indexToDelete;
 
-          seedObject.properties_seeds.forEach((currentPropObject, i) => {
-            
-            if(Object.keys(currentPropObject)[0] === prop)
-              indexToDelete = i;
-          
+        if ( leftoverPropertiesToDelete.length > 0 ) {
+
+          // Get current model from main array.
+          let current = arrayModels[objectFromArrayModelsIndex];
+
+          leftoverPropertiesToDelete.forEach( prop => {
+
+            let indexToDelete;
+
+            seedObject.properties_seeds.forEach( ( currentPropObject, i ) => {
+
+              if ( Object.keys( currentPropObject )[0] === prop )
+                indexToDelete = i;
+
             });
 
-          //Delete the property fro the property seed array of the current seed model.
-          seedObject.properties_seeds.splice(indexToDelete, 1);
+            // Delete the property fro the property seed array of the current seed model.
+            seedObject.properties_seeds.splice( indexToDelete, 1 );
 
-          indexToDelete = null;
+            indexToDelete = null;
 
-        })
-        
-        current.properties_seeds = [ ...seedObject.properties_seeds ];
-        current.hasToBeModifiedOrAdded = true;
-        
-      }
-    })();
-    
+          });
 
-  })
-  .then(files => cb(null))
-  .catch(err => {
-    console.log('Error reading files:', err.message);
-    cb(err);
+          // eslint-disable-next-line camelcase
+          current.properties_seeds = [...seedObject.properties_seeds];
+          current.hasToBeModifiedOrAdded = true;
+
+        }
+
+      })();
+
+
+    })
+  .then( files => cb( null ) )
+  .catch( err => {
+
+    console.log( 'Error reading files:', err.message );
+    cb( err );
+
   });
 
 }
@@ -301,34 +347,40 @@ function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
  * the ones that have unnecesary properties (for example, properties that not longer
  * exists on the main Loopback model of a given seed model).
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback to keep the flow on all the 
+ * @param {callback} cb - The next callback to keep the flow on all the
  * <b>prepare process</b> on the file.
- * 
+ *
  */
-function writeRemainingJSONFiles(cb) {
-  let each = require('async').each;
-  const remainingJSONs = arrayModels.filter(model => model.hasToBeModifiedOrAdded);
+function writeRemainingJSONFiles( cb ) {
 
-  //Removed hasToBeModifiedOrAdded property to not write it on the JSON Seed files.
-  remainingJSONs.forEach(json => delete json.hasToBeModifiedOrAdded);
+  let each = require( 'async' ).each;
+  const remainingJSONs = arrayModels
+    .filter( model => model.hasToBeModifiedOrAdded );
 
-  const jsonfile = require('jsonfile')
+  // Removed hasToBeModifiedOrAdded property to not write it on the JSON Seed files.
+  remainingJSONs.forEach( json => delete json.hasToBeModifiedOrAdded );
 
-  each(remainingJSONs, (json, eachCallback) => {
-    
-    let file = `.${seedsDirectory}seed-${json.filename}`
-    let obj = json
+  const jsonfile = require( 'jsonfile' );
 
-    jsonfile.writeFile(file, obj, { spaces: 2 }, function (err) {
-      if (err) eachCallback(err);
+  each( remainingJSONs, ( json, eachCallback ) => {
+
+    let file = `.${seedsDirectory}seed-${json.filename}`;
+    let obj = json;
+
+    jsonfile.writeFile( file, obj, { spaces: 2 }, function( err ) {
+
+      if ( err ) eachCallback( err );
       eachCallback();
-    })
+
+    });
 
   }, err => {
-    if (err) cb(err);
-    else cb(null);
 
-  })
+    if ( err ) cb( err );
+    else cb( null );
+
+  });
+
 }
 
 module.exports = bootstrapFuction;

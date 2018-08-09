@@ -1,5 +1,6 @@
 {
   "env": {
+      "es6": true,
       "node": true,
       "commonjs": true
   },
@@ -27,6 +28,6 @@
       "no-unused-vars": ["error", {"args": "none"}]
   },
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2018
   }
 }
