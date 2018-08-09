@@ -1,5 +1,5 @@
 'use strict';
 
-module.exports = function(Bodyareaexercisedetail) {
+module.exports = function( Bodyareaexercisedetail ) {
 
 };

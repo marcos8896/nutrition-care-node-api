@@ -23,7 +23,8 @@
       "no-multiple-empty-lines": ["error", { "max": 3, "maxEOF": 1 }],
       "object-curly-spacing": ["error", "always"],
       "space-in-parens": [2, "always", { "exceptions": ["empty", "{}"] }],
-      "padded-blocks": ["error", { "blocks": "always" }]
+      "padded-blocks": ["error", { "blocks": "always" }],
+      "no-unused-vars": ["error", {"args": "none"}]
   },
   "parserOptions": {
     "ecmaVersion": 2017
