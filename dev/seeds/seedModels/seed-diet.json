@@ -17,5 +17,6 @@
     {
       "total_calories": "{{random.number({\"min\":1700, \"max\":4000, \"precision\": 0.001})}}"
     }
-  ]
+  ],
+  "base": "PersistedModel"
 }
