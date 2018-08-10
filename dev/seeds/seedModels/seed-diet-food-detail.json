@@ -20,5 +20,6 @@
     {
       "description": "{{commerce.product}}"
     }
-  ]
+  ],
+  "base": "PersistedModel"
 }

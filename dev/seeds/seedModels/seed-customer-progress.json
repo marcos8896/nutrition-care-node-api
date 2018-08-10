@@ -20,5 +20,6 @@
     {
       "height": "{{random.number({\"min\":1.40, \"max\":2.30, \"precision\": 0.01})}}"
     }
-  ]
+  ],
+  "base": "PersistedModel"
 }

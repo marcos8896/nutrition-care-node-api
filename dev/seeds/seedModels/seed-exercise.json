@@ -8,5 +8,6 @@
     {
       "src_image": "{{internet.url}}"
     }
-  ]
+  ],
+  "base": "PersistedModel"
 }

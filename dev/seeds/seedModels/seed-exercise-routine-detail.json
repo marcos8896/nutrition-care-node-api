@@ -14,5 +14,6 @@
     {
       "day": "LUNES"
     }
-  ]
+  ],
+  "base": "PersistedModel"
 }

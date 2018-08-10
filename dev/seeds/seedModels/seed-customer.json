@@ -17,5 +17,6 @@
     {
       "password": "{{random.alphaNumeric}}"
     }
-  ]
+  ],
+  "base": "User"
 }
