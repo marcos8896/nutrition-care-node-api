@@ -107,11 +107,14 @@ function getModelsContentFromJSONs( cb ) {
 
       if ( err ) throw err;
 
+      const parsedObject = JSON.parse( contents );
+
       let json = {
         filename,
-        name: JSON.parse( contents ).name,
-        // eslint-disable-next-line camelcase
-        properties_seeds: Object.keys( JSON.parse( contents ).properties ),
+        name: parsedObject.name,
+         // eslint-disable-next-line camelcase
+        properties_seeds: Object.keys( parsedObject.properties ),
+        base: parsedObject.base,
       };
 
       arrayModels.push( json );
@@ -293,9 +296,42 @@ function keepPropetiesFromJSONSeedModelsUpToDate( cb ) {
 
       ( function deleteLeftoverPropertiesFromSeedJSONModels() {
 
+        const BASE_MODEL_PROTECTED_PROPERTIES = {
+          'User': ['email', 'password'],
+        };
+
         // Get an array of all the properties that have to be deleted from the seed model.
         const leftoverPropertiesToDelete = currentSeedProperties
-          .filter( val => !currentModelProperties.includes( val ) );
+        .filter( val => {
+
+          const baseModelKeys = Object.keys(
+            BASE_MODEL_PROTECTED_PROPERTIES
+          );
+
+          const baseModelIsIncluded = baseModelKeys
+            .includes( seedObject.base );
+
+          let isProtectedProperty = false;
+          let i = 0;
+
+          while ( baseModelIsIncluded && i < baseModelKeys.length ) {
+
+            if ( val === baseModelKeys[i] ) {
+
+              isProtectedProperty = true;
+              break;
+
+            }
+
+            i = i + 1;
+
+          }
+
+          return !currentModelProperties.includes( val ) &&
+                 isProtectedProperty &&
+                 baseModelIsIncluded;
+
+        });
 
 
         if ( leftoverPropertiesToDelete.length > 0 ) {
