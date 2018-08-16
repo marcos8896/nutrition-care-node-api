@@ -3,19 +3,22 @@
   "name": "Diet",
   "properties_seeds": [
     {
+      "registerDate": "{{date.past}}"
+    },
+    {
       "description": "{{commerce.product}} - {{commerce.product}} - {{commerce.product}}"
     },
     {
-      "total_carbohydrates": "{{random.number({\"min\":100, \"max\":400, \"precision\": 0.001})}}"
+      "totalCarbohydrates": "{{random.number({\"min\":100, \"max\":400, \"precision\": 0.001})}}"
     },
     {
-      "total_proteins": "{{random.number({\"min\":100, \"max\":150, \"precision\": 0.001})}}"
+      "totalProteins": "{{random.number({\"min\":100, \"max\":150, \"precision\": 0.001})}}"
     },
     {
-      "total_fats": "{{random.number({\"min\":50, \"max\":200, \"precision\": 0.001})}}"
+      "totalFats": "{{random.number({\"min\":50, \"max\":200, \"precision\": 0.001})}}"
     },
     {
-      "total_calories": "{{random.number({\"min\":1700, \"max\":4000, \"precision\": 0.001})}}"
+      "totalCalories": "{{random.number({\"min\":1700, \"max\":4000, \"precision\": 0.001})}}"
     }
   ],
   "base": "PersistedModel"
