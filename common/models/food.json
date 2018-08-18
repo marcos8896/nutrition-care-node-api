@@ -2,6 +2,7 @@
   "name": "Food",
   "base": "PersistedModel",
   "idInjection": true,
+  "plural": "Foods",
   "options": {
     "validateUpsert": true
   },
