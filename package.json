@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
-    "node": ">=4"
+    "node": ">=8"
   },
   "scripts": {
     "lint": "eslint .",
@@ -13,7 +13,8 @@
     "migrations:update": "node server/migrations/update",
     "seeds:static-roles": "node common/roles/create-users-roles",
     "seeds": "node dev/seeds/execute-seeds",
-    "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json"
+    "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json",
+    "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds"
   },
   "dependencies": {
     "compression": "^1.0.3",

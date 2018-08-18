@@ -10,33 +10,37 @@
       "type": "string",
       "required": true
     },
-    "total_carbohydrates": {
+    "totalCarbohydrates": {
       "type": "number",
       "required": true,
       "dataType": "decimal",
       "precision": 10,
       "scale": 4
     },
-    "total_proteins": {
+    "totalProteins": {
       "type": "number",
       "required": true,
       "dataType": "decimal",
       "precision": 10,
       "scale": 4
     },
-    "total_fats": {
+    "totalFats": {
       "type": "number",
       "required": true,
       "dataType": "decimal",
       "precision": 10,
       "scale": 4
     },
-    "total_calories": {
+    "totalCalories": {
       "type": "number",
       "required": true,
       "dataType": "decimal",
       "precision": 10,
       "scale": 4
+    },
+    "registerDate": {
+      "type": "date",
+      "required": true
     }
   },
   "validations": [],
