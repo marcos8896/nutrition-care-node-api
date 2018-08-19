@@ -56,6 +56,18 @@
       "foreignKey": ""
     }
   },
+  "mixins": {
+    "TimeStamp" : {
+      "createdAt" : "createdAt",
+      "updatedAt" : "updatedAt",
+      "required" : false,
+      "validateUpsert": true
+    },
+    "ReadOnly" : {
+      "createdAt" : true,
+      "updatedAt" : true
+    }
+  },
   "acls": [],
   "methods": {}
 }
