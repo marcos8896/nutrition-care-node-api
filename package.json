@@ -28,6 +28,7 @@
     "loopback-component-explorer": "^5.0.0",
     "loopback-component-visualizer": "^1.2.1",
     "loopback-connector-mysql": "^2.4.1",
+    "loopback-ds-readonly-mixin": "^2.0.4",
     "loopback-ds-timestamp-mixin": "^3.4.1",
     "mkdirp": "^0.5.1",
     "node-readfiles": "^0.2.0",
