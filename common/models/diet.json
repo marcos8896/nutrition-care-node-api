@@ -56,6 +56,12 @@
       "foreignKey": ""
     }
   },
+  "mixins": {
+    "TimeStamp" : {
+      "required" : false,
+      "validateUpsert": true
+    }
+  },
   "acls": [],
   "methods": {}
 }
