@@ -37,10 +37,6 @@
       "dataType": "decimal",
       "precision": 10,
       "scale": 4
-    },
-    "registerDate": {
-      "type": "date",
-      "required": true
     }
   },
   "validations": [],
