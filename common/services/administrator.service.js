@@ -43,6 +43,22 @@ class AdministratorService {
 
   }
 
+  /**
+   * type' property will be added to the instance (user) that will be
+   * returned in the login request. With 'type' property, the client
+   * application will know which type of user is loggin in.
+   *
+   * @author Brandon Emmanuel Villa Cárdenas <bornofos@gmail.com>
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+   *
+   */
+  static afterRemoteFindById( ctx, user, next ) {
+
+    user.type = CONSTANTS_ROLES.ADMIN;
+    next();
+
+  }
+
 }
 
 module.exports = AdministratorService;

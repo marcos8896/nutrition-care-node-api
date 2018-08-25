@@ -10,7 +10,7 @@
       "type": "string",
       "required": true
     },
-    "last_name": {
+    "lastName": {
       "type": "string",
       "required": true
     },

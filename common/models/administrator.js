@@ -14,4 +14,8 @@ module.exports = function( Administrator ) {
     'login', AdministratorService.afterRemoteLogin
   );
 
+  Administrator.afterRemote(
+    'findById', AdministratorService.afterRemoteFindById
+  );
+
 };
