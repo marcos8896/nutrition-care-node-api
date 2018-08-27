@@ -96,7 +96,7 @@
       "principalId": "$owner",
       "permission": "ALLOW",
       "property": "findById"
-    },
+    }
 
   ],
   "methods": {}
