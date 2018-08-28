@@ -9,7 +9,7 @@
       "email": "{{internet.email}}"
     },
     {
-      "last_name": "{{name.lastName}}"
+      "lastName": "{{name.lastName}}"
     },
     {
       "type": "REGULAR"

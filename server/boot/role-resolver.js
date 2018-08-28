@@ -50,5 +50,39 @@ module.exports = app => {
 
   });
 
+  /**
+   * This role resolver checks if the current
+   * user is a customer and if so, then it proceeds to verifies
+   * if that customer is a regular one.
+   *
+   * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+   *
+   */
+  Role.registerResolver( 'regular', ( _, context, cb ) => {
+
+    function reject() {
+
+      process.nextTick( () => cb( null, false ) );
+
+    }
+
+    // Do not allow anonymous users.
+    const userId = context.accessToken.userId;
+    if ( !userId ) return reject();
+
+    app.models.Customer.findById( userId )
+      .then( customer => {
+
+        // Check if the current user is a REGULAR customer.
+        if ( customer.type === CONSTANTS_ROLES.CUSTOMER.REGULAR )
+          return cb( null, true );
+        else
+          return reject();
+
+      })
+      .catch( err => reject() );
+
+  });
+
 };
 
