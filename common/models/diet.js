@@ -1,6 +1,8 @@
 'use strict';
 
-module.exports = function( Diet ) {
+const DietService = require( '../services/diet.service' );
+
+module.exports = Diet => {
 
   // Validations
   Diet.validatesLengthOf(
@@ -12,5 +14,12 @@ module.exports = function( Diet ) {
              '250 caracteres.',
       },
     });
+
+  Diet.fullDietRegistration = DietService.fullDietRegistration.remoteMethod;
+
+  Diet.remoteMethod(
+    'fullDietRegistration',
+    DietService.fullDietRegistration.remoteMethodOptions,
+  );
 
 };
