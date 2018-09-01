@@ -64,7 +64,7 @@ const fullDietRegistration = async ( diet, dietDetails ) => {
     try {
 
       // Attempts to rollback all the changes (it could cause an error itself
-      // which is way it is required another try/catch).
+      // which is why it is required another try/catch).
       await transaction.rollback();
       return error;
 
