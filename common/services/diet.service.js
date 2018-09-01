@@ -8,7 +8,7 @@
  * @module DietService
  */
 
-
+const app = require( '../../server/server' );
 
 /**
  * Receives a new diet model as first param and its diet details as a second param,
@@ -18,14 +18,64 @@
  * @param {Object[]} dietDetails An array with all the dietDetails objects that have to be
  * related with the main diet object.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @param {callback} cb - The next callback
- * @async
  * @returns
  */
-const remoteMethodFullDietRegistration = async ( diet, dietDetails, cb ) => {
+const fullDietRegistration = async ( diet, dietDetails ) => {
 
-  return { exampleId: 0 };
-    // return cb( null);
+  const { Diet, Diet_Food_Detail } = app.models; //eslint-disable-line
+
+  let transaction;
+
+  try {
+
+    // Creates low level Loopback transaction.
+    transaction = await Diet.beginTransaction({
+      isolationLevel: Diet.Transaction.REPEATABLE_READ,
+    });
+
+    // Sets transaction options.
+    const options = { transaction };
+
+    // Gets the registeredDiet id.
+    const registeredDiet = await Diet.create( diet, options );
+    const { id } = registeredDiet;
+
+    // Sets the registeredDiet id to every single dietDetails.
+    const dietDetailsWithId = dietDetails.map( item => {
+
+      return { ...item, dietId: id  };
+
+    });
+
+    // Creates all the Diet_Food_Detail records.
+    await Diet_Food_Detail.create( dietDetailsWithId, options ); //eslint-disable-line
+
+    // Attempts to commit all the changes.
+    await transaction.commit();
+
+    // Returns the dietId to the client.
+    return { dietId: id };
+
+
+  } catch ( error ) {
+
+    console.log( 'error: ', error );
+
+    try {
+
+      // Attempts to rollback all the changes (it could cause an error itself
+      // which is way it is required another try/catch).
+      await transaction.rollback();
+      return error;
+
+    } catch ( seriousError ) {
+
+      console.log( 'seriousError: ', seriousError );
+      return seriousError;
+
+    }
+
+  }
 
 };
 
@@ -52,12 +102,16 @@ const fullDietRegistrationOptions = {
     path: '/fullDietRegistration',
     verb: 'post',
   },
+  description: [
+    'Receives a new diet model as first param and its diet details ',
+    'as a second paramcreates them on the database',
+  ],
 };
 
 module.exports = {
 
   fullDietRegistration: {
-    remoteMethod: remoteMethodFullDietRegistration,
+    remoteMethod: fullDietRegistration,
     remoteMethodOptions: fullDietRegistrationOptions,
   },
 
