@@ -14,7 +14,8 @@
     "seeds:static-roles": "node common/roles/create-users-roles",
     "seeds": "node dev/seeds/execute-seeds",
     "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json",
-    "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds"
+    "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds",
+    "test": "jest --watch"
   },
   "dependencies": {
     "compression": "^1.0.3",
@@ -48,6 +49,7 @@
     "faker": "^4.1.0",
     "figlet": "^1.2.0",
     "inquirer": "^6.0.0",
+    "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
     "node-emoji": "^1.8.1",
     "nsp": "^2.1.0"
