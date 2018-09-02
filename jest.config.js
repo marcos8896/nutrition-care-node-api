@@ -135,6 +135,8 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!loopback-boot)',
   ],
+
+  'testPathIgnorePatterns': ['server'],
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
