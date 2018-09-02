@@ -127,7 +127,14 @@ module.exports = {
   // The test environment that will be used for testing
   testEnvironment: 'node',
 
-
+  // This lines are required due to Jest and Loopback incompatibility
+  // https://github.com/strongloop/loopback/issues/3204
+  transform: {
+    '^.+\\.js$': '<rootDir>/preprocessor.js',
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!loopback-boot)',
+  ],
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
