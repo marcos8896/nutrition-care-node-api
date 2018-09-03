@@ -2,15 +2,20 @@
 
 This project is meant to be the replacement for the old backend version that was made on PHP with the Laravel Framework.
 ___
-#### Required Enviroment Variables
+#### Required Environment Variables
 
-| ENV VARIABLE | Description |  Example |
+| DATABASE ENV VARIABLES | Description |  Example |
 | ------ | ------ | ------ | 
 | DB_USER | Database's user with enough privileges for the main database | DB_USER=user |
 | DB_PASSWORD | User's password for the main database | DB_PASSWORD=secret |
-| DB_HOST | Host where the main database is | DB_HOST=127.0.0.1 |
+| DB_HOST | Host where the main database is located | DB_HOST=127.0.0.1 |
 | DB_PORT | Port where the main database is listening to | DB_PORT=3306 |
 | DB_NAME | Main database's name | DB_NAME=mydb |
+
+| TEST ENV VARIABLES | Description |  Example |
+| ------ | ------ | ------ | 
+| TEST_API_PORT | Test API PORT to use for integration tests | TEST_API_PORT=8089 |
+| TEST_API_HOST | The host to handl the test API | TEST_API_HOST=127.0.0.1 |
 
 ###### NOTE: The DBMS used on this project is MySQL
 
