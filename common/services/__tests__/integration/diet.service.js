@@ -13,8 +13,9 @@ const app = require( '../../../../server/server' );
 jest.unmock( 'axios' );
 
 let server, seedModels;
+
 const testingPort = process.env.TEST_API_PORT;
-const baseURL = `http://localhost:${testingPort}/api`;
+const baseURL = `http://${process.env.TEST_API_HOST}:${testingPort}/api`;
 
 const axiosOptions = {
   baseURL: baseURL,
