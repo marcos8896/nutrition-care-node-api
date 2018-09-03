@@ -8,6 +8,10 @@ const {
   findSeedModel,
 } = require( '../../../../dev/testing/fixtures-utils' );
 
+const {
+  resetTables,
+} = require( '../../../../dev/testing/database-utils' );
+
 const app = require( '../../../../server/server' );
 
 jest.unmock( 'axios' );
@@ -32,18 +36,19 @@ beforeAll( async () => {
 
 });
 
-beforeEach( function( done ) {
+beforeEach( done => {
 
   server = app.listen( done );
 
 });
 
-afterEach( function( done ) {
+afterEach( async () => {
 
-  server.close( done );
+  await resetTables( app.dataSources.mysql_ds, ['Diet', 'Diet_Food_Detail'] );
+  server.close();
+
 
 });
-
 
 describe( 'fullDietRegistration endpoint', () => {
 
