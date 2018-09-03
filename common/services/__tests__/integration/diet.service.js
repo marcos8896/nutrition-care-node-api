@@ -36,22 +36,16 @@ beforeAll( async () => {
 
 });
 
-beforeEach( done => {
-
-  server = app.listen( done );
-
-});
+beforeEach( done => server = app.listen( done ) );
 
 afterEach( async () => {
 
   await resetTables( app.dataSources.mysql_ds, ['Diet', 'Diet_Food_Detail'] );
   server.close();
 
-
 });
 
 describe( 'fullDietRegistration endpoint', () => {
-
 
   let dietSeedModel, dietSeedDetails;
 
@@ -62,18 +56,23 @@ describe( 'fullDietRegistration endpoint', () => {
 
   });
 
-  it( 'it should not be able to registered a new diet without being authenticated', async () => {
+  // eslint-disable-next-line max-len
+  it( 'it should not be able to registered a new diet' + 'without being authenticated', async () => {
 
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
 
-    const response = await apiUnauth.post( '/Diets/fullDietRegistration', { diet, dietDetails })
-     .catch( e => e.response );
+    const response = await apiUnauth.post(
+      '/Diets/fullDietRegistration',
+      { diet, dietDetails }
+    )
+      .catch( e => e.response );
 
     expect( response.status ).toBe( 401 );
 
   });
 
+  // eslint-disable-next-line max-len
   it( 'it should register a new customer user and create a diet with his token', async () => {
 
     const customerSeeModel = findSeedModel( seedModels, 'Customer' );
@@ -88,7 +87,6 @@ describe( 'fullDietRegistration endpoint', () => {
       password: customer.password,
     });
     // .catch( err => console.log( err.response.data.error ) );
-
 
     const apiAuth = axios.create({
       ...axiosOptions,
