@@ -48,7 +48,7 @@ afterEach( async () => {
 
 });
 
-const createAuthenticatedUser = async () => {
+const createAuthenticatedCustomer = async () => {
 
   const customerSeeModel = findSeedModel( seedModels, 'Customer' );
   const customer = getFakeModelsArray( customerSeeModel, 1 )[0];
@@ -67,7 +67,7 @@ const createAuthenticatedUser = async () => {
   });
 
   return {
-    user: customer,
+    customer: { ...customer, id: loginResponse.data.userId },
     credentials: loginResponse.data,
   };
 
@@ -121,9 +121,10 @@ describe( 'fullDietRegistration endpoint', () => {
   // eslint-disable-next-line max-len
   it( 'it should register a new customer user and create a diet with his token', async () => {
 
-    const { Diet, Diet_Food_Detail, Customer } = app.models;// eslint-disable-line camelcase
+    // eslint-disable-next-line camelcase
+    const { Diet, Diet_Food_Detail, Customer } = app.models;
 
-    const { user, credentials } = await createAuthenticatedUser();
+    const { credentials } = await createAuthenticatedCustomer();
 
     // .catch( err => console.log( err.response.data.error ) );
     const apiAuth = createApiAuth( credentials.id );
@@ -139,20 +140,31 @@ describe( 'fullDietRegistration endpoint', () => {
     expect( await Diet.findById( dietId ) ).toBeDefined();
     expect( await Customer.count() ).toBe( 1 );
     expect( await Diet.count() ).toBe( 1 );
-    expect( await Diet_Food_Detail.count() ).toBe( 2 );
-
-
-    console.log( 'data: ', response.data );
-
-    // const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
-    // const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
-
-    // const response = await apiUnauth.post( endpoint, { diet, dietDetails })
-    //  .catch( e => e.response );
-
-    // expect( response.status ).toBe( 401 );
+    expect( await Diet_Food_Detail.count() ).toBe( 2 );// eslint-disable-line camelcase
 
   });
+
+  // eslint-disable-next-line max-len
+  // it( 'it should register a new diet related with a customer', async () => {
+
+  //   // eslint-disable-next-line camelcase
+  //   const { Diet, Diet_Food_Detail, Customer } = app.models;
+
+  //   const { customer, credentials } = await createAuthenticatedCustomer();
+  //   // .catch( err => console.log( err.response.data.error ) );
+  //   const apiAuth = createApiAuth( credentials.id );
+
+  //   const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
+  //   const dietDetails = getFakeModelsArray( dietSeedDetails, 10 );
+
+  //   const response = await apiAuth
+  //     .post( '/Diets/fullDietRegistration', { diet, dietDetails });
+
+  //   const dietId = response.data.dietId;
+
+  //   expect( await Diet.findById( dietId ).customerId ).toBe( customer.id );
+
+  // });
 
 
 });
