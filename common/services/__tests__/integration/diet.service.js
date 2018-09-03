@@ -30,6 +30,8 @@ const axiosOptions = {
 
 const apiUnauth = axios.create( axiosOptions );
 
+//---------------------------------------------------------------------
+
 beforeAll( async () => {
 
   seedModels = await getModelsSeeds();
@@ -38,12 +40,51 @@ beforeAll( async () => {
 
 beforeEach( done => server = app.listen( done ) );
 
+
 afterEach( async () => {
 
-  await resetTables( app.dataSources.mysql_ds, ['Diet', 'Diet_Food_Detail'] );
+  await resetTables( app.dataSources.mysql_ds, ['Diet', 'Diet_Food_Detail', 'Customer'] );
   server.close();
 
 });
+
+const createAuthenticatedUser = async () => {
+
+  const customerSeeModel = findSeedModel( seedModels, 'Customer' );
+  const customer = getFakeModelsArray( customerSeeModel, 1 )[0];
+
+    // Create new customer user.
+  await apiUnauth.post( '/Customers', customer )
+      .catch( err => {
+
+        throw err;
+
+      });
+
+  const loginResponse = await apiUnauth.post( '/Customers/login', {
+    email: customer.email,
+    password: customer.password,
+  });
+
+  return {
+    user: customer,
+    credentials: loginResponse.data,
+  };
+
+};
+
+const createApiAuth = ( userToken ) => {
+
+  return axios.create({
+    ...axiosOptions,
+    headers: {
+      ...axiosOptions.headers,
+      'Authorization': userToken,
+    },
+  });
+
+};
+
 
 describe( 'fullDietRegistration endpoint', () => {
 
@@ -80,32 +121,26 @@ describe( 'fullDietRegistration endpoint', () => {
   // eslint-disable-next-line max-len
   it( 'it should register a new customer user and create a diet with his token', async () => {
 
-    const customerSeeModel = findSeedModel( seedModels, 'Customer' );
-    const customer = getFakeModelsArray( customerSeeModel, 1 )[0];
+    const { Diet, Diet_Food_Detail, Customer } = app.models;// eslint-disable-line camelcase
 
-    // Create new customer user.
-    await apiUnauth.post( '/Customers', customer )
-      .catch( err => console.log( err.response.data.error ) );
+    const { user, credentials } = await createAuthenticatedUser();
 
-    const loginResponse = await apiUnauth.post( '/Customers/login', {
-      email: customer.email,
-      password: customer.password,
-    });
     // .catch( err => console.log( err.response.data.error ) );
-
-    const apiAuth = axios.create({
-      ...axiosOptions,
-      headers: {
-        ...axiosOptions.headers,
-        'Authorization': loginResponse.data.id,
-      },
-    });
+    const apiAuth = createApiAuth( credentials.id );
 
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
 
     const response = await apiAuth
       .post( '/Diets/fullDietRegistration', { diet, dietDetails });
+
+    const dietId = response.data.dietId;
+
+    expect( await Diet.findById( dietId ) ).toBeDefined();
+    expect( await Customer.count() ).toBe( 1 );
+    expect( await Diet.count() ).toBe( 1 );
+    expect( await Diet_Food_Detail.count() ).toBe( 2 );
+
 
     console.log( 'data: ', response.data );
 
