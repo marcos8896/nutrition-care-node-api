@@ -57,7 +57,9 @@ describe( 'fullDietRegistration endpoint', () => {
   });
 
   // eslint-disable-next-line max-len
-  it( 'it should not be able to registered a new diet' + 'without being authenticated', async () => {
+  it( 'it should not be able to registered a new diet without being authenticated', async () => {
+
+    const { Diet, Diet_Food_Detail } = app.models;// eslint-disable-line camelcase
 
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
@@ -69,6 +71,9 @@ describe( 'fullDietRegistration endpoint', () => {
       .catch( e => e.response );
 
     expect( response.status ).toBe( 401 );
+
+    expect( await Diet.count() ).toBe( 0 );
+    expect( await Diet_Food_Detail.count() ).toBe( 0 );// eslint-disable-line camelcase
 
   });
 
