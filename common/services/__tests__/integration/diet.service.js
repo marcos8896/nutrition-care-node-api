@@ -6,9 +6,9 @@ const {
   getModelsSeeds,
   getFakeModelsArray,
   findSeedModel,
-} = require( '../../../dev/testing/fixtures-utils' );
+} = require( '../../../../dev/testing/fixtures-utils' );
 
-const app = require( '../../../server/server' );
+const app = require( '../../../../server/server' );
 
 jest.unmock( 'axios' );
 
