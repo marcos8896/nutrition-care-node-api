@@ -10,12 +10,17 @@ ___
 | DB_PASSWORD | User's password for the main database | DB_PASSWORD=secret |
 | DB_HOST | Host where the main database is located | DB_HOST=127.0.0.1 |
 | DB_PORT | Port where the main database is listening to | DB_PORT=3306 |
-| DB_NAME | Main database's name | DB_NAME=mydb |
+| DB_NAME | Main database name | DB_NAME=mydb |
 
 | TEST ENV VARIABLES | Description |  Example |
 | ------ | ------ | ------ | 
 | TEST_API_PORT | Test API PORT to use for integration tests | TEST_API_PORT=8089 |
-| TEST_API_HOST | The host to handl the test API | TEST_API_HOST=127.0.0.1 |
+| TEST_API_HOST | The host to handle the test API | TEST_API_HOST=127.0.0.1 |
+| TEST_DB_USER | Testing database user with enough privileges for the testing database | TEST_DB_USER=127.0.0.1 |
+| TEST_DB_PASSWORD | User's password for the testing database | TEST_DB_PASSWORD=secret |
+| TEST_DB_HOST | Host where the testing database is located | TEST_DB_HOST=127.0.0.1 |
+| TEST_DB_PORT | Port where the testing database is listening to | DB_PORT=3306 |
+| TEST_DB_NAME | Database testing name | DB_NAME=mydb_test |
 
 ###### NOTE: The DBMS used on this project is MySQL
 
