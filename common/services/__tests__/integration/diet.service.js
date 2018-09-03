@@ -67,7 +67,7 @@ const createAuthenticatedCustomer = async () => {
   });
 
   return {
-    customer: { ...customer, id: loginResponse.data.userId },
+    customer: { ...customer, id: parseInt( loginResponse.data.userId ) },
     credentials: loginResponse.data,
   };
 
@@ -119,17 +119,15 @@ describe( 'fullDietRegistration endpoint', () => {
   });
 
   // eslint-disable-next-line max-len
-  it( 'it should register a new customer user and create a diet with his token', async () => {
+  it( 'it should register a new customer user and create a diet with the customer token', async () => {
 
     // eslint-disable-next-line camelcase
-    const { Diet, Diet_Food_Detail, Customer } = app.models;
-
-    const { credentials } = await createAuthenticatedCustomer();
-
-    // .catch( err => console.log( err.response.data.error ) );
+    const { Diet, Diet_Food_Detail } = app.models;
+    const { customer, credentials } = await createAuthenticatedCustomer();
     const apiAuth = createApiAuth( credentials.id );
 
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
+    diet.customerId = customer.id;
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
 
     const response = await apiAuth
@@ -137,34 +135,14 @@ describe( 'fullDietRegistration endpoint', () => {
 
     const dietId = response.data.dietId;
 
-    expect( await Diet.findById( dietId ) ).toBeDefined();
-    expect( await Customer.count() ).toBe( 1 );
+    const dietById =  await Diet.findById( dietId );
+
+    expect( dietById ).toBeDefined();
     expect( await Diet.count() ).toBe( 1 );
     expect( await Diet_Food_Detail.count() ).toBe( 2 );// eslint-disable-line camelcase
+    expect( dietById.customerId ).toEqual( customer.id );
 
   });
-
-  // eslint-disable-next-line max-len
-  // it( 'it should register a new diet related with a customer', async () => {
-
-  //   // eslint-disable-next-line camelcase
-  //   const { Diet, Diet_Food_Detail, Customer } = app.models;
-
-  //   const { customer, credentials } = await createAuthenticatedCustomer();
-  //   // .catch( err => console.log( err.response.data.error ) );
-  //   const apiAuth = createApiAuth( credentials.id );
-
-  //   const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
-  //   const dietDetails = getFakeModelsArray( dietSeedDetails, 10 );
-
-  //   const response = await apiAuth
-  //     .post( '/Diets/fullDietRegistration', { diet, dietDetails });
-
-  //   const dietId = response.data.dietId;
-
-  //   expect( await Diet.findById( dietId ).customerId ).toBe( customer.id );
-
-  // });
 
 
 });
