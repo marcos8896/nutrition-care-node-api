@@ -107,16 +107,23 @@ describe( 'fullDietRegistration endpoint', () => {
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
 
-    const response = await apiUnauth.post(
-      '/Diets/fullDietRegistration',
-      { diet, dietDetails }
-    )
-      .catch( e => e.response );
+    const [response, dietCount, dietDetailCount] = await Promise.all( [
+
+      apiUnauth.post(
+        '/Diets/fullDietRegistration',
+        { diet, dietDetails }
+      )
+      .catch( e => e.response ),
+
+      Diet.count(),
+
+      Diet_Food_Detail.count(), // eslint-disable-line camelcase
+
+    ] );
 
     expect( response.status ).toBe( 401 );
-
-    expect( await Diet.count() ).toBe( 0 );
-    expect( await Diet_Food_Detail.count() ).toBe( 0 );// eslint-disable-line camelcase
+    expect( dietCount ).toBe( 0 );
+    expect( dietDetailCount ).toBe( 0 );// eslint-disable-line camelcase
 
   });
 
