@@ -30,6 +30,8 @@ const axiosOptions = {
 
 const apiUnauth = axios.create( axiosOptions );
 
+const { Diet, Diet_Food_Detail } = app.models;// eslint-disable-line camelcase
+
 //---------------------------------------------------------------------
 
 beforeAll( async () => {
@@ -122,7 +124,6 @@ describe( 'fullDietRegistration endpoint', () => {
   it( 'it should register a new customer user and create a diet with the customer token', async () => {
 
     // eslint-disable-next-line camelcase
-    const { Diet, Diet_Food_Detail } = app.models;
     const { customer, credentials } = await createAuthenticatedCustomer();
     const apiAuth = createApiAuth( credentials.id );
 
@@ -141,6 +142,25 @@ describe( 'fullDietRegistration endpoint', () => {
     expect( await Diet.count() ).toBe( 1 );
     expect( await Diet_Food_Detail.count() ).toBe( 2 );// eslint-disable-line camelcase
     expect( dietById.customerId ).toEqual( customer.id );
+
+  });
+
+  it( 'it shouldn\'t register a diet without valid dietDetails', async () => {
+
+    // eslint-disable-next-line camelcase
+    const { customer, credentials } = await createAuthenticatedCustomer();
+    const apiAuth = createApiAuth( credentials.id );
+
+    const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
+    diet.customerId = customer.id;
+    const dietDetails = [{ invalid: 'record' }];
+
+    const response = await apiAuth
+      .post( '/Diets/fullDietRegistration', { diet, dietDetails })
+      .catch( err => err );
+
+    expect( await Diet.count() ).toBe( 0 );
+    expect( await Diet_Food_Detail.count() ).toBe( 0 );// eslint-disable-line camelcase
 
   });
 

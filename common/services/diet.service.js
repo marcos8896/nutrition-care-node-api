@@ -59,8 +59,6 @@ const fullDietRegistration = async ( diet, dietDetails ) => {
 
   } catch ( error ) {
 
-    console.log( 'error: ', error );
-
     try {
 
       // Attempts to rollback all the changes (it could cause an error itself
@@ -70,7 +68,6 @@ const fullDietRegistration = async ( diet, dietDetails ) => {
 
     } catch ( seriousError ) {
 
-      console.log( 'seriousError: ', seriousError );
       return seriousError;
 
     }
