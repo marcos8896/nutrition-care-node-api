@@ -79,7 +79,7 @@
       "principalType": "ROLE",
       "principalId": "regular",
       "permission": "ALLOW",
-      "property": "create"
+      "property": "fullDietRegistration"
     },
 
     {
@@ -87,7 +87,7 @@
       "principalType": "ROLE",
       "principalId": "premium",
       "permission": "ALLOW",
-      "property": "create"
+      "property": "fullDietRegistration"
     },
 
     {

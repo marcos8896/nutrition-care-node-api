@@ -46,7 +46,7 @@
       "precision": 10,
       "scale": 4
     },
-    "desired_grams": {
+    "desiredGrams": {
       "type": "number",
       "required": true,
       "dataType": "decimal",
