@@ -27,7 +27,8 @@
       "space-in-parens": [2, "always", { "exceptions": ["empty", "{}"] }],
       "padded-blocks": ["error", { "blocks": "always" }],
       "no-unused-vars": ["error", {"args": "none"}],
-      "max-len": ["error", { "code": 90 }]
+      "max-len": ["error", { "code": 90 }],
+      "camelcase": ["error", {"properties": "never"}]
   },
   "parserOptions": {
     "ecmaVersion": 2018
