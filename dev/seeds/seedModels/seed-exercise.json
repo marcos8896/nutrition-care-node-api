@@ -6,7 +6,7 @@
       "name": "{{lorem.words(3)}}"
     },
     {
-      "src_image": "{{internet.url}}"
+      "srcImage": "{{internet.url}}"
     }
   ],
   "base": "PersistedModel"
