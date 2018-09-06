@@ -3,16 +3,19 @@
   "name": "Administrator",
   "properties_seeds": [
     {
-      "id": ""
+      "id": "{{random.uuid}}"
     },
     {
-      "name": ""
+      "name": "{{name.firstName}}"
     },
     {
-      "last_name": ""
+      "email": "{{internet.email}}"
     },
     {
-      "type": ""
+      "lastName": "{{name.lastName}}"
+    },
+    {
+      "password": "{{internet.password}}"
     }
   ],
   "base": "User"
