@@ -27,22 +27,31 @@ const { BodyArea } = app.models;
 
 let server, seedModels, bodyAreaModel, port, baseURL;
 
+const resetCurrentModels = () => {
+
+  return resetTables(
+    app.dataSources.mysql_ds,
+    ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
+  );
+
+};
 //---------------------------------------------------------------------
 
 beforeAll( async () => {
 
-  port = await getFreePort();
-  baseURL = getBaseURLWithPort( port );
-
-  const [models] = await Promise.all( [
+  const [availablePort, allModelSeeds] = await Promise.all( [
+    getFreePort(),
     getModelsSeeds(),
-    resetTables(
-      app.dataSources.mysql_ds,
-      ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
-    ),
+    createTestingDatabase(),
   ] );
 
-  seedModels = models;
+  port = availablePort;
+  baseURL = getBaseURLWithPort( port );
+  seedModels = allModelSeeds;
+
+  await resetCurrentModels();
+
+
 
 });
 
@@ -51,12 +60,8 @@ beforeEach( () => server = app.listen( port ) );
 
 afterEach( async () => {
 
-  await createTestingDatabase();
 
-  await resetTables(
-    app.dataSources.mysql_ds,
-    ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
-  );
+
   server.close();
 
 });
