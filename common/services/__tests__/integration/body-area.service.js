@@ -15,17 +15,23 @@ const {
   resetTables,
 } = require( '../../../../dev/testing/database-utils' );
 
+const {
+  getFreePort,
+  getBaseURLWithPort,
+} = require( '../../../../dev/testing/environment-utils' );
+
 const app = require( '../../../../server/server' );
 
 const { BodyArea } = app.models;
 
-let server, seedModels, bodyAreaModel;
+let server, seedModels, bodyAreaModel, port, baseURL;
 
-const testingPort = process.env.TEST_API_PORT;
-const baseURL = `http://${process.env.TEST_API_HOST}:${testingPort}/api`;
 //---------------------------------------------------------------------
 
 beforeAll( async () => {
+
+  port = await getFreePort();
+  baseURL = getBaseURLWithPort( port );
 
   const [models] = await Promise.all( [
     getModelsSeeds(),
@@ -39,7 +45,7 @@ beforeAll( async () => {
 
 });
 
-beforeEach( done => server = app.listen( done ) );
+beforeEach( () => server = app.listen( port ) );
 
 
 afterEach( async () => {
@@ -74,6 +80,9 @@ describe( 'ACLs from BodyArea model', () => {
 
     expect( registeredBodyArea.description ).toBe( bodyArea.description );
     expect( bodyAreaCount ).toBe( 1 );
+
+    // const message = { port: server.address().port };
+    // throw message;
 
 
   });
