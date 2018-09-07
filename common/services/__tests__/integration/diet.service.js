@@ -1,66 +1,57 @@
 'use strict';
 
-const {
-  getModelsSeeds,
-  getFakeModelsArray,
-  findSeedModel,
-} = require( '../../../../dev/testing/fixtures-utils' );
+jest.unmock( 'axios' );
 
-const {
-  resetTables,
-} = require( '../../../../dev/testing/database-utils' );
+const { integrationTestSetup } = require( '../../../../dev/testing/environment-utils' );
 
-const {
-  getBaseURLWithPort,
-  createTestingDatabase,
-  getApiTestPort,
-} = require( '../../../../dev/testing/environment-utils' );
+const { resetTables } = require( '../../../../dev/testing/database-utils' );
 
 const {
   createApiUnauth,
   createRegularCustomerApiAuth,
 } = require( '../../../../dev/testing/auth-utils' );
 
+const {
+  getFakeModelsArray,
+  findSeedModel,
+} = require( '../../../../dev/testing/fixtures-utils' );
+
 const app = require( '../../../../server/server' );
 
-jest.unmock( 'axios' );
-
 let server, seedModels, apiPort, baseURL;
+const { Diet, Diet_Food_Detail } = app.models;
+const currentModels = ['Diet', 'Diet_Food_Detail', 'Customer', 'Administrator'];
+
+//---------------------------------------------------------------------
 
 const resetCurrentModels = () => {
 
   return resetTables(
     app.dataSources.mysql_ds,
-    ['Diet', 'Diet_Food_Detail', 'Customer']
+    currentModels,
   );
 
 };
 
-const { Diet, Diet_Food_Detail } = app.models;
-//---------------------------------------------------------------------
-
 beforeAll( async () => {
 
-  const [allModelSeeds] = await Promise.all( [
-    getModelsSeeds(),
-    createTestingDatabase(),
-  ] ).catch( err => {
-
-    throw err;
-
+  const {
+    retunedApiPort,
+    retunedBaseURL,
+    retunedSeedModels,
+  } = await integrationTestSetup({
+    datasource: app.dataSources.mysql_ds,
+    dbModelsToReset: currentModels,
   });
 
-  apiPort = getApiTestPort();
-  baseURL = getBaseURLWithPort( apiPort );
-  seedModels = allModelSeeds;
-
-  await resetCurrentModels();
+  apiPort = retunedApiPort;
+  baseURL = retunedBaseURL;
+  seedModels = retunedSeedModels;
 
 });
 
 
 beforeEach( () => server = app.listen( apiPort ) );
-
 
 afterEach( async () => {
 
@@ -68,7 +59,6 @@ afterEach( async () => {
   server.close();
 
 });
-
 
 describe( 'fullDietRegistration endpoint', () => {
 
