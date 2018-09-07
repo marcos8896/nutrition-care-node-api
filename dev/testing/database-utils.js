@@ -44,6 +44,10 @@ const resetTables = ( db, modelNames ) => {
 
 };
 
-module.exports = {
-  resetTables,
-};
+if ( process.env.NODE_ENV === 'test' ) {
+
+  module.exports = {
+    resetTables,
+  };
+
+}
