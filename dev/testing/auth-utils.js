@@ -232,10 +232,7 @@ const createCustomerApiAuth = ( baseURL, accessToken ) => {
     },
   };
 
-  return {
-    apiCustomerAxios: axios.create( axiosOptions ),
-
-  };
+  return axios.create( axiosOptions );
 
 };
 
@@ -244,7 +241,7 @@ const createCustomerApiAuth = ( baseURL, accessToken ) => {
  *
  * @param {String} baseURL - The base url in which the axios instance will be connected.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @returns {Promise<Object>} Return an unauthenticated axios instance.
+ * @returns {Object} Return an unauthenticated axios instance.
  */
 const createApiUnauth = ( baseURL ) => {
 
