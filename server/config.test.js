@@ -3,7 +3,9 @@
 module.exports = {
   'restApiRoot': '/api',
   'host': process.env.TEST_API_HOST,
-  'port': process.env.TEST_API_PORT,
+  // 'port': process.env.TEST_API_PORT,
+  // The port is not set here anymore. Instead set on app.listen()
+  // inside your tests.
   'remoting': {
     'context': false,
     'rest': {

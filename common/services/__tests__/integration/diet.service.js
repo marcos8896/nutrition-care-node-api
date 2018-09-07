@@ -1,85 +1,57 @@
 'use strict';
 
-const axios = require( 'axios' );
+jest.unmock( 'axios' );
+
+const { integrationTestSetup } = require( '../../../../dev/testing/environment-utils' );
+
+const { resetTables } = require( '../../../../dev/testing/database-utils' );
 
 const {
-  getModelsSeeds,
+  createApiUnauth,
+  createRegularCustomerApiAuth,
+} = require( '../../../../dev/testing/auth-utils' );
+
+const {
   getFakeModelsArray,
   findSeedModel,
 } = require( '../../../../dev/testing/fixtures-utils' );
 
-const {
-  resetTables,
-} = require( '../../../../dev/testing/database-utils' );
-
 const app = require( '../../../../server/server' );
 
-jest.unmock( 'axios' );
+let server, seedModels, apiPort, baseURL;
+const { Diet, Diet_Food_Detail } = app.models;
+const currentModels = ['Diet', 'Diet_Food_Detail', 'Customer', 'Administrator'];
 
-let server, seedModels;
-
-const testingPort = process.env.TEST_API_PORT;
-const baseURL = `http://${process.env.TEST_API_HOST}:${testingPort}/api`;
-
-const axiosOptions = {
-  baseURL: baseURL,
-  headers: [
-        { 'content-type': 'application/json' },
-  ],
-};
-
-const apiUnauth = axios.create( axiosOptions );
-
-const { Diet, Diet_Food_Detail, Customer } = app.models;
 //---------------------------------------------------------------------
+
+const resetCurrentModels = () => resetTables( app.dataSources.mysql_ds, currentModels );
 
 beforeAll( async () => {
 
-  seedModels = await getModelsSeeds();
+  const {
+    retunedApiPort,
+    retunedBaseURL,
+    retunedSeedModels,
+  } = await integrationTestSetup({
+    datasource: app.dataSources.mysql_ds,
+    dbModelsToReset: currentModels,
+  });
+
+  apiPort = retunedApiPort;
+  baseURL = retunedBaseURL;
+  seedModels = retunedSeedModels;
 
 });
 
-beforeEach( done => server = app.listen( done ) );
 
+beforeEach( () => server = app.listen( apiPort ) );
 
 afterEach( async () => {
 
-  await resetTables( app.dataSources.mysql_ds, ['Diet', 'Diet_Food_Detail', 'Customer'] );
+  await resetCurrentModels();
   server.close();
 
 });
-
-const createAuthenticatedCustomer = async () => {
-
-  const customerSeeModel = findSeedModel( seedModels, 'Customer' );
-  const customer = getFakeModelsArray( customerSeeModel, 1 )[0];
-
-  await Customer.create( customer );
-
-  const loginResponse = await apiUnauth.post( '/Customers/login', {
-    email: customer.email,
-    password: customer.password,
-  });
-
-  return {
-    customer: { ...customer, id: parseInt( loginResponse.data.userId ) },
-    credentials: loginResponse.data,
-  };
-
-};
-
-const createApiAuth = ( userToken ) => {
-
-  return axios.create({
-    ...axiosOptions,
-    headers: {
-      ...axiosOptions.headers,
-      'Authorization': userToken,
-    },
-  });
-
-};
-
 
 describe( 'fullDietRegistration endpoint', () => {
 
@@ -100,18 +72,16 @@ describe( 'fullDietRegistration endpoint', () => {
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
 
-    const [response, dietCount, dietDetailCount] = await Promise.all( [
+    const apiUnauth = createApiUnauth( baseURL );
 
-      apiUnauth.post(
-        '/Diets/fullDietRegistration',
-        { diet, dietDetails }
-      )
-      .catch( e => e.response ),
+    const response = await apiUnauth.post(
+      '/Diets/fullDietRegistration',
+      { diet, dietDetails }
+    ).catch( e => e.response );
 
+    const [dietCount, dietDetailCount] = await Promise.all( [
       Diet.count(),
-
       Diet_Food_Detail.count(),
-
     ] );
 
     expect( response.status ).toBe( 401 );
@@ -123,14 +93,13 @@ describe( 'fullDietRegistration endpoint', () => {
   // eslint-disable-next-line max-len
   it( 'it should register a new customer user and create a diet with the customer token', async () => {
 
-    const { customer, credentials } = await createAuthenticatedCustomer();
-    const apiAuth = createApiAuth( credentials.id );
+    const { customer, apiCustomerAxios } = await createRegularCustomerApiAuth( baseURL );
 
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     diet.customerId = customer.id;
     const dietDetails = getFakeModelsArray( dietSeedDetails, 2 );
 
-    const response = await apiAuth
+    const response = await apiCustomerAxios
       .post( '/Diets/fullDietRegistration', { diet, dietDetails });
 
     const dietId = response.data.dietId;
@@ -153,14 +122,13 @@ describe( 'fullDietRegistration endpoint', () => {
 
   it( 'it shouldn\'t register a diet without valid dietDetails', async () => {
 
-    const { customer, credentials } = await createAuthenticatedCustomer();
-    const apiAuth = createApiAuth( credentials.id );
+    const { customer, apiCustomerAxios } = await createRegularCustomerApiAuth( baseURL );
 
     const diet = getFakeModelsArray( dietSeedModel, 1 )[0];
     diet.customerId = customer.id;
     const dietDetails = [{ invalid: 'record' }];
 
-    await apiAuth
+    await apiCustomerAxios
       .post( '/Diets/fullDietRegistration', { diet, dietDetails })
       .catch( err => err );
 

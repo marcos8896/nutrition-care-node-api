@@ -1,14 +1,16 @@
 'use strict';
 
+jest.unmock( 'axios' );
+
+const { integrationTestSetup } = require( '../../../../dev/testing/environment-utils' );
+
 const {
-  getModelsSeeds,
   getFakeModelsArray,
   findSeedModel,
 } = require( '../../../../dev/testing/fixtures-utils' );
 
 const {
   createAdminApiAuth,
-  // createCustomerApiAuth,
 } = require( '../../../../dev/testing/auth-utils' );
 
 const {
@@ -19,35 +21,40 @@ const app = require( '../../../../server/server' );
 
 const { BodyArea } = app.models;
 
-let server, seedModels, bodyAreaModel;
+let server, seedModels, bodyAreaModel, apiPort, baseURL;
 
-const testingPort = process.env.TEST_API_PORT;
-const baseURL = `http://${process.env.TEST_API_HOST}:${testingPort}/api`;
+const currentModels = [
+  'BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer',
+];
+
+const resetCurrentModels = () => resetTables( app.dataSources.mysql_ds, currentModels );
+
 //---------------------------------------------------------------------
 
 beforeAll( async () => {
 
-  const [models] = await Promise.all( [
-    getModelsSeeds(),
-    resetTables(
-      app.dataSources.mysql_ds,
-      ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
-    ),
-  ] );
+  const {
+    retunedApiPort,
+    retunedBaseURL,
+    retunedSeedModels,
+  } = await integrationTestSetup({
+    datasource: app.dataSources.mysql_ds,
+    dbModelsToReset: currentModels,
+  });
 
-  seedModels = models;
+  apiPort = retunedApiPort;
+  baseURL = retunedBaseURL;
+  seedModels = retunedSeedModels;
 
 });
 
-beforeEach( done => server = app.listen( done ) );
+
+beforeEach( () => server = app.listen( apiPort ) );
 
 
 afterEach( async () => {
 
-  await resetTables(
-    app.dataSources.mysql_ds,
-    ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
-  );
+  await resetCurrentModels();
   server.close();
 
 });
@@ -74,6 +81,9 @@ describe( 'ACLs from BodyArea model', () => {
 
     expect( registeredBodyArea.description ).toBe( bodyArea.description );
     expect( bodyAreaCount ).toBe( 1 );
+
+    // const msessage = { port: server.address().port };
+    // throw message;
 
 
   });

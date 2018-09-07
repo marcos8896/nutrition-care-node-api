@@ -3,7 +3,7 @@
 module.exports = {
   'mysql_ds': {
     // eslint-disable-next-line
-    'url': `mysql://${ process.env.TEST_DB_USER }:${ process.env.TEST_DB_PASSWORD }@${ process.env.TEST_DB_HOST }:${ process.env.TEST_DB_PORT }/${ process.env.TEST_DB_NAME }`,
+    'url': `mysql://${ process.env.TEST_DB_USER }:${ process.env.TEST_DB_PASSWORD }@${ process.env.TEST_DB_HOST }:${ process.env.TEST_DB_PORT }/${process.env.TEST_DB_NAME}_${process.env.JEST_WORKER_ID}`,
     'name': 'mysql_ds',
     'connector': 'mysql',
   },
