@@ -15,7 +15,7 @@
     "seeds": "node dev/seeds/execute-seeds",
     "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json",
     "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds",
-    "test": "jest --watch"
+    "test": "jest --watch --maxWorkers=8"
   },
   "dependencies": {
     "compression": "^1.0.3",
