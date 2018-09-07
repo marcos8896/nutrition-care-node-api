@@ -30,11 +30,38 @@ const getFreePort = () => portfinder.getPortPromise();
 const getBaseURLWithPort = ( port ) =>  `http://${process.env.TEST_API_HOST}:${port}/api`;
 
 
+const createTestingDatabase = () => {
+
+  const mysql = require( 'mysql' );
+  const pool  = mysql.createPool({
+    host: process.env.TEST_API_HOST,
+    user: process.env.TEST_DB_USER,
+    password: process.env.TEST_DB_PASSWORD,
+  });
+
+  return new Promise( ( resolve, reject ) => {
+
+    pool.query( `
+          CREATE DATABASE IF NOT EXISTS 
+          ${process.env.TEST_DB_NAME}_${process.env.JEST_WORKER_ID}`,
+          function( error, results ) {
+
+            if ( error ) return reject( error );
+
+            return resolve( results );
+
+          });
+
+  });
+
+};
+
 if ( process.env.NODE_ENV === 'test' ) {
 
   module.exports = {
     getFreePort,
     getBaseURLWithPort,
+    createTestingDatabase,
   };
 
 }

@@ -18,6 +18,7 @@ const {
 const {
   getFreePort,
   getBaseURLWithPort,
+  createTestingDatabase,
 } = require( '../../../../dev/testing/environment-utils' );
 
 const app = require( '../../../../server/server' );
@@ -50,6 +51,8 @@ beforeEach( () => server = app.listen( port ) );
 
 afterEach( async () => {
 
+  await createTestingDatabase();
+
   await resetTables(
     app.dataSources.mysql_ds,
     ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
@@ -81,7 +84,7 @@ describe( 'ACLs from BodyArea model', () => {
     expect( registeredBodyArea.description ).toBe( bodyArea.description );
     expect( bodyAreaCount ).toBe( 1 );
 
-    // const message = { port: server.address().port };
+    // const msessage = { port: server.address().port };
     // throw message;
 
 
