@@ -1,6 +1,13 @@
 'use strict';
 
 /**
+ * Contains migration functionality to be able reset the
+ * test database when needed.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @module Testing/Database-utils
+ */
+
+/**
  * Run the proper migrations, thereby, performs a complete reset of the
  * given database. Only for testing.
  * @param {dataSource} db - A given data source in which the migration
