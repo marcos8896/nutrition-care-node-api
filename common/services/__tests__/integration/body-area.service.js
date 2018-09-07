@@ -8,7 +8,6 @@ const {
 
 const {
   createAdminApiAuth,
-  // createCustomerApiAuth,
 } = require( '../../../../dev/testing/auth-utils' );
 
 const {
@@ -16,16 +15,16 @@ const {
 } = require( '../../../../dev/testing/database-utils' );
 
 const {
-  getFreePort,
   getBaseURLWithPort,
   createTestingDatabase,
+  getApiTestPort,
 } = require( '../../../../dev/testing/environment-utils' );
 
 const app = require( '../../../../server/server' );
 
 const { BodyArea } = app.models;
 
-let server, seedModels, bodyAreaModel, port, baseURL;
+let server, seedModels, bodyAreaModel, apiPort, baseURL;
 
 const resetCurrentModels = () => {
 
@@ -39,29 +38,29 @@ const resetCurrentModels = () => {
 
 beforeAll( async () => {
 
-  const [availablePort, allModelSeeds] = await Promise.all( [
-    getFreePort(),
+  const [allModelSeeds] = await Promise.all( [
     getModelsSeeds(),
     createTestingDatabase(),
-  ] );
+  ] ).catch( err => {
 
-  port = availablePort;
-  baseURL = getBaseURLWithPort( port );
+    throw err;
+
+  });
+
+  apiPort = getApiTestPort();
+  baseURL = getBaseURLWithPort( apiPort );
   seedModels = allModelSeeds;
 
   await resetCurrentModels();
 
-
-
 });
 
-beforeEach( () => server = app.listen( port ) );
+beforeEach( () => server = app.listen( apiPort ) );
 
 
 afterEach( async () => {
 
-
-
+  await resetCurrentModels();
   server.close();
 
 });
