@@ -1,7 +1,10 @@
 'use strict';
 
+jest.unmock( 'axios' );
+
+const { integrationTestSetup } = require( '../../../../dev/testing/environment-utils' );
+
 const {
-  getModelsSeeds,
   getFakeModelsArray,
   findSeedModel,
 } = require( '../../../../dev/testing/fixtures-utils' );
@@ -14,46 +17,37 @@ const {
   resetTables,
 } = require( '../../../../dev/testing/database-utils' );
 
-const {
-  getBaseURLWithPort,
-  createTestingDatabase,
-  getApiTestPort,
-} = require( '../../../../dev/testing/environment-utils' );
-
 const app = require( '../../../../server/server' );
 
 const { BodyArea } = app.models;
 
 let server, seedModels, bodyAreaModel, apiPort, baseURL;
 
-const resetCurrentModels = () => {
+const currentModels = [
+  'BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer',
+];
 
-  return resetTables(
-    app.dataSources.mysql_ds,
-    ['BodyArea', 'BodyArea_Exercise_Detail', 'Administrator', 'Customer']
-  );
+const resetCurrentModels = () => resetTables( app.dataSources.mysql_ds, currentModels );
 
-};
 //---------------------------------------------------------------------
 
 beforeAll( async () => {
 
-  const [allModelSeeds] = await Promise.all( [
-    getModelsSeeds(),
-    createTestingDatabase(),
-  ] ).catch( err => {
-
-    throw err;
-
+  const {
+    retunedApiPort,
+    retunedBaseURL,
+    retunedSeedModels,
+  } = await integrationTestSetup({
+    datasource: app.dataSources.mysql_ds,
+    dbModelsToReset: currentModels,
   });
 
-  apiPort = getApiTestPort();
-  baseURL = getBaseURLWithPort( apiPort );
-  seedModels = allModelSeeds;
-
-  await resetCurrentModels();
+  apiPort = retunedApiPort;
+  baseURL = retunedBaseURL;
+  seedModels = retunedSeedModels;
 
 });
+
 
 beforeEach( () => server = app.listen( apiPort ) );
 

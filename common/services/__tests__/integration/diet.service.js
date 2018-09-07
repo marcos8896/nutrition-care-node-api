@@ -24,14 +24,7 @@ const currentModels = ['Diet', 'Diet_Food_Detail', 'Customer', 'Administrator'];
 
 //---------------------------------------------------------------------
 
-const resetCurrentModels = () => {
-
-  return resetTables(
-    app.dataSources.mysql_ds,
-    currentModels,
-  );
-
-};
+const resetCurrentModels = () => resetTables( app.dataSources.mysql_ds, currentModels );
 
 beforeAll( async () => {
 
