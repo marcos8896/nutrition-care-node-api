@@ -9,7 +9,7 @@ module.exports = {
   users: [{
     id: process.env.ADMINITRATOR_ID,
     name: process.env.ADMINITRATOR_NAME,
-    last_name: process.env.ADMINITRATOR_LAST_NAME, // eslint-disable-line camelcase
+    lastName: process.env.ADMINITRATOR_LAST_NAME, // eslint-disable-line camelcase
     type: CONSTANT_ROLES.ADMIN,
     username: process.env.ADMINITRATOR_USERNAME,
     email: process.env.ADMINITRATOR_EMAIL,

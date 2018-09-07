@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
-    "node": ">=8"
+    "node": ">=8.9.1"
   },
   "scripts": {
     "lint": "eslint .",
@@ -15,7 +15,7 @@
     "seeds": "node dev/seeds/execute-seeds",
     "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json",
     "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds",
-    "test": "jest --watch"
+    "test": "jest --watch --maxWorkers=1"
   },
   "dependencies": {
     "compression": "^1.0.3",

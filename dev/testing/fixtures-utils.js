@@ -4,7 +4,7 @@
  * Contains simple functionality to create fake data for
  * integration tests.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @module Fixtures/Fixtures-Utils
+ * @module Testing/Fixtures-Utils
  */
 
 const faker = require( 'faker' );
