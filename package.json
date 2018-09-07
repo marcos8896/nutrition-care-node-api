@@ -53,7 +53,8 @@
     "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
     "node-emoji": "^1.8.1",
-    "nsp": "^2.1.0"
+    "nsp": "^2.1.0",
+    "portfinder": "^1.0.17"
   },
   "repository": {
     "type": "",
