@@ -71,12 +71,51 @@ const createTestingDatabase = () => {
 
 };
 
+
+/**
+ * Creates all the environment for the integration test.
+ *
+ * @returns {Promise<Object>} Return a promise which contains an
+ * object an apiPort in which the testing API port can be mounted,
+ * a baseURL where the axios api calls with have to point to,
+ * and the seedModels which contains all the seedModel to generate
+ * fake data.
+ */
+const integrationTestSetup = async ({ datasource, dbModelsToReset }) => {
+
+  const { getModelsSeeds } = require( './fixtures-utils' );
+  const { resetTables } = require( './database-utils' );
+
+  const [allModelSeeds] = await Promise.all( [
+    getModelsSeeds(),
+    createTestingDatabase(),
+  ] ).catch( err => {
+
+    throw err;
+
+  });
+
+  const apiPort = getApiTestPort();
+  const baseURL = getBaseURLWithPort( apiPort );
+  const seedModels = allModelSeeds;
+
+  await resetTables( datasource, dbModelsToReset );
+
+  return {
+    retunedApiPort: apiPort,
+    retunedBaseURL: baseURL,
+    retunedSeedModels: seedModels,
+  };
+
+};
+
 if ( process.env.NODE_ENV === 'test' ) {
 
   module.exports = {
     getBaseURLWithPort,
     createTestingDatabase,
     getApiTestPort,
+    integrationTestSetup,
   };
 
 }
