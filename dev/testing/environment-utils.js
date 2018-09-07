@@ -16,9 +16,35 @@
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {String} Return a the full BaseURL.
  */
-const getBaseURLWithPort = ( port ) =>  `http://${process.env.TEST_API_HOST}:${port}/api`;
+const getBaseURLWithPort = ( port ) =>
+  `http://${process.env.TEST_API_HOST}:${port}/api`;
 
 
+/**
+ * Compose the a PORT based on the given TEST_API_PORT port from the
+ * env file and the current JEST_WORKER_ID.
+ * @example
+ * process.env.TEST_API_PORT=8880
+ * process.env.JEST_WORKER_ID=1
+ *
+ * then
+ *
+ * getApiTestPort returns 8881
+ *
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @returns {Number} A generated port to run the testing API.
+ */
+const getApiTestPort = () => parseInt( process.env.TEST_API_PORT ) +
+                             parseInt( process.env.JEST_WORKER_ID );
+
+
+/**
+ * Create a new test database to parallelize the integration tests.
+ * It uses the JEST_WORKER_ID to create a unique database per worker.
+ *
+ * @returns {Promise<Object>} Return a promise which contains the
+ * results from the mysql query or the error in case of failure.
+ */
 const createTestingDatabase = () => {
 
   const mysql = require( 'mysql' );
@@ -50,6 +76,7 @@ if ( process.env.NODE_ENV === 'test' ) {
   module.exports = {
     getBaseURLWithPort,
     createTestingDatabase,
+    getApiTestPort,
   };
 
 }
