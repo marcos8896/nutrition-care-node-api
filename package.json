@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "start": "node .",
+    "start": "npm run initial-prod-setup",
     "posttest": "npm run lint && nsp check",
     "migrations:reset": "node server/migrations/reset",
     "migrations:update": "node server/migrations/update",
@@ -16,7 +16,8 @@
     "seeds": "node dev/seeds/execute-seeds",
     "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json",
     "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds",
-    "test": "jest --watch --maxWorkers=8"
+    "test": "jest --watch --maxWorkers=8",
+    "initial-prod-setup": "npm run update-tables && npm run create-roles-users && node . web: node --optimize_for_size --max_old_space_size=920 --gc_interval=100"
   },
   "dependencies": {
     "compression": "^1.0.3",
