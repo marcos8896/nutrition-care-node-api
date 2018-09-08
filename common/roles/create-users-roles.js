@@ -161,7 +161,7 @@ const createRole = ( model, collection, newRole, roleDescription, cb ) => {
  * of role, but it was left behind right there just in case future custom roles are needed
  * in the future.)
  *
- * @name parallelBootsprapFunction
+ * @name parallelBootstrapFunction
  *
 */
 parallel({
