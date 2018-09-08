@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
-    "node": "~8.9.1",
-    "npm": "~5.5.1"
+    "node": "8.9.1",
+    "npm": "5.5.1"
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "npm run update-tables && npm run create-roles-users",
+    "initial-prod": "npm run migrations:update && npm run seeds:static-roles && node .",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "migrations:reset": "node server/migrations/reset",
