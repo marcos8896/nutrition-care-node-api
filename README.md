@@ -5,6 +5,7 @@ ___
 #### Required Environment Variables
 Environment variables that are needed to setup properly the database (in this project, it is a MySQL database).
 It will be required to put the following ENV variables inside a file called ".env" and such a file will have to be located at the project's root folder.
+___
 | DATABASE ENV VARIABLES | Description |  Example |
 | ------ | ------ | ------ | 
 | DB_USER | Database's user with enough privileges for the main database | DB_USER=user |
@@ -12,9 +13,9 @@ It will be required to put the following ENV variables inside a file called ".en
 | DB_HOST | Host where the main database is located | DB_HOST=127.0.0.1 |
 | DB_PORT | Port where the main database is listening to | DB_PORT=3306 |
 | DB_NAME | Main database name | DB_NAME=mydb |
-
-Environment variables to setup all the test environment, like testing database, ports and so on.
-This ENV variables setup will be required to run the "npm test" command. Otherwise it won't work.
+___
+Environment variables to setup all the test environment, like testing database, ports and so on. This ENV variables setup will be required to run the "npm test" command. Otherwise it won't work.
+___
 | TEST ENV VARIABLES | Description |  Example |
 | ------ | ------ | ------ | 
 | TEST_API_PORT | Test API PORT to use for integration tests | TEST_API_PORT=8089 |
@@ -24,8 +25,9 @@ This ENV variables setup will be required to run the "npm test" command. Otherwi
 | TEST_DB_HOST | Host where the testing database is located | TEST_DB_HOST=127.0.0.1 |
 | TEST_DB_PORT | Port where the testing database is listening to | DB_PORT=3306 |
 | TEST_DB_NAME | Database testing name | DB_NAME=mydb_test |
-
+___
 Environment variables to setup the Administrator user.
+___
 | ADMINISTRATOR ENV VARIABLES | Description |  Example |
 | ------ | ------ | ------ | 
 | ADMINITRATOR_ID | The user's id that the administrator will have | ADMINITRATOR_ID=17c5d698-7877-40d9-9fb3-eb7496091c93 |
@@ -34,8 +36,9 @@ Environment variables to setup the Administrator user.
 | ADMINITRATOR_USERNAME | The administrator's username | ADMINITRATOR_USERNAME=admin |
 | ADMINITRATOR_EMAIL | The administrator's email (a valid one) | ADMINITRATOR_EMAIL=admin@admin.com |
 | ADMINITRATOR_PASSWORD | The administrator's password | ADMINITRATOR_PASSWORD=secret |
-
+___
 General environment variables
+___
 | GENERAL ENV VARIABLES | Description |  Example |
 | ------ | ------ | ------ | 
 | NODE_ENV | The current node environment | NODE_ENV=development |
