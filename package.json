@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "poststart": "npm run update-tables && npm run create-roles-users",
+    "postinstall": "npm run update-tables && npm run create-roles-users",
     "start": "node .",
     "posttest": "npm run lint && nsp check",
     "migrations:reset": "node server/migrations/reset",
