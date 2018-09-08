@@ -34,8 +34,6 @@ class FoodService {
                    '(proteins, carbohydrates, fats, calories)'
                 ) );
 
-
-
   }
 
 }

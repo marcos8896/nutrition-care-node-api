@@ -10,9 +10,21 @@
       "type": "string",
       "required": true
     },
-    "src_image": {
+    "srcImage": {
       "type": "string",
       "required": true
+    }
+  },
+  "mixins": {
+    "TimeStamp" : {
+      "createdAt" : "createdAt",
+      "updatedAt" : "updatedAt",
+      "required" : false,
+      "validateUpsert": true
+    },
+    "ReadOnly" : {
+      "createdAt" : true,
+      "updatedAt" : true
     }
   },
   "validations": [],

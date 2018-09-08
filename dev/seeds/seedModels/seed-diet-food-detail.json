@@ -15,7 +15,7 @@
       "proteins": "{{random.number({\"min\":0, \"max\":1, \"precision\": 0.001})}}"
     },
     {
-      "desired_grams": "{{random.number({\"min\":0, \"max\":350, \"precision\": 0.001})}}"
+      "desiredGrams": "{{random.number({\"min\":0, \"max\":350, \"precision\": 0.001})}}"
     },
     {
       "description": "{{commerce.product}}"

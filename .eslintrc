@@ -2,7 +2,8 @@
   "env": {
       "es6": true,
       "node": true,
-      "commonjs": true
+      "commonjs": true,
+      "jest": true
   },
   "extends": [
     "eslint:recommended",
@@ -25,7 +26,9 @@
       "object-curly-spacing": ["error", "always"],
       "space-in-parens": [2, "always", { "exceptions": ["empty", "{}"] }],
       "padded-blocks": ["error", { "blocks": "always" }],
-      "no-unused-vars": ["error", {"args": "none"}]
+      "no-unused-vars": ["error", {"args": "none"}],
+      "max-len": ["error", { "code": 90 }],
+      "camelcase": ["error", {"properties": "never"}]
   },
   "parserOptions": {
     "ecmaVersion": 2018

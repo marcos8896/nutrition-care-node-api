@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "engines": {
-    "node": ">=8"
+    "node": ">=8.9.1"
   },
   "scripts": {
     "lint": "eslint .",
@@ -14,7 +14,8 @@
     "seeds:static-roles": "node common/roles/create-users-roles",
     "seeds": "node dev/seeds/execute-seeds",
     "docs:generate": "node_modules/.bin/jsdoc -c conf-jsdoc.json",
-    "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds"
+    "dev:db-reset": "npm run migrations:reset && npm run seeds:static-roles && npm run seeds",
+    "test": "jest --watch --maxWorkers=8"
   },
   "dependencies": {
     "compression": "^1.0.3",
@@ -31,6 +32,7 @@
     "loopback-ds-readonly-mixin": "^2.0.4",
     "loopback-ds-timestamp-mixin": "^3.4.1",
     "mkdirp": "^0.5.1",
+    "mysql": "^2.16.0",
     "node-readfiles": "^0.2.0",
     "prompt": "^1.0.0",
     "serve-favicon": "^2.0.1",
@@ -39,6 +41,7 @@
     "yargs": "^10.1.2"
   },
   "devDependencies": {
+    "axios": "^0.18.0",
     "chalk": "^2.4.1",
     "clear": "^0.1.0",
     "docdash": "^0.4.0",
@@ -48,9 +51,11 @@
     "faker": "^4.1.0",
     "figlet": "^1.2.0",
     "inquirer": "^6.0.0",
+    "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
     "node-emoji": "^1.8.1",
-    "nsp": "^2.1.0"
+    "nsp": "^2.1.0",
+    "portfinder": "^1.0.17"
   },
   "repository": {
     "type": "",
