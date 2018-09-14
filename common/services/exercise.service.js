@@ -22,22 +22,58 @@ const app = require( '../../server/server' );
  */
 const fullExerciseRegistration = async ( req ) => {
 
-  // console.log( 'ajalas: ', ajalas );
   try {
 
     // This is required to get all the parsed form data from
     // the 'req' object. Without this, it won't be possible
     // to get the data from the 'req' object.
-    await parseFormData( req );
+    await parseMultiPartFormData( req );
     console.log( 'req.body', req.body );
-    console.log( 'req.files', req.files );
-    console.log( 'req.file', req.file );
+
+    // const exerciseContainer = await new Promise( ( resolve, reject ) =>
+    //   Container.getContainer( 'exercises', ( err, container ) => {
+
+    //     if ( err ) return reject( err );
+    //     return resolve( container );
+
+    //   })
+    // );
+
+    // const result = await new Promise( ( resolve, reject ) =>
+    //   Container.upload( 'exercises', req, res, {}, ( err, result ) => {
+
+    //     if ( err ) return reject( err );
+    //     return resolve( result );
+
+    //   })
+    // );
+    // console.log( 'result: ', result );
+
+    // const result = await new Promise( ( resolve, reject ) =>
+    //   Container.createContainer({ name: 'exercises' }, ( err, container ) => {
+
+    //     if ( err ) return reject( err );
+    //     return resolve( container );
+
+    //   })
+    // );
+    // console.log( 'result: ', result );
+    // const containers = await Container.getContainers( ( err, ajalas ) => {
+
+    //   console.log( 'err: ', err );
+    //   console.log( 'ajalas: ', ajalas );
+
+    // });
+    // console.log( 'containers: ', containers );
+    // console.log( 'Container: ', Object.keys( Container ) );
 
     return 'test';
 
   } catch ( error ) {
 
     console.log( 'on error' );
+    console.log( 'error: ', error );
+
     throw error;
 
   }
@@ -107,10 +143,29 @@ const fullExerciseRegistration = async ( req ) => {
 
 };
 
-const parseFormData = ( req ) => {
+
+const parseMultiPartFormData = ( req ) => {
 
   const multer = require( 'multer' );
-  const upload = multer().single( 'fileImage' );
+
+  const multerStorage = getMulterDiskStorage({
+    multer: multer,
+    destination: 'storage/exercises',
+    filePrefix: 'image',
+  });
+
+  const maxMegaBytes = 1;
+  const multerOptions = {
+    limits: {
+      fields: 2,
+      files: 1,
+      fileSize: maxMegaBytes * 1024 * 1024,
+    },
+    fileFilter: imageFilterValidation,
+    storage: multerStorage,
+  };
+
+  const upload = multer( multerOptions ).single( 'fileImage' );
 
   return new Promise( ( resolve, reject ) => {
 
@@ -125,6 +180,39 @@ const parseFormData = ( req ) => {
   });
 
 };
+
+
+const getMulterDiskStorage = ({ multer, destination, filePrefix = 'file' }) => {
+
+  const storage = multer.diskStorage({
+    destination: destination,
+    filename: ( req, file, cb ) => {
+
+      var { extension } = require( 'mime-types' );
+      const newFileName = filePrefix + '-' + new Date().getTime() + '.' +
+                          extension( file.mimetype );
+
+      return cb( null, newFileName );
+
+    },
+  });
+
+  return storage;
+
+};
+
+
+const imageFilterValidation = ( request, file, cb ) => {
+
+  const allowedContentTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+
+  if ( !allowedContentTypes.includes( file.mimetype ) )
+    return cb( new Error( 'The file has to be a png, jpg or gif image' ) );
+  else
+    return cb( null, true );
+
+};
+
 
 const fullExerciseRegistrationOptions = {
   accepts: [
