@@ -20,9 +20,27 @@ const app = require( '../../server/server' );
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Object} An object with the already created exerciseId
  */
-const fullExerciseRegistration = ( req ) => {
+const fullExerciseRegistration = async ( req ) => {
 
+  // console.log( 'ajalas: ', ajalas );
+  try {
 
+    // This is required to get all the parsed form data from
+    // the 'req' object. Without this, it won't be possible
+    // to get the data from the 'req' object.
+    await parseFormData( req );
+    console.log( 'req.body', req.body );
+    console.log( 'req.files', req.files );
+    console.log( 'req.file', req.file );
+
+    return 'test';
+
+  } catch ( error ) {
+
+    console.log( 'on error' );
+    throw error;
+
+  }
   // const multiparty = require( 'multiparty' );
   // const { file, fields } =
   //   getDataFromRequest( multiparty, req )
@@ -89,10 +107,28 @@ const fullExerciseRegistration = ( req ) => {
 
 };
 
+const parseFormData = ( req ) => {
+
+  const multer = require( 'multer' );
+  const upload = multer().single( 'fileImage' );
+
+  return new Promise( ( resolve, reject ) => {
+
+    upload( req, null, function( err ) {
+
+      if ( err ) return reject( err );
+      // Everything went fine
+      return resolve();
+
+    });
+
+  });
+
+};
+
 const fullExerciseRegistrationOptions = {
   accepts: [
     { arg: 'req', type: 'Object', http: { source: 'req' } },
-    { arg: 'res', type: 'Object', http: { source: 'res' } },
   ],
   returns: { arg: 'exerciseId', type: 'Number', root: true },
   http: {
