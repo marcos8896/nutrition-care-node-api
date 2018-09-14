@@ -81,5 +81,9 @@
   "Administrator": {
     "dataSource": "mysql_ds",
     "public": true
+  },
+  "Container": {
+    "dataSource": "storage",
+    "public": false
   }
 }
