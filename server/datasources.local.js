@@ -13,18 +13,4 @@ module.exports = {
     'name': 'mysql_ds',
     'connector': 'mysql',
   },
-  'storage': {
-    'name': 'storage',
-    'connector': 'loopback-component-storage',
-    'provider': 'filesystem',
-    'root': './storage',
-    'allowedContentTypes': ['image/jpg', 'image/jpeg', 'image/png', 'image/tiff'],
-    'maxFileSize': 1 * 1024 * 1024,
-    'getFilename': function( fileInfo ) {
-
-      var { extension } = require( 'mime-types' );
-      return 'image-' + new Date().getTime() + '.' + extension( fileInfo.type );
-
-    },
-  },
 };
