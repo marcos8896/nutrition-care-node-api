@@ -10,7 +10,7 @@
       "type": "string",
       "required": true
     },
-    "srcImage": {
+    "imageName": {
       "type": "string",
       "required": true
     }
