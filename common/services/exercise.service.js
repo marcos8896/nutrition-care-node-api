@@ -22,22 +22,67 @@ const app = require( '../../server/server' );
  */
 const fullExerciseRegistration = async ( req ) => {
 
+  const { Exercise, BodyArea_Exercise_Detail } = app.models;
+  let transaction;
+
   try {
 
     // This is required to get all the parsed form data from
     // the 'req' object. Without this, it won't be possible
     // to get the data from the 'req' object.
     await parseMultiPartFormData( req );
-    console.log( 'req.body', req.body );
 
-    return 'test';
+    // Get exercise and imageName from the already parsed req object
+    const exercise = {
+      ...JSON.parse( req.body.exercise ),
+      imageName: req.file.filename,
+    };
+
+    // Creates low level Loopback transaction.
+    transaction = await Exercise.beginTransaction({
+      isolationLevel: Exercise.Transaction.REPEATABLE_READ,
+    });
+
+    // Sets transaction options.
+    const options = { transaction };
+
+    // Gets the registeredDiet id.
+    const registeredExercise = await Exercise.create( exercise, options );
+    const { id } = registeredExercise;
+
+    const exerciseBodyAreaDetails = JSON.parse( req.body.bodyAreaDetails )
+      .map( item => {
+
+        return { bodyAreaId: item.id, exerciseId: id };
+
+      });
+
+    // Creates all the BodyArea_Exercise_Detail records.
+    await BodyArea_Exercise_Detail.create( exerciseBodyAreaDetails );
+
+    // Attempts to commit all the changes.
+    await transaction.commit();
+
+    // Returns the dietId to the client.
+    return { exerciseId: id };
 
   } catch ( error ) {
 
     console.log( 'on error' );
     console.log( 'error: ', error );
 
-    throw error;
+    try {
+
+      //     // Attempts to rollback all the changes (it could cause an error itself
+      //     // which is why it is required another try/catch).
+      await transaction.rollback();
+      throw error;
+
+    } catch ( err ) {
+
+      throw err;
+
+    }
 
   }
 
@@ -100,6 +145,8 @@ const fullExerciseRegistration = async ( req ) => {
  * Parse the 'req' loopback object to check if there are multi-part/form-data on it.
  * It will check for a 'fileImage' param on the FormData which will have to contain
  * an image with a size lower tha 1MB to be processed and uploaded.
+ * This method implicitly upload the 'fileImage' image file if all the validations
+ * are passed.
  * Note: It is REQUIRED to wait all this process to finish in order to get the
  * non-file fields from the request object.
  * @param {Object} req The loopback/express request object
