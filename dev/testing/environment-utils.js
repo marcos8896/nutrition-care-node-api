@@ -114,9 +114,9 @@ const integrationTestSetup = async ({ datasource, dbModelsToReset }) => {
   await resetTables( datasource, dbModelsToReset );
 
   return {
-    retunedApiPort: apiPort,
-    retunedBaseURL: baseURL,
-    retunedSeedModels: seedModels,
+    returnedApiPort: apiPort,
+    returnedBaseURL: baseURL,
+    returnedSeedModels: seedModels,
   };
 
 };
