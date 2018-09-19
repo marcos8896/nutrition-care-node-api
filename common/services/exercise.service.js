@@ -200,13 +200,14 @@ const fullExerciseRegistrationOptions = {
     verb: 'post',
   },
   description: [
-    'Receives a new exercise model as first param and its body area details ',
-    'as a second param and creates them on the database',
+    'Recieve the raw express/loobpack req object and parse it as multipart/form-data',
+    'in order to get a \'fileImage\' file from \'req.file\' ',
+    'and the \'exercise\' and \'bodyAreaDetails\' stringify object and array',
+    'respectively from \'req.body\' ',
   ],
 };
 
 module.exports = {
-
   fullExerciseRegistration: {
     remoteMethod: fullExerciseRegistration,
     remoteMethodOptions: fullExerciseRegistrationOptions,
