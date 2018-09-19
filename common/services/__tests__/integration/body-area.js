@@ -11,6 +11,7 @@ const {
 
 const {
   createAdminApiAuth,
+  createRegularCustomerApiAuth,
 } = require( '../../../../dev/testing/auth-utils' );
 
 const {
@@ -82,31 +83,25 @@ describe( 'ACLs from BodyArea model', () => {
     expect( registeredBodyArea.description ).toBe( bodyArea.description );
     expect( bodyAreaCount ).toBe( 1 );
 
-    // const msessage = { port: server.address().port };
-    // throw message;
-
-
   });
 
 
-//   it.only( 'should DENY an authenticated non-admin user to create BodyArea records', async () => {
+  it( 'should DENY an authenticated non-admin user to create BodyArea records',
+    async () => {
 
-//     const { apiCustomerAxios } = await createCustomerApiAuth();
-//     const bodyArea = getFakeModelsArray( bodyAreaModel, 1 )[0];
-//     const [response, bodyAreaCount] = await Promise.all( [
+      const { apiCustomerAxios } = await createRegularCustomerApiAuth( baseURL );
+      const bodyArea = getFakeModelsArray( bodyAreaModel, 1 )[0];
+      const statusCode = await apiCustomerAxios.post( '/BodyAreas', bodyArea )
+        .catch( e => e.response.status );
 
-//       apiAdminAxios.post(
-//         '/BodyAreas',
-//         bodyArea
-//       ).catch( e => e.response ),
+      const bodyAreaCount = await BodyArea.count();
 
-//       BodyArea.count(),
+      // Not authorized status code
+      expect( statusCode ).toBe( 401 );
+      expect( bodyAreaCount ).toBe( 0 );
 
-//     ] );
-
-//     throw response.data;
-
-//   });
+    }
+  );
 
 
 
