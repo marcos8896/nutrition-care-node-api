@@ -54,6 +54,7 @@
     "eslint-config-loopback": "^8.0.0",
     "faker": "^4.1.0",
     "figlet": "^1.2.0",
+    "form-data": "^2.3.2",
     "inquirer": "^6.0.0",
     "jest": "^23.5.0",
     "jsdoc": "^3.5.5",
