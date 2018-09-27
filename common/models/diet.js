@@ -4,6 +4,7 @@ const DietService = require( '../services/diet.service' );
 
 module.exports = Diet => {
 
+
   // Validations
   Diet.validatesLengthOf(
     'description',
@@ -15,6 +16,8 @@ module.exports = Diet => {
       },
     });
 
+
+  // Custom remote methods
   Diet.fullDietRegistration = DietService.fullDietRegistration.remoteMethod;
 
   Diet.remoteMethod(
