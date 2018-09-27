@@ -27,6 +27,11 @@ const fullExerciseRegistration = async ( req ) => {
 
   try {
 
+    // Creates low level Loopback transaction.
+    transaction = await Exercise.beginTransaction({
+      isolationLevel: Exercise.Transaction.REPEATABLE_READ,
+    });
+
     // This is required to get all the parsed form data from
     // the 'req' object. Without this, it won't be possible
     // to get the data from the 'req' object.
@@ -38,10 +43,7 @@ const fullExerciseRegistration = async ( req ) => {
       imageName: req.file.filename,
     };
 
-    // Creates low level Loopback transaction.
-    transaction = await Exercise.beginTransaction({
-      isolationLevel: Exercise.Transaction.REPEATABLE_READ,
-    });
+
 
     // Sets transaction options.
     const options = { transaction };
