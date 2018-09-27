@@ -88,58 +88,6 @@ const fullExerciseRegistration = async ( req ) => {
 
   }
 
-  // const { Diet, Diet_Food_Detail } = app.models; //eslint-disable-line
-
-  // let transaction;
-
-  // try {
-
-  //   // Creates low level Loopback transaction.
-  //   transaction = await Diet.beginTransaction({
-  //     isolationLevel: Diet.Transaction.REPEATABLE_READ,
-  //   });
-
-  //   // Sets transaction options.
-  //   const options = { transaction };
-
-  //   // Gets the registeredDiet id.
-  //   const registeredDiet = await Diet.create( diet, options );
-  //   const { id } = registeredDiet;
-
-  //   // Sets the registeredDiet id to every single dietDetails.
-  //   const dietDetailsWithId = dietDetails.map( item => {
-
-  //     return { ...item, dietId: id  };
-
-  //   });
-
-  //   // Creates all the Diet_Food_Detail records.
-  //   await Diet_Food_Detail.create( dietDetailsWithId, options ); //eslint-disable-line
-
-  //   // Attempts to commit all the changes.
-  //   await transaction.commit();
-
-  //   // Returns the dietId to the client.
-  //   return { dietId: id };
-
-
-  // } catch ( error ) {
-
-  //   try {
-
-  //     // Attempts to rollback all the changes (it could cause an error itself
-  //     // which is why it is required another try/catch).
-  //     await transaction.rollback();
-  //     return error;
-
-  //   } catch ( seriousError ) {
-
-  //     return seriousError;
-
-  //   }
-
-  // }
-
 };
 
 
