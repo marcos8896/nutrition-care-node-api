@@ -29,17 +29,17 @@ const resetCurrentModels = () => resetTables( app.dataSources.mysql_ds, currentM
 beforeAll( async () => {
 
   const {
-    retunedApiPort,
-    retunedBaseURL,
-    retunedSeedModels,
+    returnedApiPort,
+    returnedBaseURL,
+    returnedSeedModels,
   } = await integrationTestSetup({
     datasource: app.dataSources.mysql_ds,
     dbModelsToReset: currentModels,
   });
 
-  apiPort = retunedApiPort;
-  baseURL = retunedBaseURL;
-  seedModels = retunedSeedModels;
+  apiPort = returnedApiPort;
+  baseURL = returnedBaseURL;
+  seedModels = returnedSeedModels;
 
 });
 
