@@ -35,6 +35,20 @@ const currentModels = [
 
 const resetCurrentModels = () => resetTables( app.dataSources.mysql_ds, currentModels );
 
+const imageCleanUp = exerciseImagePath => {
+
+  return new Promise( ( resolve, reject ) => {
+
+    fs.unlink( exerciseImagePath, error => {
+
+      if ( error ) return reject( error );
+      else return resolve();
+
+    });
+
+  });
+
+};
 //---------------------------------------------------------------------
 
 beforeAll( async () => {
@@ -130,13 +144,18 @@ describe( 'ACLs from Exercise model', () => {
       expect( await BodyArea_Exercise_Detail.count() ).toBe( 5 );
       expect( registeredExercise.name ).toBe( exercise.name );
 
-      const exerciseImageExist = await fileExists(
-        resolve( './storage/exercises/' + registeredExercise.imageName )
-      );
+
+      const exerciseImagePath = resolve(
+        './storage/exercises/' + registeredExercise.imageName
+        );
+
+      const exerciseImageExist = await fileExists( exerciseImagePath );
 
       // The image exist on the exercises folder
       expect( exerciseImageExist ).toBe( true );
 
+      // Delete test image from the disk after integration test
+      await imageCleanUp( exerciseImagePath );
 
     });
 
