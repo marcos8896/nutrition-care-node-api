@@ -44,8 +44,9 @@ const getApiTestPort = () => parseInt( process.env.TEST_API_PORT ) +
  *
  * @returns {Promise<Object>} Return a promise which contains the
  * results from the mysql query or the error in case of failure.
+ * @async
  */
-const createTestingDatabase = () => {
+const createTestingDatabase = async () => {
 
   const mysql = require( 'mysql' );
   const pool  = mysql.createPool({
@@ -54,7 +55,7 @@ const createTestingDatabase = () => {
     password: process.env.TEST_DB_PASSWORD,
   });
 
-  return new Promise( ( resolve, reject ) => {
+  await new Promise( ( resolve, reject ) => {
 
     pool.query( `
           CREATE DATABASE IF NOT EXISTS 
@@ -67,7 +68,18 @@ const createTestingDatabase = () => {
 
           });
 
-  });
+  }).catch( err => err );
+
+  return new Promise( ( resolve, reject ) => {
+
+    pool.end( err => {
+
+      if ( err ) return reject( err );
+      else return resolve();
+
+    });
+
+  }).catch( err => err );
 
 };
 
@@ -102,9 +114,9 @@ const integrationTestSetup = async ({ datasource, dbModelsToReset }) => {
   await resetTables( datasource, dbModelsToReset );
 
   return {
-    retunedApiPort: apiPort,
-    retunedBaseURL: baseURL,
-    retunedSeedModels: seedModels,
+    returnedApiPort: apiPort,
+    returnedBaseURL: baseURL,
+    returnedSeedModels: seedModels,
   };
 
 };

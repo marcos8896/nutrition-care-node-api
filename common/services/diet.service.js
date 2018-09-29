@@ -18,7 +18,7 @@ const app = require( '../../server/server' );
  * @param {Object[]} dietDetails An array with all the dietDetails objects that have to be
  * related with the main diet object.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
- * @returns
+ * @returns {Object} An object with the already created dietId
  */
 const fullDietRegistration = async ( diet, dietDetails ) => {
 
@@ -101,7 +101,7 @@ const fullDietRegistrationOptions = {
   },
   description: [
     'Receives a new diet model as first param and its diet details ',
-    'as a second paramcreates them on the database',
+    'as a second param and creates them on the database',
   ],
 };
 
