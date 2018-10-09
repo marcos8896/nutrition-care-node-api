@@ -40,7 +40,13 @@
       ]
     }
   },
-  "files": {},
+  "files": {
+    "loopback#static":[{
+        "name": "exercises",
+        "paths": ["/exercise-images"],
+        "params": "$!../storage/exercises" 
+    }]
+  },
   "final": {
     "loopback#urlNotFound": {}
   },
