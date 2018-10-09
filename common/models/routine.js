@@ -1,6 +1,8 @@
 'use strict';
 
-module.exports = function( Routine ) {
+const RoutineService = require( '../services/routine.service' );
+
+module.exports =  Routine => {
 
   // Validations
   Routine.validatesLengthOf(
@@ -11,5 +13,13 @@ module.exports = function( Routine ) {
         max: 'La descripción no debe de exceder los 250 caracteres.',
       },
     });
+
+  // Custom remote methods
+  Routine.fullRoutine = RoutineService.fullRoutine.remoteMethod;
+
+  Routine.remoteMethod(
+    'fullRoutine',
+    RoutineService.fullRoutine.remoteMethodOptions,
+  );
 
 };

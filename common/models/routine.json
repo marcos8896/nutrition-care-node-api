@@ -24,6 +24,22 @@
       "foreignKey": ""
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "regular",
+      "permission": "ALLOW",
+      "property": "fullRoutine"
+    },
+
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "premium",
+      "permission": "ALLOW",
+      "property": "fullRoutine"
+    }
+  ],
   "methods": {}
 }
