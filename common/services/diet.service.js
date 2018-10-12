@@ -100,10 +100,61 @@ const fullDietRegistrationOptions = {
     verb: 'post',
   },
   description: [
-    'Receives a new diet model as first param and its diet details ',
+    'Receive a new diet model as first param and its diet details ',
     'as a second param and creates them on the database',
   ],
 };
+
+
+//--------------------------------------------------------------------------------
+
+/**
+ * Receives an existing diet model as first param and its modified diet details as a second param,
+ * edit them on the database and makes the relations between them in one
+ * database transaction.
+ * @param {Object} diet The given diet to be edited.
+ * @param {Object[]} dietDetails An array with all the edited dietDetails objects that have to be
+ * related with the given diet object.
+ * @author Marcos Barrera del Río <elyomarcos@gmail.com>
+ * @returns {Object} An object with the already edited dietId
+ */
+const editDiet = async ( diet, dietDetails ) => {
+
+  
+
+  }
+
+};
+
+const editDietOptions = {
+  accepts: [
+    {
+      arg: 'diet',
+      type: 'Object',
+      required: true,
+      description: 'A given diet object to be edited.',
+    },
+    {
+      arg: 'dietDetails',
+      type: 'array',
+      required: true,
+      description: [
+        'An array with all the edited dietDetails objects that have to ',
+        'be related with the main diet object.',
+      ],
+    },
+  ],
+  returns: { arg: 'dietId', type: 'Number', root: true },
+  http: {
+    path: '/editDiet',
+    verb: 'put',
+  },
+  description: [
+    'Receive an existing edited diet model as first param and its diet details ',
+    'as a second param and upsert/edit them on the database',
+  ],
+};
+
 
 module.exports = {
 
@@ -112,6 +163,11 @@ module.exports = {
     remoteMethodOptions: fullDietRegistrationOptions,
   },
 
-  //Next method
+  editDiet: {
+    remoteMethod: editDiet,
+    remoteMethodOptions: editDietOptions,
+  },
+
+  // Next method
 
 };

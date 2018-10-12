@@ -17,12 +17,23 @@ module.exports = Diet => {
     });
 
 
-  // Custom remote methods
-  Diet.fullDietRegistration = DietService.fullDietRegistration.remoteMethod;
+  //--------------------------------------------------------------------------------
 
+
+  // Custom remote methods
+
+  Diet.fullDietRegistration = DietService.fullDietRegistration.remoteMethod;
   Diet.remoteMethod(
     'fullDietRegistration',
     DietService.fullDietRegistration.remoteMethodOptions,
   );
+
+  //----------
+
+  Diet.editDiet = DietService.editDiet.remoteMethod;
+  Diet.remoteMethod( 'editDiet', DietService.editDiet.remoteMethodOptions );
+
+  //--------------------------------------------------------------------------------
+
 
 };
