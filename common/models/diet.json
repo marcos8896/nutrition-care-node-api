@@ -91,6 +91,22 @@
     },
 
     {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "regular",
+      "permission": "ALLOW",
+      "property": "editDiet"
+    },
+
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "premium",
+      "permission": "ALLOW",
+      "property": "editDiet"
+    },
+
+    {
       "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$owner",

@@ -109,18 +109,72 @@ const fullDietRegistrationOptions = {
 //--------------------------------------------------------------------------------
 
 /**
- * Receives an existing diet model as first param and its modified diet details as a second param,
- * edit them on the database and makes the relations between them in one
+ * Receives an existing diet model as first param and its modified diet details as
+ * a second param, edit them on the database and makes the relations between them in one
  * database transaction.
  * @param {Object} diet The given diet to be edited.
- * @param {Object[]} dietDetails An array with all the edited dietDetails objects that have to be
- * related with the given diet object.
+ * @param {Object[]} dietDetails An array with all the edited dietDetails objects
+ * that have to be related with the given diet object.
  * @author Marcos Barrera del Río <elyomarcos@gmail.com>
  * @returns {Object} An object with the already edited dietId
  */
 const editDiet = async ( diet, dietDetails ) => {
 
-  
+  // console.log( 'dietDetails: ', dietDetails );
+
+
+  console.log( 'diet: ', diet );
+
+  const { Diet, Diet_Food_Detail } = app.models; //eslint-disable-line
+
+
+  let transaction;
+
+  try {
+
+    // Creates low level Loopback transaction.
+    transaction = await Diet.beginTransaction({
+      isolationLevel: Diet.Transaction.REPEATABLE_READ,
+    });
+
+    // Sets transaction options.
+    const options = { transaction };
+
+
+    const editedDiet = await Diet.upsert( diet, options );
+
+    // const { id } = registeredDiet;
+
+    //   // Sets the registeredDiet id to every single dietDetails.
+    //   const dietDetailsWithId = dietDetails.map( item => {
+
+    //     return { ...item, dietId: id  };
+
+    //   });
+
+    //   // Creates all the Diet_Food_Detail records.
+    // await Diet_Food_Detail.create( dietDetailsWithId, options ); //eslint-disable-line
+
+    // Attempts to commit all the changes.
+    await transaction.commit();
+
+    // Returns the dietId to the client.
+    return { dietId: editedDiet.id };
+
+  } catch ( error ) {
+
+    try {
+
+      // Attempts to rollback all the changes (it could cause an error itself
+      // which is why it is required another try/catch).
+      await transaction.rollback();
+      return error;
+
+    } catch ( seriousError ) {
+
+      return seriousError;
+
+    }
 
   }
 
