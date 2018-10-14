@@ -1,6 +1,7 @@
 'use strict';
 
 const DietService = require( '../services/diet.service' );
+const DietHooks = require( '../hooks/diet.hooks' );
 
 module.exports = Diet => {
 
@@ -16,6 +17,11 @@ module.exports = Diet => {
       },
     });
 
+
+  //--------------------------------------------------------------------------------
+
+  // Remote hooks
+  Diet.beforeRemote( 'editDiet', DietHooks.validateOwnerEditDiet );
 
   //--------------------------------------------------------------------------------
 
