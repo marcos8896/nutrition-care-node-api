@@ -8,6 +8,8 @@
  * @module DietHooks
  */
 
+const createError = require( 'http-errors' );
+
 const app = require( '../../server/server' );
 
 /**
@@ -27,11 +29,7 @@ const validateOwnerEditDiet = async ( ctx ) => {
     null, { accessToken: id }
   );
 
-  if ( isOwner !== true ) {
-
-    throw new Error( 'Not authorized' );
-
-  }
+  if ( isOwner !== true ) throw createError( 401, 'Not authorized to edit this record' );
 
   return;
 
