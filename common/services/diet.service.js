@@ -120,13 +120,7 @@ const fullDietRegistrationOptions = {
  */
 const editDiet = async ( diet, dietDetails ) => {
 
-  // console.log( 'dietDetails: ', dietDetails );
-
-
-  console.log( 'diet: ', diet );
-
   const { Diet, Diet_Food_Detail } = app.models; //eslint-disable-line
-
 
   let transaction;
 
@@ -137,23 +131,33 @@ const editDiet = async ( diet, dietDetails ) => {
       isolationLevel: Diet.Transaction.REPEATABLE_READ,
     });
 
+    // Sets the editedDiet id to every single dietDetails.
+    const dietDetailsWithId = dietDetails.map( item => {
+
+      return {
+        calories: item.calories,
+        carbohydrates: item.carbohydrates,
+        fats: item.fats,
+        proteins: item.proteins,
+        desiredGrams: item.desiredGrams,
+        description: item.description,
+        foodId: item.foodId,
+        dietId: diet.id,
+        id: undefined,
+      };
+
+    });
+
     // Sets transaction options.
     const options = { transaction };
 
-
     const editedDiet = await Diet.upsert( diet, options );
 
-    // const { id } = registeredDiet;
+    // Delete all the diet details that are related to the main diet record.
+    await editedDiet.dietFoodDetails.destroyAll({}, options );
 
-    //   // Sets the registeredDiet id to every single dietDetails.
-    //   const dietDetailsWithId = dietDetails.map( item => {
-
-    //     return { ...item, dietId: id  };
-
-    //   });
-
-    //   // Creates all the Diet_Food_Detail records.
-    // await Diet_Food_Detail.create( dietDetailsWithId, options ); //eslint-disable-line
+    // Re-creates all the Diet_Food_Detail edited records.
+    await Diet_Food_Detail.create( dietDetailsWithId, options );
 
     // Attempts to commit all the changes.
     await transaction.commit();
@@ -168,11 +172,11 @@ const editDiet = async ( diet, dietDetails ) => {
       // Attempts to rollback all the changes (it could cause an error itself
       // which is why it is required another try/catch).
       await transaction.rollback();
-      return error;
+      throw error;
 
-    } catch ( seriousError ) {
+    } catch ( err ) {
 
-      return seriousError;
+      throw err;
 
     }
 
