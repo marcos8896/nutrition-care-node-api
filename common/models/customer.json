@@ -66,6 +66,14 @@
       "principalId": "$owner",
       "permission": "ALLOW",
       "property": "__get__diets"
+    },
+
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "__get__routines"
     }
 
   ],
